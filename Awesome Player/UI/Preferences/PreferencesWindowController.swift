@@ -19,7 +19,7 @@ class PreferencesWindowController: NSWindowController {
 
     init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 600, height: 450),
+            contentRect: NSRect(x: 0, y: 0, width: 620, height: 560),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -105,10 +105,17 @@ class GeneralPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Appearance")
         addRow(stack, "Theme:", NSPopUpButton().configured { $0.addItems(withTitles: ["System", "Dark", "Light"]) })
         addToggleRow(stack, "Transparent title bar", key: Defaults.transparentTitleBar)
-        addToggleRow(stack, "Resume playback position", key: Defaults.resumePlayback)
+
+        addSectionHeader(stack, "Behavior")
+        addToggleRow(stack, "Resume playback position on reopen", key: Defaults.resumePlayback)
         addToggleRow(stack, "Quit when last window closed", key: Defaults.quitOnLastWindowClosed)
+        addToggleRow(stack, "Restore window position on launch", key: Defaults.resumePlayback)
+
+        addSectionHeader(stack, "Updates")
+        addToggleRow(stack, "Check for updates automatically", key: Defaults.resumePlayback)
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -118,11 +125,17 @@ class MediaOpenPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Playback Engine")
         addRow(stack, "Default engine:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto", "AVPlayer", "FFmpeg"]) })
-        addToggleRow(stack, "Auto-find series files", key: Defaults.autoFindSeriesFiles)
-        addToggleRow(stack, "Auto-load subtitle files", key: Defaults.autoLoadSubtitles)
+
+        addSectionHeader(stack, "File Opening")
+        addToggleRow(stack, "Auto-find series files in same folder", key: Defaults.autoFindSeriesFiles)
         addToggleRow(stack, "Auto-load next file in folder", key: Defaults.autoLoadNextFile)
         addToggleRow(stack, "Open in new window", key: Defaults.openInNewWindow)
+
+        addSectionHeader(stack, "Subtitles")
+        addToggleRow(stack, "Auto-load matching subtitle files", key: Defaults.autoLoadSubtitles)
+        addRow(stack, "Subtitle search:", NSPopUpButton().configured { $0.addItems(withTitles: ["Same directory only", "Include subdirectories"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -132,12 +145,20 @@ class PlaybackPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Speed")
         addSliderRow(stack, "Default speed:", min: 0.25, max: 4.0, value: 1.0, key: Defaults.defaultSpeed)
-        addSliderRow(stack, "Short seek (s):", min: 1, max: 30, value: 5, key: Defaults.shortSeekInterval)
-        addSliderRow(stack, "Long seek (s):", min: 5, max: 120, value: 30, key: Defaults.longSeekInterval)
+
+        addSectionHeader(stack, "Seeking")
+        addSliderRow(stack, "Short seek interval (s):", min: 1, max: 30, value: 5, key: Defaults.shortSeekInterval)
+        addSliderRow(stack, "Long seek interval (s):", min: 5, max: 120, value: 30, key: Defaults.longSeekInterval)
+        addToggleRow(stack, "Key-frame seeking (faster, less precise)", key: Defaults.keyFrameSeeking)
+
+        addSectionHeader(stack, "Behavior")
         addToggleRow(stack, "Auto-play on open", key: Defaults.autoPlayOnOpen)
-        addRow(stack, "When media ends:", NSPopUpButton().configured { $0.addItems(withTitles: ["Do Nothing", "Close", "Play Next", "Loop"]) })
-        addSliderRow(stack, "A-B loop gap (s):", min: 0, max: 5, value: 0, key: Defaults.abLoopGap)
+        addRow(stack, "When media ends:", NSPopUpButton().configured { $0.addItems(withTitles: ["Do Nothing", "Close Media", "Play Next", "Loop"]) })
+
+        addSectionHeader(stack, "A-B Loop")
+        addSliderRow(stack, "Gap between loops (s):", min: 0, max: 5, value: 0, key: Defaults.abLoopGap)
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -147,10 +168,16 @@ class PlaylistPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Repeat & Shuffle")
         addRow(stack, "Repeat mode:", NSPopUpButton().configured { $0.addItems(withTitles: ["Off", "One", "All"]) })
         addToggleRow(stack, "Shuffle", key: Defaults.shuffle)
+
+        addSectionHeader(stack, "End of Playlist")
         addRow(stack, "When playlist ends:", NSPopUpButton().configured { $0.addItems(withTitles: ["Do Nothing", "Close Window", "Quit"]) })
-        addToggleRow(stack, "Auto-add files from directory", key: Defaults.autoAddFromDirectory)
+
+        addSectionHeader(stack, "Auto-Add")
+        addToggleRow(stack, "Auto-add files from same directory", key: Defaults.autoAddFromDirectory)
+        addRow(stack, "Sort order:", NSPopUpButton().configured { $0.addItems(withTitles: ["Name (ascending)", "Name (descending)", "Date modified", "File size"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -160,10 +187,22 @@ class VideoPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
-        addRow(stack, "Default aspect ratio:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto", "4:3", "16:9", "16:10", "2.35:1"]) })
-        addRow(stack, "Default size:", NSPopUpButton().configured { $0.addItems(withTitles: ["Fit to Screen", "Original", "50%", "200%"]) })
-        addRow(stack, "Screenshot format:", NSPopUpButton().configured { $0.addItems(withTitles: ["PNG", "JPEG", "TIFF"]) })
-        addRow(stack, "HDR tone mapping:", NSPopUpButton().configured { $0.addItems(withTitles: ["System", "Always HDR", "Force SDR"]) })
+        addSectionHeader(stack, "Display")
+        addRow(stack, "Default aspect ratio:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto", "4:3", "16:9", "16:10", "2.35:1", "2.39:1"]) })
+        addRow(stack, "Default window size:", NSPopUpButton().configured { $0.addItems(withTitles: ["Fit to Screen", "Original Size", "Half Size", "Double Size", "50%", "75%", "150%", "200%"]) })
+        addRow(stack, "Fill screen mode:", NSPopUpButton().configured { $0.addItems(withTitles: ["Stretch to Fill", "Crop to Fill"]) })
+
+        addSectionHeader(stack, "HDR")
+        addRow(stack, "HDR tone mapping:", NSPopUpButton().configured { $0.addItems(withTitles: ["System Default", "Always HDR", "Force SDR"]) })
+
+        addSectionHeader(stack, "Video Equalizer Defaults")
+        addSliderRow(stack, "Brightness:", min: -0.5, max: 0.5, value: 0, key: "video.defaultBrightness")
+        addSliderRow(stack, "Contrast:", min: 0.5, max: 2.0, value: 1.0, key: "video.defaultContrast")
+        addSliderRow(stack, "Saturation:", min: 0, max: 2.0, value: 1.0, key: "video.defaultSaturation")
+
+        addSectionHeader(stack, "Screenshot")
+        addRow(stack, "Format:", NSPopUpButton().configured { $0.addItems(withTitles: ["PNG", "JPEG", "TIFF"]) })
+        addRow(stack, "Save to:", NSPopUpButton().configured { $0.addItems(withTitles: ["Desktop", "Pictures", "Downloads", "Custom…"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -173,11 +212,27 @@ class AudioPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Volume")
         addSliderRow(stack, "Default volume:", min: 0, max: 1, value: 1, key: Defaults.defaultVolume)
-        addToggleRow(stack, "Allow extended volume (>100%)", key: Defaults.extendedVolume)
-        addRow(stack, "Passthrough:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto-detect", "Always On", "Off"]) })
+        addToggleRow(stack, "Allow extended volume (up to 400%)", key: Defaults.extendedVolume)
+
+        addSectionHeader(stack, "Passthrough")
+        addRow(stack, "Audio passthrough:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto-detect", "Always On", "Off"]) })
+
+        addSectionHeader(stack, "Equalizer")
         addRow(stack, "Default EQ preset:", NSPopUpButton().configured { $0.addItems(withTitles: AudioEqualizer.presets.map { $0.name }) })
-        addSliderRow(stack, "Normalization (LUFS):", min: -24, max: -6, value: -14, key: Defaults.normalizationTarget)
+
+        addSectionHeader(stack, "Audio Processing")
+        addToggleRow(stack, "Enable compressor (night mode)", key: "audio.compressorEnabled")
+        addToggleRow(stack, "Enable spatializer (headphone surround)", key: "audio.spatializerEnabled")
+        addSliderRow(stack, "Stereo width:", min: 0, max: 200, value: 100, key: "audio.stereoWidth")
+
+        addSectionHeader(stack, "Normalization")
+        addToggleRow(stack, "Enable loudness normalization", key: "audio.normalizationEnabled")
+        addSliderRow(stack, "Target loudness (LUFS):", min: -24, max: -6, value: -14, key: Defaults.normalizationTarget)
+
+        addSectionHeader(stack, "Sync")
+        addSliderRow(stack, "Audio delay step (ms):", min: 10, max: 500, value: 100, key: "audio.delayStep")
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -187,11 +242,24 @@ class SubtitlePrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Loading")
         addToggleRow(stack, "Auto-load embedded subtitles", key: Defaults.autoLoadEmbedded)
         addToggleRow(stack, "Auto-load external subtitle files", key: Defaults.autoLoadExternal)
-        addRow(stack, "Default encoding:", NSPopUpButton().configured { $0.addItems(withTitles: ["UTF-8", "GBK", "Shift-JIS", "EUC-KR", "ISO-8859-1"]) })
-        addSliderRow(stack, "Font size:", min: 12, max: 48, value: 24, key: Defaults.subtitleFontSize)
-        addRow(stack, "Position:", NSPopUpButton().configured { $0.addItems(withTitles: ["Bottom of Video", "Bottom of Screen", "Letterbox"]) })
+        addRow(stack, "Preferred language:", NSPopUpButton().configured { $0.addItems(withTitles: ["Any", "English", "Chinese (Simplified)", "Chinese (Traditional)", "Japanese", "Korean", "Spanish", "French", "German"]) })
+
+        addSectionHeader(stack, "Encoding")
+        addRow(stack, "Default encoding:", NSPopUpButton().configured { $0.addItems(withTitles: ["UTF-8", "Auto-detect", "GBK (Chinese)", "Shift-JIS (Japanese)", "EUC-KR (Korean)", "ISO-8859-1 (Latin)", "Windows-1252 (Western)"]) })
+
+        addSectionHeader(stack, "Appearance")
+        addRow(stack, "Font:", NSPopUpButton().configured { $0.addItems(withTitles: ["System Default", "Helvetica Neue", "Arial", "SF Pro", "PingFang SC"]) })
+        addSliderRow(stack, "Font size:", min: 12, max: 60, value: 24, key: Defaults.subtitleFontSize)
+        addRow(stack, "Text color:", NSPopUpButton().configured { $0.addItems(withTitles: ["White", "Yellow", "Green", "Cyan"]) })
+        addRow(stack, "Outline:", NSPopUpButton().configured { $0.addItems(withTitles: ["Black outline", "Shadow only", "Background box", "None"]) })
+
+        addSectionHeader(stack, "Position")
+        addRow(stack, "Display position:", NSPopUpButton().configured { $0.addItems(withTitles: ["Bottom of Video", "Bottom of Screen", "Upper Letterbox", "Lower Letterbox"]) })
+
+        addSectionHeader(stack, "Sync")
         addSliderRow(stack, "Delay step (s):", min: 0.05, max: 1.0, value: 0.1, key: Defaults.subtitleDelayStep)
         embed(stack)
     }
@@ -202,11 +270,17 @@ class FullScreenPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Enter / Exit")
         addToggleRow(stack, "Auto-enter fullscreen on open", key: Defaults.autoEnterFullscreen)
         addToggleRow(stack, "Pause when exiting fullscreen", key: Defaults.pauseOnExitFullscreen)
         addToggleRow(stack, "Start playing when entering fullscreen", key: Defaults.playOnEnterFullscreen)
+
+        addSectionHeader(stack, "Display")
         addToggleRow(stack, "Black out other screens", key: Defaults.blackOutOtherScreens)
-        addRow(stack, "Control bar:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto-hide", "Always Show"]) })
+        addRow(stack, "Control bar:", NSPopUpButton().configured { $0.addItems(withTitles: ["Auto-hide (3 seconds)", "Auto-hide (5 seconds)", "Always Show"]) })
+
+        addSectionHeader(stack, "Time Display")
+        addRow(stack, "Time OSD position:", NSPopUpButton().configured { $0.addItems(withTitles: ["Top-left", "Top-center", "Top-right", "Hidden"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -216,13 +290,40 @@ class KeyboardPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        addSectionHeader(stack, "Media Keys")
         addToggleRow(stack, "Enable media keys (Play/Pause, Next, Prev)", key: Defaults.mediaKeyEnabled)
-        addRow(stack, "Escape key:", NSPopUpButton().configured { $0.addItems(withTitles: ["Exit Fullscreen", "Close Panel", "Stop Playback"]) })
 
-        let note = NSTextField(wrappingLabelWithString: "Keyboard shortcuts can be customized in future versions. Current shortcuts: Space (play/pause), Arrows (seek/volume), F (fullscreen), M (mute), S (subtitles), R (A-B loop), [ ] (speed).")
-        note.font = .systemFont(ofSize: 11)
-        note.textColor = .secondaryLabelColor
-        stack.addArrangedSubview(note)
+        addSectionHeader(stack, "Escape Key")
+        addRow(stack, "Escape key action:", NSPopUpButton().configured { $0.addItems(withTitles: ["Exit Fullscreen", "Close Panel", "Stop Playback"]) })
+
+        addSectionHeader(stack, "Current Shortcuts")
+        let shortcuts: [(String, String)] = [
+            ("Space", "Play / Pause"),
+            ("← / →", "Seek ±5 seconds"),
+            ("⇧← / ⇧→", "Seek ±30 seconds"),
+            ("⌘← / ⌘→", "Seek ±60 seconds"),
+            ("↑ / ↓", "Volume up / down"),
+            ("M", "Mute / Unmute"),
+            ("F / ⌘F", "Toggle fullscreen"),
+            ("[ / ]", "Speed -/+ 0.25x"),
+            ("\\", "Reset speed to 1.0x"),
+            ("R", "A-B loop (set A → set B → clear)"),
+            ("⌘O", "Open file"),
+            ("⌘T", "Keep on top"),
+        ]
+        for (key, action) in shortcuts {
+            let row = NSStackView()
+            row.orientation = .horizontal
+            let keyLabel = NSTextField(labelWithString: key)
+            keyLabel.font = .monospacedSystemFont(ofSize: 11, weight: .medium)
+            keyLabel.textColor = .secondaryLabelColor
+            keyLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            let actionLabel = NSTextField(labelWithString: action)
+            actionLabel.font = .systemFont(ofSize: 11)
+            row.addArrangedSubview(keyLabel)
+            row.addArrangedSubview(actionLabel)
+            stack.addArrangedSubview(row)
+        }
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -232,10 +333,18 @@ class MousePrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
-        addRow(stack, "Single click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Play/Pause", "Nothing"]) })
-        addRow(stack, "Double click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Fullscreen", "Nothing"]) })
-        addRow(stack, "Middle click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Mute", "Pause", "Nothing"]) })
-        addRow(stack, "Scroll wheel:", NSPopUpButton().configured { $0.addItems(withTitles: ["Volume", "Seek", "Nothing"]) })
+        addSectionHeader(stack, "Click Actions")
+        addRow(stack, "Single click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Play / Pause", "Nothing"]) })
+        addRow(stack, "Double click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Toggle Fullscreen", "Nothing"]) })
+        addRow(stack, "Middle click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Mute / Unmute", "Play / Pause", "Nothing"]) })
+        addRow(stack, "Right click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Context Menu", "Nothing"]) })
+
+        addSectionHeader(stack, "Scroll Wheel")
+        addRow(stack, "Scroll action:", NSPopUpButton().configured { $0.addItems(withTitles: ["Volume", "Seek", "Nothing"]) })
+        addSliderRow(stack, "Scroll sensitivity:", min: 1, max: 10, value: 5, key: Defaults.scrollWheelSensitivity)
+
+        addSectionHeader(stack, "Trackpad")
+        addRow(stack, "Pinch gesture:", NSPopUpButton().configured { $0.addItems(withTitles: ["Zoom Video", "Resize Window", "Nothing"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -245,11 +354,19 @@ class CastPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
-        addRow(stack, "Default behavior:", NSPopUpButton().configured { $0.addItems(withTitles: ["Ask", "Auto-connect Last"]) })
-        addRow(stack, "Chromecast quality:", NSPopUpButton().configured { $0.addItems(withTitles: ["Low", "Medium", "High"]) })
-        addRow(stack, "DLNA quality:", NSPopUpButton().configured { $0.addItems(withTitles: ["Low", "Medium", "High"]) })
+        addSectionHeader(stack, "Connection")
+        addRow(stack, "Default behavior:", NSPopUpButton().configured { $0.addItems(withTitles: ["Ask every time", "Auto-connect to last device"]) })
         addToggleRow(stack, "Auto-disconnect on window close", key: Defaults.autoDisconnectOnClose)
         addToggleRow(stack, "Resume local playback on disconnect", key: Defaults.resumeLocalOnDisconnect)
+
+        addSectionHeader(stack, "AirPlay")
+        addRow(stack, "Show AirPlay button:", NSPopUpButton().configured { $0.addItems(withTitles: ["Always", "When device available", "Never"]) })
+
+        addSectionHeader(stack, "Chromecast")
+        addRow(stack, "Transcoding quality:", NSPopUpButton().configured { $0.addItems(withTitles: ["Low (720p)", "Medium (1080p)", "High (4K)"]) })
+
+        addSectionHeader(stack, "DLNA")
+        addRow(stack, "Transcoding quality:", NSPopUpButton().configured { $0.addItems(withTitles: ["Low (720p)", "Medium (1080p)", "High (4K)"]) })
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -274,6 +391,22 @@ extension NSView {
             stack.leadingAnchor.constraint(equalTo: leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+    }
+
+    func addSectionHeader(_ stack: NSStackView, _ title: String) {
+        if !stack.arrangedSubviews.isEmpty {
+            let spacer = NSView()
+            spacer.heightAnchor.constraint(equalToConstant: 4).isActive = true
+            stack.addArrangedSubview(spacer)
+        }
+        let label = NSTextField(labelWithString: title)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = .labelColor
+        stack.addArrangedSubview(label)
+        let sep = NSBox()
+        sep.boxType = .separator
+        sep.widthAnchor.constraint(equalToConstant: 400).isActive = true
+        stack.addArrangedSubview(sep)
     }
 
     func addRow(_ stack: NSStackView, _ label: String, _ control: NSView) {

@@ -12,6 +12,7 @@ struct EQPreset {
 class AudioEqualizer {
     let node: AVAudioUnitEQ
 
+    /// Standard ISO 266 1/3-octave center frequencies, spaced to cover the audible range
     static let bandFrequencies: [Float] = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
 
     static let presets: [EQPreset] = [
@@ -34,6 +35,8 @@ class AudioEqualizer {
         configureBands()
     }
 
+    /// Parametric filter type allows independent gain per band. Bandwidth of 1.0 octave
+    /// means each band influences frequencies ~0.7x to ~1.4x its center frequency.
     private func configureBands() {
         for (index, freq) in Self.bandFrequencies.enumerated() {
             let band = node.bands[index]
@@ -58,6 +61,7 @@ class AudioEqualizer {
         }
     }
 
+    /// Clamp to +/-12 dB to prevent clipping and speaker damage
     func setGain(_ gain: Float, forBand band: Int) {
         guard band < node.bands.count else { return }
         node.bands[band].gain = max(-12, min(12, gain))
@@ -68,6 +72,7 @@ class AudioEqualizer {
         return node.bands[band].gain
     }
 
+    /// bypass=true passes audio through unprocessed (inverted logic from "enabled")
     func setEnabled(_ enabled: Bool) {
         node.bypass = !enabled
     }
