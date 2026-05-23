@@ -11,13 +11,12 @@ class PlayerWindow: NSWindow {
     override var canBecomeMain: Bool { true }
 
     init() {
-        let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
-        let windowSize = NSSize(width: screenFrame.width * 0.7, height: screenFrame.height * 0.7)
-        let origin = NSPoint(
-            x: (screenFrame.width - windowSize.width) / 2,
-            y: (screenFrame.height - windowSize.height) / 2
-        )
-        let contentRect = NSRect(origin: origin, size: windowSize)
+        let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
+        let w = screen.width * 0.7
+        let h = screen.height * 0.7
+        let x = screen.origin.x + (screen.width - w) / 2
+        let y = screen.origin.y + (screen.height - h) / 2
+        let contentRect = NSRect(x: x, y: y, width: w, height: h)
 
         super.init(
             contentRect: contentRect,
@@ -26,6 +25,8 @@ class PlayerWindow: NSWindow {
             defer: false
         )
 
+        // Disable window state restoration so macOS doesn't override our size
+        isRestorable = false
         titlebarAppearsTransparent = true
         titleVisibility = .hidden
         // Disabled so drag-to-seek on the video area doesn't accidentally move the window
