@@ -5,21 +5,21 @@ class PreferencesWindowController: NSWindowController {
 
     private let tabs: [(String, String, NSView)] = [
         ("General", "gearshape", GeneralPrefsView()),
-        ("Media Open", "doc.badge.plus", MediaOpenPrefsView()),
+        ("Open", "doc.badge.plus", MediaOpenPrefsView()),
         ("Playback", "play.circle", PlaybackPrefsView()),
         ("Playlist", "list.bullet", PlaylistPrefsView()),
         ("Video", "film", VideoPrefsView()),
         ("Audio", "speaker.wave.3", AudioPrefsView()),
         ("Subtitle", "captions.bubble", SubtitlePrefsView()),
-        ("Full Screen", "arrow.up.left.and.arrow.down.right", FullScreenPrefsView()),
-        ("Keyboard", "keyboard", KeyboardPrefsView()),
+        ("Screen", "arrow.up.left.and.arrow.down.right", FullScreenPrefsView()),
+        ("Keys", "keyboard", KeyboardPrefsView()),
         ("Mouse", "computermouse", MousePrefsView()),
         ("Cast", "tv", CastPrefsView()),
     ]
 
     init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 820, height: 560),
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 560),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
