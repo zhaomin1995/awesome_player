@@ -17,8 +17,8 @@ class PreferencesWindowController: NSWindowController {
 
     init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 900, height: 560),
-            styleMask: [.titled, .closable],
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 700),
+            styleMask: [.titled, .closable, .resizable],
             backing: .buffered,
             defer: false
         )
@@ -47,7 +47,6 @@ class PreferencesWindowController: NSWindowController {
         for (i, (name, _, _, view)) in tabs.enumerated() {
             let item = NSTabViewItem(identifier: name)
             item.label = name
-            view.translatesAutoresizingMaskIntoConstraints = false
             item.view = view
             tabView.addTabViewItem(item)
 
@@ -465,36 +464,11 @@ extension NSView {
     }
 
     func embed(_ stack: NSStackView) {
-        // Use frame-based layout for the scroll view document — Auto Layout
-        // inside NSScrollView.documentView is notoriously broken for sizing.
-        let scrollView = NSScrollView(frame: bounds)
-        scrollView.autoresizingMask = [.width, .height]
-        scrollView.hasVerticalScroller = true
-        scrollView.drawsBackground = false
-
-        let container = FlippedView()
-        scrollView.documentView = container
-        addSubview(scrollView)
-
-        // Build stack with frame-based layout inside container
         stack.translatesAutoresizingMaskIntoConstraints = true
-        container.addSubview(stack)
-
-        // Relayout when the view appears and when the tab is selected
-        let layout = { [weak self] in
-            guard let self = self else { return }
-            let w = scrollView.contentSize.width
-            stack.frame = NSRect(x: 20, y: 12, width: w - 40, height: 0)
-            stack.frame.size.height = stack.fittingSize.height
-            container.frame = NSRect(x: 0, y: 0, width: w, height: stack.frame.maxY + 12)
-        }
-
-        // Layout now and also whenever the view becomes visible (tab switch)
-        DispatchQueue.main.async { layout() }
-        NotificationCenter.default.addObserver(forName: NSView.frameDidChangeNotification, object: scrollView, queue: .main) { _ in layout() }
-        NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { _ in
-            DispatchQueue.main.async { layout() }
-        }
+        stack.autoresizingMask = [.width]
+        stack.frame = NSRect(x: 20, y: 0, width: max(bounds.width - 40, 600), height: 10000)
+        stack.frame.size.height = stack.fittingSize.height
+        addSubview(stack)
     }
 
     func addSectionHeader(_ stack: NSStackView, _ title: String) {
