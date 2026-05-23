@@ -19,7 +19,7 @@ class PreferencesWindowController: NSWindowController {
 
     init() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 620, height: 560),
+            contentRect: NSRect(x: 0, y: 0, width: 820, height: 560),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -92,7 +92,8 @@ extension PreferencesWindowController: NSToolbarDelegate {
         guard let tab = tabs.first(where: { $0.0 == itemIdentifier.rawValue }) else { return nil }
         let item = NSToolbarItem(itemIdentifier: itemIdentifier)
         item.label = tab.0
-        item.image = NSImage(systemSymbolName: tab.1, accessibilityDescription: tab.0)
+        let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
+        item.image = NSImage(systemSymbolName: tab.1, accessibilityDescription: tab.0)?.withSymbolConfiguration(config)
         item.target = self
         item.action = #selector(tabClicked(_:))
         return item
