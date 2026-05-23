@@ -22,6 +22,7 @@ class PlayerWindowController: NSWindowController {
         window.contentViewController = playerViewController
 
         titleBarView.delegate = self
+        titleBarView.setTitle("Awesome Player")
         titleBarView.translatesAutoresizingMaskIntoConstraints = false
         if let contentView = window.contentView {
             contentView.addSubview(titleBarView)

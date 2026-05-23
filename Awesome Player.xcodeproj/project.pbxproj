@@ -54,6 +54,7 @@
 		A10046 /* CastPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10046; };
 		A10047 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10047; };
 		A10048 /* FFmpegBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F10048; };
+		A10070 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10070; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +107,7 @@
 		F10047 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		F10048 /* FFmpegBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFmpegBridge.m; sourceTree = "<group>"; };
 		F10049 /* FFmpegBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFmpegBridge.h; sourceTree = "<group>"; };
+		F10070 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F10050 /* AwesomePlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AwesomePlayer-Bridging-Header.h"; sourceTree = "<group>"; };
 		F10099 /* Awesome Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awesome Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -231,6 +233,7 @@
 				F10026 /* PlayerViewController.swift */,
 				F10027 /* SubtitleOverlayView.swift */,
 				F10028 /* VideoView.swift */,
+			F10070 /* WelcomeView.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				A10047 /* PreferencesWindowController.swift in Sources */,
 				A10048 /* FFmpegBridge.m in Sources */,
 				A10060 /* main.swift in Sources */,
+				A10070 /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

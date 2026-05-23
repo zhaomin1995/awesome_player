@@ -3,6 +3,7 @@ import AVFoundation
 
 class PlayerViewController: NSViewController {
     private let videoView = VideoView()
+    private let welcomeView = WelcomeView()
     private let controlBarView = ControlBarView()
     private let subtitleOverlayView = SubtitleOverlayView()
     private let osdView = OSDView()
@@ -33,6 +34,7 @@ class PlayerViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupVideoView()
+        setupWelcomeView()
         setupSubtitleOverlay()
         setupControlBar()
         setupOSD()
@@ -48,6 +50,17 @@ class PlayerViewController: NSViewController {
             videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+    }
+
+    private func setupWelcomeView() {
+        welcomeView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(welcomeView)
+        NSLayoutConstraint.activate([
+            welcomeView.topAnchor.constraint(equalTo: view.topAnchor),
+            welcomeView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            welcomeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            welcomeView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
 
@@ -161,6 +174,7 @@ class PlayerViewController: NSViewController {
     // MARK: - Playback
 
     func openFile(url: URL) {
+        welcomeView.isHidden = true
         playerEngine?.stop()
 
         let engine = AVPlayerEngine()
