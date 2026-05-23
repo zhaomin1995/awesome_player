@@ -6,6 +6,7 @@
 #include "libavutil/dict.h"
 #include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
+#include "libavutil/audio_fifo.h"
 #include "libswresample/swresample.h"
 
 #define HAS_FFMPEG 1
@@ -279,19 +280,56 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
         return NO;
     }
 
-    // Setup resampler for audio transcoding if needed
+    // Setup resampler and audio FIFO for transcoding
     struct SwrContext *swr_ctx = NULL;
+    AVAudioFifo *audio_fifo = NULL;
+    __block int64_t audio_pts = 0;
+
     if (dec_ctx && enc_ctx) {
         swr_alloc_set_opts2(&swr_ctx,
                             &enc_ctx->ch_layout, enc_ctx->sample_fmt, enc_ctx->sample_rate,
                             &dec_ctx->ch_layout, dec_ctx->sample_fmt, dec_ctx->sample_rate,
                             0, NULL);
         swr_init(swr_ctx);
+        audio_fifo = av_audio_fifo_alloc(enc_ctx->sample_fmt,
+                                          enc_ctx->ch_layout.nb_channels, enc_ctx->frame_size);
     }
 
     AVPacket *pkt = av_packet_alloc();
     AVFrame *frame = av_frame_alloc();
     AVPacket *enc_pkt = av_packet_alloc();
+
+    // Helper: encode frames from FIFO in exact frame_size chunks
+    void (^drainFifo)(BOOL) = ^(BOOL flush) {
+        int fs = enc_ctx->frame_size;
+        while (av_audio_fifo_size(audio_fifo) >= fs || (flush && av_audio_fifo_size(audio_fifo) > 0)) {
+            int samples = FFMIN(av_audio_fifo_size(audio_fifo), fs);
+            AVFrame *enc_frame = av_frame_alloc();
+            enc_frame->nb_samples = samples;
+            enc_frame->format = enc_ctx->sample_fmt;
+            av_channel_layout_copy(&enc_frame->ch_layout, &enc_ctx->ch_layout);
+            enc_frame->sample_rate = enc_ctx->sample_rate;
+            av_frame_get_buffer(enc_frame, 0);
+            av_audio_fifo_read(audio_fifo, (void **)enc_frame->data, samples);
+            enc_frame->pts = audio_pts;
+            audio_pts += samples;
+
+            avcodec_send_frame(enc_ctx, enc_frame);
+            av_frame_free(&enc_frame);
+
+            AVPacket *out_pkt = av_packet_alloc();
+            while (avcodec_receive_packet(enc_ctx, out_pkt) >= 0) {
+                out_pkt->stream_index = stream_mapping[audio_transcode_stream];
+                AVStream *os = ofmt_ctx->streams[out_pkt->stream_index];
+                av_packet_rescale_ts(out_pkt, enc_ctx->time_base, os->time_base);
+                av_interleaved_write_frame(ofmt_ctx, out_pkt);
+                av_packet_unref(out_pkt);
+            }
+            av_packet_free(&out_pkt);
+
+            if (!flush && av_audio_fifo_size(audio_fifo) < fs) break;
+        }
+    };
 
     while (av_read_frame(ifmt_ctx, pkt) >= 0) {
         if (pkt->stream_index >= (int)ifmt_ctx->nb_streams ||
@@ -302,42 +340,38 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
 
         int in_idx = pkt->stream_index;
         AVStream *in_stream = ifmt_ctx->streams[in_idx];
-        pkt->stream_index = stream_mapping[in_idx];
-        AVStream *out_stream = ofmt_ctx->streams[pkt->stream_index];
+        int mapped_idx = stream_mapping[in_idx];
 
         if (in_idx == audio_transcode_stream && dec_ctx && enc_ctx) {
-            // Decode -> resample -> encode
             ret = avcodec_send_packet(dec_ctx, pkt);
             av_packet_unref(pkt);
             while (ret >= 0) {
                 ret = avcodec_receive_frame(dec_ctx, frame);
                 if (ret < 0) break;
 
-                // Resample
-                AVFrame *resampled = av_frame_alloc();
-                resampled->sample_rate = enc_ctx->sample_rate;
-                resampled->format = enc_ctx->sample_fmt;
-                av_channel_layout_copy(&resampled->ch_layout, &enc_ctx->ch_layout);
-                resampled->nb_samples = swr_get_out_samples(swr_ctx, frame->nb_samples);
-                av_frame_get_buffer(resampled, 0);
-                swr_convert(swr_ctx, resampled->data, resampled->nb_samples,
-                           (const uint8_t **)frame->data, frame->nb_samples);
-                resampled->pts = frame->pts;
+                // Resample to encoder format
+                int out_samples = swr_get_out_samples(swr_ctx, frame->nb_samples);
+                uint8_t **out_buf = NULL;
+                int out_linesize;
+                av_samples_alloc_array_and_samples(&out_buf, &out_linesize,
+                    enc_ctx->ch_layout.nb_channels, out_samples, enc_ctx->sample_fmt, 0);
+                int converted = swr_convert(swr_ctx, out_buf, out_samples,
+                    (const uint8_t **)frame->data, frame->nb_samples);
 
-                avcodec_send_frame(enc_ctx, resampled);
-                av_frame_free(&resampled);
+                if (converted > 0) {
+                    av_audio_fifo_write(audio_fifo, (void **)out_buf, converted);
+                    drainFifo(NO);
+                }
 
-                while (avcodec_receive_packet(enc_ctx, enc_pkt) >= 0) {
-                    enc_pkt->stream_index = pkt->stream_index;
-                    av_packet_rescale_ts(enc_pkt, enc_ctx->time_base, out_stream->time_base);
-                    enc_pkt->stream_index = stream_mapping[in_idx];
-                    av_interleaved_write_frame(ofmt_ctx, enc_pkt);
-                    av_packet_unref(enc_pkt);
+                if (out_buf) {
+                    av_freep(&out_buf[0]);
+                    av_freep(&out_buf);
                 }
                 av_frame_unref(frame);
             }
         } else {
-            // Copy packet (video or compatible audio)
+            AVStream *out_stream = ofmt_ctx->streams[mapped_idx];
+            pkt->stream_index = mapped_idx;
             pkt->pts = av_rescale_q_rnd(pkt->pts, in_stream->time_base, out_stream->time_base,
                                          AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX);
             pkt->dts = av_rescale_q_rnd(pkt->dts, in_stream->time_base, out_stream->time_base,
@@ -349,13 +383,14 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
         }
     }
 
-    // Flush encoder
-    if (enc_ctx) {
+    // Flush remaining samples from FIFO and encoder
+    if (enc_ctx && audio_fifo) {
+        drainFifo(YES);
         avcodec_send_frame(enc_ctx, NULL);
         while (avcodec_receive_packet(enc_ctx, enc_pkt) >= 0) {
             enc_pkt->stream_index = stream_mapping[audio_transcode_stream];
-            AVStream *out_stream = ofmt_ctx->streams[enc_pkt->stream_index];
-            av_packet_rescale_ts(enc_pkt, enc_ctx->time_base, out_stream->time_base);
+            AVStream *os = ofmt_ctx->streams[enc_pkt->stream_index];
+            av_packet_rescale_ts(enc_pkt, enc_ctx->time_base, os->time_base);
             av_interleaved_write_frame(ofmt_ctx, enc_pkt);
             av_packet_unref(enc_pkt);
         }
@@ -367,6 +402,7 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
     av_write_trailer(ofmt_ctx);
     free(stream_mapping);
 
+    if (audio_fifo) av_audio_fifo_free(audio_fifo);
     if (swr_ctx) swr_free(&swr_ctx);
     if (dec_ctx) avcodec_free_context(&dec_ctx);
     if (enc_ctx) avcodec_free_context(&enc_ctx);
