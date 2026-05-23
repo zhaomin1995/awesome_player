@@ -100,22 +100,43 @@ class MenuManager {
         let menuItem = NSMenuItem(title: "Audio", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "Audio")
 
-        menu.addItem(withTitle: "Volume Up", action: #selector(AppDelegate.volumeUp(_:)), keyEquivalent: String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)))
-        menu.addItem(withTitle: "Volume Down", action: #selector(AppDelegate.volumeDown(_:)), keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)))
-        menu.addItem(withTitle: "Mute", action: #selector(AppDelegate.toggleMute(_:)), keyEquivalent: "m")
+        // Tracks section
+        let tracksHeader = NSMenuItem(title: "Tracks", action: nil, keyEquivalent: "")
+        tracksHeader.isEnabled = false
+        menu.addItem(tracksHeader)
+        let noTrack = NSMenuItem(title: "(None)", action: nil, keyEquivalent: "")
+        noTrack.isEnabled = false
+        menu.addItem(noTrack)
         menu.addItem(.separator())
 
-        let tracksItem = NSMenuItem(title: "Audio Tracks", action: nil, keyEquivalent: "")
-        tracksItem.submenu = NSMenu(title: "Audio Tracks")
-        menu.addItem(tracksItem)
+        // Equalizer submenu
+        let eqItem = NSMenuItem(title: "Equalizer", action: nil, keyEquivalent: "")
+        let eqMenu = NSMenu(title: "Equalizer")
+        for preset in ["Flat", "Bass Boost", "Treble Boost", "Vocal", "Rock", "Jazz", "Classical", "Electronic"] {
+            eqMenu.addItem(withTitle: preset, action: #selector(AppDelegate.setEQPreset(_:)), keyEquivalent: "")
+        }
+        eqItem.submenu = eqMenu
+        menu.addItem(eqItem)
 
-        menu.addItem(.separator())
-        menu.addItem(withTitle: "Equalizer", action: #selector(AppDelegate.showAudioPanel(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Passthrough", action: #selector(AppDelegate.togglePassthrough(_:)), keyEquivalent: "p")
-
+        // Output Device submenu
         let deviceItem = NSMenuItem(title: "Output Device", action: nil, keyEquivalent: "")
         deviceItem.submenu = NSMenu(title: "Output Device")
         menu.addItem(deviceItem)
+        menu.addItem(.separator())
+
+        // Sync section
+        let syncHeader = NSMenuItem(title: "Sync.", action: nil, keyEquivalent: "")
+        syncHeader.isEnabled = false
+        menu.addItem(syncHeader)
+        menu.addItem(withTitle: "Pull", action: #selector(AppDelegate.audioSyncPull(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: "Push", action: #selector(AppDelegate.audioSyncPush(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: "Revert Sync.", action: #selector(AppDelegate.audioSyncRevert(_:)), keyEquivalent: "")
+        menu.addItem(.separator())
+
+        // Volume section
+        menu.addItem(withTitle: "Increase Volume", action: #selector(AppDelegate.volumeUp(_:)), keyEquivalent: String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)))
+        menu.addItem(withTitle: "Decrease Volume", action: #selector(AppDelegate.volumeDown(_:)), keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)))
+        menu.addItem(withTitle: "Mute", action: #selector(AppDelegate.toggleMute(_:)), keyEquivalent: "m")
 
         menuItem.submenu = menu
         return menuItem
@@ -125,28 +146,64 @@ class MenuManager {
         let menuItem = NSMenuItem(title: "Video", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "Video")
 
+        // Tracks section
+        let tracksHeader = NSMenuItem(title: "Tracks", action: nil, keyEquivalent: "")
+        tracksHeader.isEnabled = false
+        menu.addItem(tracksHeader)
+        let noTrack = NSMenuItem(title: "(None)", action: nil, keyEquivalent: "")
+        noTrack.isEnabled = false
+        menu.addItem(noTrack)
+        menu.addItem(.separator())
+
+        // Full Screen & PiP
+        menu.addItem(withTitle: "Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "\r")
+        menu.addItem(withTitle: "Picture in Picture", action: #selector(AppDelegate.togglePiP(_:)), keyEquivalent: "p")
+        menu.addItem(.separator())
+
+        // Size
+        let half = menu.addItem(withTitle: "Half Size", action: #selector(AppDelegate.setHalfSize(_:)), keyEquivalent: "`")
+        let actual = menu.addItem(withTitle: "Actual Size", action: #selector(AppDelegate.setOriginalSize(_:)), keyEquivalent: "1")
+        let double = menu.addItem(withTitle: "Double Size", action: #selector(AppDelegate.setDoubleSize(_:)), keyEquivalent: "2")
+        let fit = menu.addItem(withTitle: "Fit to Screen", action: #selector(AppDelegate.fitToScreen(_:)), keyEquivalent: "4")
+        menu.addItem(.separator())
+
+        // Fill Screen
+        menu.addItem(withTitle: "Fill Screen", action: #selector(AppDelegate.fillScreen(_:)), keyEquivalent: "f")
+        menu.addItem(.separator())
+
+        // Aspect Ratio submenu
         let aspectItem = NSMenuItem(title: "Aspect Ratio", action: nil, keyEquivalent: "")
         let aspectMenu = NSMenu(title: "Aspect Ratio")
-        for ratio in ["Default", "4:3", "16:9", "16:10", "2.35:1", "Fill Screen"] {
+        for ratio in ["Default", "4:3", "16:9", "16:10", "2.35:1", "2.39:1"] {
             aspectMenu.addItem(withTitle: ratio, action: #selector(AppDelegate.setAspectRatio(_:)), keyEquivalent: "")
         }
         aspectItem.submenu = aspectMenu
         menu.addItem(aspectItem)
-
-        let sizeItem = NSMenuItem(title: "Size", action: nil, keyEquivalent: "")
-        let sizeMenu = NSMenu(title: "Size")
-        sizeMenu.addItem(withTitle: "Half Size", action: #selector(AppDelegate.setHalfSize(_:)), keyEquivalent: "")
-        sizeMenu.addItem(withTitle: "Original Size", action: #selector(AppDelegate.setOriginalSize(_:)), keyEquivalent: "")
-        sizeMenu.addItem(withTitle: "Double Size", action: #selector(AppDelegate.setDoubleSize(_:)), keyEquivalent: "")
-        sizeMenu.addItem(withTitle: "Fit to Screen", action: #selector(AppDelegate.fitToScreen(_:)), keyEquivalent: "")
-        sizeItem.submenu = sizeMenu
-        menu.addItem(sizeItem)
-
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Video Equalizer", action: #selector(AppDelegate.showVideoEQ(_:)), keyEquivalent: "e")
+
+        // Rotate & Flip
+        let rotL = menu.addItem(withTitle: "Rotate Left", action: #selector(AppDelegate.rotateLeft(_:)), keyEquivalent: "l")
+        rotL.keyEquivalentModifierMask = [.shift, .command]
+        let rotR = menu.addItem(withTitle: "Rotate Right", action: #selector(AppDelegate.rotateRight(_:)), keyEquivalent: "r")
+        rotR.keyEquivalentModifierMask = [.shift, .command]
+        let flipH = menu.addItem(withTitle: "Flip Horizontal", action: #selector(AppDelegate.flipHorizontal(_:)), keyEquivalent: "h")
+        flipH.keyEquivalentModifierMask = [.shift, .command]
+        let flipV = menu.addItem(withTitle: "Flip Vertical", action: #selector(AppDelegate.flipVertical(_:)), keyEquivalent: "v")
+        flipV.keyEquivalentModifierMask = [.shift, .command]
+        menu.addItem(withTitle: "Revert Transform", action: #selector(AppDelegate.revertTransform(_:)), keyEquivalent: "")
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Picture in Picture", action: #selector(AppDelegate.togglePiP(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
+
+        // Filters submenu
+        let filtersItem = NSMenuItem(title: "Filters", action: nil, keyEquivalent: "")
+        let filtersMenu = NSMenu(title: "Filters")
+        filtersMenu.addItem(withTitle: "Video Equalizer…", action: #selector(AppDelegate.showVideoEQ(_:)), keyEquivalent: "e")
+        filtersItem.submenu = filtersMenu
+        menu.addItem(filtersItem)
+        menu.addItem(.separator())
+
+        // Screenshot
+        let ss = menu.addItem(withTitle: "Save Screenshot", action: #selector(AppDelegate.saveScreenshot(_:)), keyEquivalent: "s")
+        ss.keyEquivalentModifierMask = [.option, .command]
 
         menuItem.submenu = menu
         return menuItem
@@ -156,15 +213,40 @@ class MenuManager {
         let menuItem = NSMenuItem(title: "Subtitle", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "Subtitle")
 
-        menu.addItem(withTitle: "Show / Hide Subtitles", action: #selector(AppDelegate.toggleSubtitles(_:)), keyEquivalent: "s")
+        // Tracks section
+        let tracksHeader = NSMenuItem(title: "Tracks", action: nil, keyEquivalent: "")
+        tracksHeader.isEnabled = false
+        menu.addItem(tracksHeader)
+        let noTrack = NSMenuItem(title: "(None)", action: nil, keyEquivalent: "")
+        noTrack.isEnabled = false
+        menu.addItem(noTrack)
         menu.addItem(.separator())
 
-        let tracksItem = NSMenuItem(title: "Subtitle Tracks", action: nil, keyEquivalent: "")
-        tracksItem.submenu = NSMenu(title: "Subtitle Tracks")
-        menu.addItem(tracksItem)
+        // Display Type submenu
+        let displayItem = NSMenuItem(title: "Display Type", action: nil, keyEquivalent: "")
+        let displayMenu = NSMenu(title: "Display Type")
+        displayMenu.addItem(withTitle: "Bottom of Video", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
+        displayMenu.addItem(withTitle: "Bottom of Screen", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
+        displayMenu.addItem(withTitle: "Letterbox", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
+        displayItem.submenu = displayMenu
+        menu.addItem(displayItem)
 
+        // Hide Subtitles
+        let hide = menu.addItem(withTitle: "Hide Subtitles", action: #selector(AppDelegate.toggleSubtitles(_:)), keyEquivalent: "v")
+        hide.keyEquivalentModifierMask = [.control]
         menu.addItem(.separator())
+
+        // Add Subtitle File
         menu.addItem(withTitle: "Add Subtitle File…", action: #selector(AppDelegate.addSubtitleFile(_:)), keyEquivalent: "")
+        menu.addItem(.separator())
+
+        // Sync section
+        let syncHeader = NSMenuItem(title: "Sync.", action: nil, keyEquivalent: "")
+        syncHeader.isEnabled = false
+        menu.addItem(syncHeader)
+        menu.addItem(withTitle: "Pull", action: #selector(AppDelegate.subtitleSyncPull(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: "Push", action: #selector(AppDelegate.subtitleSyncPush(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: "Revert Sync.", action: #selector(AppDelegate.subtitleSyncRevert(_:)), keyEquivalent: "")
 
         menuItem.submenu = menu
         return menuItem

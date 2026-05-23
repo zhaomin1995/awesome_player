@@ -79,6 +79,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     @objc func showAudioPanel(_ sender: Any?) {}
     @objc func togglePassthrough(_ sender: Any?) {}
+    @objc func setEQPreset(_ sender: Any?) {}
+    @objc func audioSyncPull(_ sender: Any?) {}
+    @objc func audioSyncPush(_ sender: Any?) {}
+    @objc func audioSyncRevert(_ sender: Any?) {}
 
     // MARK: - Video Menu
 
@@ -87,12 +91,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func setOriginalSize(_ sender: Any?) {}
     @objc func setDoubleSize(_ sender: Any?) {}
     @objc func fitToScreen(_ sender: Any?) {}
+    @objc func fillScreen(_ sender: Any?) {}
     @objc func showVideoEQ(_ sender: Any?) {}
     @objc func togglePiP(_ sender: Any?) {}
+    @objc func rotateLeft(_ sender: Any?) {}
+    @objc func rotateRight(_ sender: Any?) {}
+    @objc func flipHorizontal(_ sender: Any?) {}
+    @objc func flipVertical(_ sender: Any?) {}
+    @objc func revertTransform(_ sender: Any?) {}
 
     // MARK: - Subtitle Menu
 
     @objc func toggleSubtitles(_ sender: Any?) {}
+    @objc func setSubtitlePosition(_ sender: Any?) {}
+    @objc func subtitleSyncPull(_ sender: Any?) {}
+    @objc func subtitleSyncPush(_ sender: Any?) {}
+    @objc func subtitleSyncRevert(_ sender: Any?) {}
 
     // MARK: - Playlist Menu
 

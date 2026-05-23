@@ -16,19 +16,11 @@ class WelcomeView: NSView {
 
     private func setupViews() {
         wantsLayer = true
-
-        let gradient = CAGradientLayer()
-        gradient.colors = [
-            NSColor(white: 0.15, alpha: 1).cgColor,
-            NSColor(white: 0.08, alpha: 1).cgColor,
-        ]
-        gradient.startPoint = CGPoint(x: 0.5, y: 0)
-        gradient.endPoint = CGPoint(x: 0.5, y: 1)
-        layer?.addSublayer(gradient)
+        layer?.backgroundColor = NSColor(white: 0.18, alpha: 1).cgColor
 
         iconView.wantsLayer = true
         iconView.layer?.cornerRadius = 28
-        iconView.layer?.backgroundColor = NSColor(white: 0.22, alpha: 1).cgColor
+        iconView.layer?.backgroundColor = NSColor(white: 0.25, alpha: 1).cgColor
         iconView.layer?.shadowColor = NSColor.black.cgColor
         iconView.layer?.shadowOffset = CGSize(width: 0, height: -4)
         iconView.layer?.shadowRadius = 20
@@ -43,29 +35,36 @@ class WelcomeView: NSView {
         playSymbol.translatesAutoresizingMaskIntoConstraints = false
         iconView.addSubview(playSymbol)
 
-        let hintLabel = NSTextField(labelWithString: "Drop a video file here or press ⌘O to open")
-        hintLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        hintLabel.textColor = NSColor(white: 0.45, alpha: 1)
-        hintLabel.alignment = .center
-        hintLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(hintLabel)
-
         NSLayoutConstraint.activate([
             iconView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            iconView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -20),
+            iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconView.widthAnchor.constraint(equalToConstant: 120),
             iconView.heightAnchor.constraint(equalToConstant: 120),
 
             playSymbol.centerXAnchor.constraint(equalTo: iconView.centerXAnchor, constant: 4),
             playSymbol.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
-
-            hintLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            hintLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 24),
         ])
+    }
+
+    override func updateLayer() {
+        let gradient = CAGradientLayer()
+        gradient.type = .radial
+        gradient.frame = bounds
+        gradient.colors = [
+            NSColor(white: 0.10, alpha: 1).cgColor,
+            NSColor(white: 0.15, alpha: 1).cgColor,
+            NSColor(white: 0.22, alpha: 1).cgColor,
+        ]
+        gradient.locations = [0.0, 0.5, 1.0]
+        gradient.startPoint = CGPoint(x: 0.5, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
+
+        layer?.sublayers?.filter { $0 is CAGradientLayer }.forEach { $0.removeFromSuperlayer() }
+        layer?.insertSublayer(gradient, at: 0)
     }
 
     override func layout() {
         super.layout()
-        layer?.sublayers?.first?.frame = bounds
+        layer?.sublayers?.first(where: { $0 is CAGradientLayer })?.frame = bounds
     }
 }
