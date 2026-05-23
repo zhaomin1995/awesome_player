@@ -40,6 +40,10 @@
 		A10031 /* TitleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10031; };
 		A10032 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10032; };
 		A10033 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10033; };
+		A10034 /* CastingHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10035; };
+		A10035 /* CastingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10036; };
+		A10036 /* ChromecastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10037; };
+		A10037 /* DLNAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10038; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +81,10 @@
 		F10032 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		F10033 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F10034 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F10035 /* CastingHTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastingHTTPServer.swift; sourceTree = "<group>"; };
+		F10036 /* CastingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastingManager.swift; sourceTree = "<group>"; };
+		F10037 /* ChromecastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromecastManager.swift; sourceTree = "<group>"; };
+		F10038 /* DLNAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLNAManager.swift; sourceTree = "<group>"; };
 		F10099 /* DVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -151,6 +159,10 @@
 		G00040 /* Casting */ = {
 			isa = PBXGroup;
 			children = (
+				F10035 /* CastingHTTPServer.swift */,
+				F10036 /* CastingManager.swift */,
+				F10037 /* ChromecastManager.swift */,
+				F10038 /* DLNAManager.swift */,
 			);
 			path = Casting;
 			sourceTree = "<group>";
@@ -364,6 +376,10 @@
 				A10031 /* TitleBarView.swift in Sources */,
 				A10032 /* Defaults.swift in Sources */,
 				A10033 /* Extensions.swift in Sources */,
+				A10034 /* CastingHTTPServer.swift in Sources */,
+				A10035 /* CastingManager.swift in Sources */,
+				A10036 /* ChromecastManager.swift in Sources */,
+				A10037 /* DLNAManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
