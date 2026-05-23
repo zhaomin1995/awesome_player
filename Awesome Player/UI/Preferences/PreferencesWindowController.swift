@@ -155,7 +155,7 @@ class PlaybackPrefsView: NSView {
         addSectionHeader(stack, "Seeking")
         addSliderRow(stack, "Short seek interval (s):", min: 1, max: 30, value: 5, key: Defaults.shortSeekInterval)
         addSliderRow(stack, "Long seek interval (s):", min: 5, max: 120, value: 30, key: Defaults.longSeekInterval)
-        addToggleRow(stack, "Key-frame seeking (faster, less precise)", key: Defaults.keyFrameSeeking)
+        addToggleRow(stack, "Key-frame seeking (faster)", key: Defaults.keyFrameSeeking)
 
         addSectionHeader(stack, "Behavior")
         addToggleRow(stack, "Auto-play on open", key: Defaults.autoPlayOnOpen)
@@ -458,12 +458,34 @@ extension NSView {
     }
 
     func embed(_ stack: NSStackView) {
-        addSubview(stack)
+        let scrollView = NSScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
+        scrollView.drawsBackground = false
+
+        let container = FlippedView()
+        container.addSubview(stack)
+        scrollView.documentView = container
+        addSubview(scrollView)
+
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12),
         ])
+
+        // Size container to scroll view width after layout
+        DispatchQueue.main.async {
+            let w = scrollView.contentSize.width
+            stack.frame.size.width = w - 40
+            container.frame = NSRect(x: 0, y: 0, width: w, height: stack.fittingSize.height + 24)
+        }
     }
 
     func addSectionHeader(_ stack: NSStackView, _ title: String) {
@@ -486,12 +508,14 @@ extension NSView {
         let row = NSStackView()
         row.orientation = .horizontal
         row.alignment = .centerY
+        row.spacing = 12
+
         let lbl = NSTextField(labelWithString: label)
         lbl.font = .systemFont(ofSize: 12)
-        lbl.lineBreakMode = .byTruncatingTail
-        lbl.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-        lbl.widthAnchor.constraint(equalToConstant: 220).isActive = true
-        control.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        lbl.lineBreakMode = .byWordWrapping
+        lbl.setContentCompressionResistancePriority(.required, for: .horizontal)
+        lbl.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
+
         row.addArrangedSubview(lbl)
         row.addArrangedSubview(control)
         stack.addArrangedSubview(row)
@@ -509,7 +533,7 @@ extension NSView {
         slider.maxValue = max
         slider.doubleValue = UserDefaults.standard.double(forKey: key) != 0 ? UserDefaults.standard.double(forKey: key) : value
         slider.isContinuous = true
-        slider.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        slider.widthAnchor.constraint(equalToConstant: 250).isActive = true
         addRow(stack, label, slider)
     }
 }
