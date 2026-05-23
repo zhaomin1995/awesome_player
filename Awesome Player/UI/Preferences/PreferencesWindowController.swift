@@ -7,13 +7,11 @@ class PreferencesWindowController: NSWindowController {
         ("General", "gearshape.fill", .systemGray, GeneralPrefsView()),
         ("Open", "doc.badge.plus", .systemBlue, MediaOpenPrefsView()),
         ("Playback", "play.circle.fill", .systemGreen, PlaybackPrefsView()),
-        ("Playlist", "list.bullet", .systemOrange, PlaylistPrefsView()),
         ("Video", "film.fill", .systemPurple, VideoPrefsView()),
         ("Audio", "speaker.wave.3.fill", .systemPink, AudioPrefsView()),
         ("Subtitle", "captions.bubble.fill", .systemTeal, SubtitlePrefsView()),
         ("Screen", "arrow.up.left.and.arrow.down.right", .systemIndigo, FullScreenPrefsView()),
-        ("Keys", "keyboard.fill", .systemBrown, KeyboardPrefsView()),
-        ("Mouse", "computermouse.fill", .systemMint, MousePrefsView()),
+        ("Input", "keyboard.fill", .systemBrown, InputPrefsView()),
         ("Cast", "tv.fill", .systemRed, CastPrefsView()),
     ]
 
@@ -124,8 +122,6 @@ class GeneralPrefsView: NSView {
         addToggleRow(stack, "Quit when last window closed", key: Defaults.quitOnLastWindowClosed)
         addToggleRow(stack, "Restore window position on launch", key: Defaults.resumePlayback)
 
-        addSectionHeader(stack, "Updates")
-        addToggleRow(stack, "Check for updates automatically", key: Defaults.resumePlayback)
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -169,24 +165,12 @@ class PlaybackPrefsView: NSView {
 
         addSectionHeader(stack, "A-B Loop")
         addSliderRow(stack, "Gap between loops (s):", min: 0, max: 5, value: 0, key: Defaults.abLoopGap)
-        embed(stack)
-    }
-    required init?(coder: NSCoder) { fatalError() }
-}
 
-class PlaylistPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
-        addSectionHeader(stack, "Repeat & Shuffle")
+        addSectionHeader(stack, "Playlist")
         addRow(stack, "Repeat mode:", NSPopUpButton().configured { $0.addItems(withTitles: ["Off", "One", "All"]) })
         addToggleRow(stack, "Shuffle", key: Defaults.shuffle)
-
-        addSectionHeader(stack, "End of Playlist")
         addRow(stack, "When playlist ends:", NSPopUpButton().configured { $0.addItems(withTitles: ["Do Nothing", "Close Window", "Quit"]) })
-
-        addSectionHeader(stack, "Auto-Add")
-        addToggleRow(stack, "Auto-add files from same directory", key: Defaults.autoAddFromDirectory)
+        addToggleRow(stack, "Auto-add files from directory", key: Defaults.autoAddFromDirectory)
         addRow(stack, "Sort order:", NSPopUpButton().configured { $0.addItems(withTitles: ["Name (ascending)", "Name (descending)", "Date modified", "File size"]) })
         embed(stack)
     }
@@ -296,54 +280,69 @@ class FullScreenPrefsView: NSView {
     required init?(coder: NSCoder) { fatalError() }
 }
 
-class KeyboardPrefsView: NSView {
+class InputPrefsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
+    private let tableView = NSTableView()
+    private var shortcuts: [(action: String, key: String)] = [
+        ("Play / Pause", "Space"),
+        ("Seek ±5 seconds", "← / →"),
+        ("Seek ±30 seconds", "⇧← / ⇧→"),
+        ("Seek ±60 seconds", "⌘← / ⌘→"),
+        ("Volume up / down", "↑ / ↓"),
+        ("Mute / Unmute", "M"),
+        ("Toggle fullscreen", "F"),
+        ("Speed -/+ 0.25x", "[ / ]"),
+        ("Reset speed 1.0x", "\\"),
+        ("A-B loop", "R"),
+        ("Open file", "⌘O"),
+        ("Keep on top", "⌘T"),
+        ("Save screenshot", "⌥⌘S"),
+    ]
+    private var editingRow: Int? = nil
+
     override init(frame: NSRect) {
         super.init(frame: frame)
+
         let stack = makePrefsStack()
+
         addSectionHeader(stack, "Media Keys")
         addToggleRow(stack, "Enable media keys (Play/Pause, Next, Prev)", key: Defaults.mediaKeyEnabled)
 
         addSectionHeader(stack, "Escape Key")
         addRow(stack, "Escape key action:", NSPopUpButton().configured { $0.addItems(withTitles: ["Exit Fullscreen", "Close Panel", "Stop Playback"]) })
 
-        addSectionHeader(stack, "Current Shortcuts")
-        let shortcuts: [(String, String)] = [
-            ("Space", "Play / Pause"),
-            ("← / →", "Seek ±5 seconds"),
-            ("⇧← / ⇧→", "Seek ±30 seconds"),
-            ("⌘← / ⌘→", "Seek ±60 seconds"),
-            ("↑ / ↓", "Volume up / down"),
-            ("M", "Mute / Unmute"),
-            ("F / ⌘F", "Toggle fullscreen"),
-            ("[ / ]", "Speed -/+ 0.25x"),
-            ("\\", "Reset speed to 1.0x"),
-            ("R", "A-B loop (set A → set B → clear)"),
-            ("⌘O", "Open file"),
-            ("⌘T", "Keep on top"),
-        ]
-        for (key, action) in shortcuts {
-            let row = NSStackView()
-            row.orientation = .horizontal
-            let keyLabel = NSTextField(labelWithString: key)
-            keyLabel.font = .monospacedSystemFont(ofSize: 11, weight: .medium)
-            keyLabel.textColor = .secondaryLabelColor
-            keyLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-            let actionLabel = NSTextField(labelWithString: action)
-            actionLabel.font = .systemFont(ofSize: 11)
-            row.addArrangedSubview(keyLabel)
-            row.addArrangedSubview(actionLabel)
-            stack.addArrangedSubview(row)
-        }
-        embed(stack)
-    }
-    required init?(coder: NSCoder) { fatalError() }
-}
+        addSectionHeader(stack, "Keyboard Shortcuts")
+        let hint = NSTextField(labelWithString: "Double-click a shortcut to change it")
+        hint.font = .systemFont(ofSize: 11)
+        hint.textColor = .tertiaryLabelColor
+        stack.addArrangedSubview(hint)
 
-class MousePrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
-        addSectionHeader(stack, "Click Actions")
+        let actionCol = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("action"))
+        actionCol.title = "Action"
+        actionCol.width = 200
+        let keyCol = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("key"))
+        keyCol.title = "Shortcut"
+        keyCol.width = 120
+        tableView.addTableColumn(actionCol)
+        tableView.addTableColumn(keyCol)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = 22
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.doubleAction = #selector(shortcutDoubleClicked)
+        tableView.target = self
+
+        let scrollView = NSScrollView()
+        scrollView.documentView = tableView
+        scrollView.hasVerticalScroller = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        stack.addArrangedSubview(scrollView)
+
+        let resetBtn = NSButton(title: "Reset to Defaults", target: self, action: #selector(resetShortcuts))
+        resetBtn.bezelStyle = .rounded
+        stack.addArrangedSubview(resetBtn)
+
+        addSectionHeader(stack, "Mouse")
         addRow(stack, "Single click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Play / Pause", "Nothing"]) })
         addRow(stack, "Double click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Toggle Fullscreen", "Nothing"]) })
         addRow(stack, "Middle click:", NSPopUpButton().configured { $0.addItems(withTitles: ["Mute / Unmute", "Play / Pause", "Nothing"]) })
@@ -355,9 +354,75 @@ class MousePrefsView: NSView {
 
         addSectionHeader(stack, "Trackpad")
         addRow(stack, "Pinch gesture:", NSPopUpButton().configured { $0.addItems(withTitles: ["Zoom Video", "Resize Window", "Nothing"]) })
+
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { shortcuts.count }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let text: String
+        if tableColumn?.identifier.rawValue == "action" {
+            text = shortcuts[row].action
+        } else {
+            if editingRow == row {
+                text = "⌨ Press key…"
+            } else {
+                text = shortcuts[row].key
+            }
+        }
+        let label = NSTextField(labelWithString: text)
+        label.font = tableColumn?.identifier.rawValue == "key"
+            ? .monospacedSystemFont(ofSize: 12, weight: .medium)
+            : .systemFont(ofSize: 12)
+        if editingRow == row && tableColumn?.identifier.rawValue == "key" {
+            label.textColor = .systemBlue
+        }
+        return label
+    }
+
+    @objc private func shortcutDoubleClicked() {
+        let row = tableView.clickedRow
+        guard row >= 0 else { return }
+        editingRow = row
+        tableView.reloadData()
+
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self = self, let editing = self.editingRow else { return event }
+            var parts: [String] = []
+            if event.modifierFlags.contains(.control) { parts.append("⌃") }
+            if event.modifierFlags.contains(.option) { parts.append("⌥") }
+            if event.modifierFlags.contains(.shift) { parts.append("⇧") }
+            if event.modifierFlags.contains(.command) { parts.append("⌘") }
+            let char = event.charactersIgnoringModifiers?.uppercased() ?? ""
+            parts.append(char)
+            self.shortcuts[editing].key = parts.joined()
+            self.editingRow = nil
+            self.tableView.reloadData()
+            return nil
+        }
+    }
+
+    @objc private func resetShortcuts() {
+        shortcuts = [
+            ("Play / Pause", "Space"),
+            ("Seek ±5 seconds", "← / →"),
+            ("Seek ±30 seconds", "⇧← / ⇧→"),
+            ("Seek ±60 seconds", "⌘← / ⌘→"),
+            ("Volume up / down", "↑ / ↓"),
+            ("Mute / Unmute", "M"),
+            ("Toggle fullscreen", "F"),
+            ("Speed -/+ 0.25x", "[ / ]"),
+            ("Reset speed 1.0x", "\\"),
+            ("A-B loop", "R"),
+            ("Open file", "⌘O"),
+            ("Keep on top", "⌘T"),
+            ("Save screenshot", "⌥⌘S"),
+        ]
+        editingRow = nil
+        tableView.reloadData()
+    }
 }
 
 class CastPrefsView: NSView {
@@ -395,11 +460,22 @@ extension NSView {
     }
 
     func embed(_ stack: NSStackView) {
-        addSubview(stack)
+        let scrollView = NSScrollView()
+        scrollView.documentView = stack
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
+        scrollView.drawsBackground = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
+
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stack.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 12),
+            stack.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor),
         ])
     }
 
@@ -422,9 +498,13 @@ extension NSView {
     func addRow(_ stack: NSStackView, _ label: String, _ control: NSView) {
         let row = NSStackView()
         row.orientation = .horizontal
+        row.alignment = .centerY
         let lbl = NSTextField(labelWithString: label)
         lbl.font = .systemFont(ofSize: 12)
-        lbl.widthAnchor.constraint(equalToConstant: 260).isActive = true
+        lbl.lineBreakMode = .byTruncatingTail
+        lbl.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        lbl.widthAnchor.constraint(equalToConstant: 220).isActive = true
+        control.setContentHuggingPriority(.defaultLow, for: .horizontal)
         row.addArrangedSubview(lbl)
         row.addArrangedSubview(control)
         stack.addArrangedSubview(row)
@@ -450,6 +530,8 @@ extension NSView {
 extension NSPopUpButton {
     func configured(_ block: (NSPopUpButton) -> Void) -> NSPopUpButton {
         block(self)
+        isEnabled = true
+        widthAnchor.constraint(greaterThanOrEqualToConstant: 150).isActive = true
         return self
     }
 }
