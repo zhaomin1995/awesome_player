@@ -455,6 +455,76 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
 #endif
 }
 
+
++ (BOOL)remuxVideoOnly:(NSString *)inputPath
+              toOutput:(NSString *)outputPath
+                 error:(NSError **)error {
+#if HAS_FFMPEG
+    NSLog(@"[FFmpegBridge] Fast video-only remux: %@", inputPath);
+    AVFormatContext *ifmt_ctx = NULL;
+    int ret = avformat_open_input(&ifmt_ctx, [inputPath UTF8String], NULL, NULL);
+    if (ret < 0) {
+        if (error) *error = [NSError errorWithDomain:@"FFmpeg" code:ret userInfo:@{NSLocalizedDescriptionKey: @"Failed to open input"}];
+        return NO;
+    }
+    avformat_find_stream_info(ifmt_ctx, NULL);
+
+    AVFormatContext *ofmt_ctx = NULL;
+    avformat_alloc_output_context2(&ofmt_ctx, NULL, "mp4", [outputPath UTF8String]);
+    if (!ofmt_ctx) { avformat_close_input(&ifmt_ctx); return NO; }
+
+    int video_in = -1;
+    for (unsigned i = 0; i < ifmt_ctx->nb_streams; i++) {
+        if (ifmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+            video_in = i;
+            AVStream *os = avformat_new_stream(ofmt_ctx, NULL);
+            avcodec_parameters_copy(os->codecpar, ifmt_ctx->streams[i]->codecpar);
+            if (ifmt_ctx->streams[i]->codecpar->codec_id == AV_CODEC_ID_HEVC) {
+                os->codecpar->codec_tag = MKTAG('h','v','c','1');
+            } else {
+                os->codecpar->codec_tag = 0;
+            }
+            break;
+        }
+    }
+
+    if (video_in < 0) {
+        avformat_close_input(&ifmt_ctx);
+        avformat_free_context(ofmt_ctx);
+        return NO;
+    }
+
+    avio_open(&ofmt_ctx->pb, [outputPath UTF8String], AVIO_FLAG_WRITE);
+    AVDictionary *opts = NULL;
+    av_dict_set(&opts, "movflags", "faststart", 0);
+    avformat_write_header(ofmt_ctx, &opts);
+    av_dict_free(&opts);
+
+    AVPacket *pkt = av_packet_alloc();
+    while (av_read_frame(ifmt_ctx, pkt) >= 0) {
+        if (pkt->stream_index != video_in) { av_packet_unref(pkt); continue; }
+        AVStream *is = ifmt_ctx->streams[video_in];
+        pkt->stream_index = 0;
+        AVStream *os = ofmt_ctx->streams[0];
+        pkt->pts = av_rescale_q_rnd(pkt->pts, is->time_base, os->time_base, AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX);
+        pkt->dts = av_rescale_q_rnd(pkt->dts, is->time_base, os->time_base, AV_ROUND_NEAR_INF|AV_ROUND_PASS_MINMAX);
+        pkt->duration = av_rescale_q(pkt->duration, is->time_base, os->time_base);
+        pkt->pos = -1;
+        av_interleaved_write_frame(ofmt_ctx, pkt);
+        av_packet_unref(pkt);
+    }
+    av_packet_free(&pkt);
+    av_write_trailer(ofmt_ctx);
+    avio_closep(&ofmt_ctx->pb);
+    avformat_close_input(&ifmt_ctx);
+    avformat_free_context(ofmt_ctx);
+    NSLog(@"[FFmpegBridge] Fast remux complete: %@", outputPath);
+    return YES;
+#else
+    return NO;
+#endif
+}
+
 + (nullable NSString *)extractSubtitleTrack:(int)trackIndex
                                    fromFile:(NSString *)path
                                       error:(NSError **)error {

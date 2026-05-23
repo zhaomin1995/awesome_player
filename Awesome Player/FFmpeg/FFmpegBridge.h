@@ -37,10 +37,15 @@ typedef struct {
 + (NSArray<NSDictionary *> *)audioTracksForFile:(NSString *)path;
 + (NSArray<NSDictionary *> *)subtitleTracksForFile:(NSString *)path;
 
-// Remuxing: MKV -> fragmented MP4
+// Remuxing: MKV -> MP4 (full remux with audio transcoding if needed)
 + (BOOL)remuxFile:(NSString *)inputPath
        toOutput:(NSString *)outputPath
           error:(NSError **)error;
+
+// Fast video-only remux: copies video stream, skips audio. Much faster for large files.
++ (BOOL)remuxVideoOnly:(NSString *)inputPath
+              toOutput:(NSString *)outputPath
+                 error:(NSError **)error;
 
 // Subtitle extraction
 + (nullable NSString *)extractSubtitleTrack:(int)trackIndex
