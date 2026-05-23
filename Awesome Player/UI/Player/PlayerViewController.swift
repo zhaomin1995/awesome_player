@@ -175,6 +175,7 @@ class PlayerViewController: NSViewController {
 
     func openFile(url: URL) {
         welcomeView.isHidden = true
+        controlBarView.setVideoActive(true)
         playerEngine?.stop()
 
         let engine = AVPlayerEngine()

@@ -37,14 +37,14 @@ class ControlBarView: NSView {
     private func setupViews() {
         wantsLayer = true
 
-        // Dark gradient scrim behind controls for readability
         gradientView.translatesAutoresizingMaskIntoConstraints = false
+        gradientView.isHidden = true
         addSubview(gradientView)
 
         effectView.wantsLayer = true
         effectView.layer?.cornerRadius = 10
         effectView.layer?.masksToBounds = true
-        effectView.layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.95).cgColor
+        effectView.layer?.backgroundColor = NSColor.clear.cgColor
         effectView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(effectView)
 
@@ -145,6 +145,16 @@ class ControlBarView: NSView {
 
     @objc private func fullscreenClicked() {
         window?.toggleFullScreen(nil)
+    }
+
+    func setVideoActive(_ active: Bool) {
+        if active {
+            effectView.layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.95).cgColor
+            gradientView.isHidden = false
+        } else {
+            effectView.layer?.backgroundColor = NSColor.clear.cgColor
+            gradientView.isHidden = true
+        }
     }
 
     // MARK: - Public API
