@@ -1,0 +1,26 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Vendor (FFmpeg) - built locally, not committed
+Vendor/
+
+# Build products
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Temporary files
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
