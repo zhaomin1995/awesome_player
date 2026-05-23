@@ -195,14 +195,24 @@ class PlayerViewController: NSViewController {
     }
 
     private func playWithEngine(_ engine: AVPlayerEngine, url: URL) {
+        print("[DVPlayer] Opening: \(url.path)")
         engine.open(url: url)
         videoView.setPlayer(engine.player)
-        controlBarView.setDuration(engine.duration)
-        engine.play()
-        controlBarView.setPlaying(true)
 
-        if let window = view.window as? PlayerWindow, let videoSize = engine.videoSize {
-            window.setAspectRatio(videoSize)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self = self else { return }
+            self.controlBarView.setDuration(engine.duration)
+            engine.play()
+            self.controlBarView.setPlaying(true)
+
+            if let window = self.view.window as? PlayerWindow, let videoSize = engine.videoSize {
+                window.setAspectRatio(videoSize)
+                let screenFrame = NSScreen.main?.visibleFrame ?? .zero
+                let scale = min(screenFrame.width * 0.7 / videoSize.width, screenFrame.height * 0.7 / videoSize.height, 1.0)
+                let newSize = NSSize(width: videoSize.width * scale, height: videoSize.height * scale)
+                window.setContentSize(newSize)
+                window.center()
+            }
         }
     }
 

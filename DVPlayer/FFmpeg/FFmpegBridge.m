@@ -1,15 +1,11 @@
 #import "FFmpegBridge.h"
 
-// FFmpeg headers — conditionally included when FFmpeg is linked
-#if __has_include(<libavformat/avformat.h>)
-#import <libavformat/avformat.h>
-#import <libavcodec/avcodec.h>
-#import <libavutil/avutil.h>
-#import <libavutil/dict.h>
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavutil/avutil.h"
+#include "libavutil/dict.h"
+
 #define HAS_FFMPEG 1
-#else
-#define HAS_FFMPEG 0
-#endif
 
 @implementation FFmpegBridge
 
@@ -165,11 +161,13 @@
        toOutput:(NSString *)outputPath
           error:(NSError **)error {
 #if HAS_FFMPEG
+    NSLog(@"[FFmpegBridge] Remuxing: %@ -> %@", inputPath, outputPath);
     AVFormatContext *ifmt_ctx = NULL, *ofmt_ctx = NULL;
     int ret;
 
     ret = avformat_open_input(&ifmt_ctx, [inputPath UTF8String], NULL, NULL);
     if (ret < 0) {
+        NSLog(@"[FFmpegBridge] Failed to open input: %d", ret);
         if (error) *error = [NSError errorWithDomain:@"FFmpeg" code:ret userInfo:@{NSLocalizedDescriptionKey: @"Failed to open input"}];
         return NO;
     }
@@ -256,6 +254,7 @@
     avformat_close_input(&ifmt_ctx);
     avformat_free_context(ofmt_ctx);
 
+    NSLog(@"[FFmpegBridge] Remux complete: %@", outputPath);
     return YES;
 #else
     if (error) *error = [NSError errorWithDomain:@"FFmpeg" code:-1 userInfo:@{NSLocalizedDescriptionKey: @"FFmpeg not linked"}];
