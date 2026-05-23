@@ -3,18 +3,18 @@ import Cocoa
 class PreferencesWindowController: NSWindowController {
     private let tabView = NSTabView()
 
-    private let tabs: [(String, String, NSView)] = [
-        ("General", "gearshape", GeneralPrefsView()),
-        ("Open", "doc.badge.plus", MediaOpenPrefsView()),
-        ("Playback", "play.circle", PlaybackPrefsView()),
-        ("Playlist", "list.bullet", PlaylistPrefsView()),
-        ("Video", "film", VideoPrefsView()),
-        ("Audio", "speaker.wave.3", AudioPrefsView()),
-        ("Subtitle", "captions.bubble", SubtitlePrefsView()),
-        ("Screen", "arrow.up.left.and.arrow.down.right", FullScreenPrefsView()),
-        ("Keys", "keyboard", KeyboardPrefsView()),
-        ("Mouse", "computermouse", MousePrefsView()),
-        ("Cast", "tv", CastPrefsView()),
+    private let tabs: [(String, String, NSColor, NSView)] = [
+        ("General", "gearshape.fill", .systemGray, GeneralPrefsView()),
+        ("Open", "doc.badge.plus", .systemBlue, MediaOpenPrefsView()),
+        ("Playback", "play.circle.fill", .systemGreen, PlaybackPrefsView()),
+        ("Playlist", "list.bullet", .systemOrange, PlaylistPrefsView()),
+        ("Video", "film.fill", .systemPurple, VideoPrefsView()),
+        ("Audio", "speaker.wave.3.fill", .systemPink, AudioPrefsView()),
+        ("Subtitle", "captions.bubble.fill", .systemTeal, SubtitlePrefsView()),
+        ("Screen", "arrow.up.left.and.arrow.down.right", .systemIndigo, FullScreenPrefsView()),
+        ("Keys", "keyboard.fill", .systemBrown, KeyboardPrefsView()),
+        ("Mouse", "computermouse.fill", .systemMint, MousePrefsView()),
+        ("Cast", "tv.fill", .systemRed, CastPrefsView()),
     ]
 
     init() {
@@ -24,7 +24,7 @@ class PreferencesWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "Preferences"
+        window.title = "General"
         window.center()
         super.init(window: window)
         setupTabs()
@@ -43,7 +43,7 @@ class PreferencesWindowController: NSWindowController {
         tabView.tabViewType = .noTabsNoBorder
         window?.contentView?.addSubview(tabView)
 
-        for (i, (name, _, view)) in tabs.enumerated() {
+        for (i, (name, _, _, view)) in tabs.enumerated() {
             let item = NSTabViewItem(identifier: name)
             item.label = name
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -66,9 +66,10 @@ class PreferencesWindowController: NSWindowController {
     }
 
     @objc private func tabClicked(_ sender: NSToolbarItem) {
-        for (i, (name, _, _)) in tabs.enumerated() {
+        for (i, (name, _, _, _)) in tabs.enumerated() {
             if name == sender.itemIdentifier.rawValue {
                 tabView.selectTabViewItem(at: i)
+                window?.title = name
                 break
             }
         }
@@ -93,7 +94,15 @@ extension PreferencesWindowController: NSToolbarDelegate {
         let item = NSToolbarItem(itemIdentifier: itemIdentifier)
         item.label = tab.0
         let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .regular)
-        item.image = NSImage(systemSymbolName: tab.1, accessibilityDescription: tab.0)?.withSymbolConfiguration(config)
+        if let img = NSImage(systemSymbolName: tab.1, accessibilityDescription: tab.0)?.withSymbolConfiguration(config) {
+            let tinted = NSImage(size: img.size, flipped: false) { rect in
+                tab.2.set()
+                img.draw(in: rect, from: .zero, operation: .destinationIn, fraction: 1.0)
+                return true
+            }
+            tinted.isTemplate = false
+            item.image = tinted
+        }
         item.target = self
         item.action = #selector(tabClicked(_:))
         return item
@@ -415,7 +424,7 @@ extension NSView {
         row.orientation = .horizontal
         let lbl = NSTextField(labelWithString: label)
         lbl.font = .systemFont(ofSize: 12)
-        lbl.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        lbl.widthAnchor.constraint(equalToConstant: 260).isActive = true
         row.addArrangedSubview(lbl)
         row.addArrangedSubview(control)
         stack.addArrangedSubview(row)
