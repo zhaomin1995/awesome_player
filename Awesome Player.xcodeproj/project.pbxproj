@@ -327,6 +327,7 @@
 				S00001 /* Sources */,
 				FB0001 /* Frameworks */,
 				R00001 /* Resources */,
+				SH0001 /* Copy FFmpeg Dylibs */,
 			);
 			buildRules = (
 			);
@@ -432,6 +433,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		SH0001 /* Copy FFmpeg Dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy FFmpeg Dylibs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nfor dylib in libavformat libavcodec libavutil libswresample libswscale; do\n    SRC=$(find \"${PROJECT_DIR}/Vendor/ffmpeg/lib\" -name \"${dylib}.*.*.*.dylib\" -not -type l | head -1)\n    [ -n \"$SRC\" ] && cp -f \"$SRC\" \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		BC0010 /* Debug */ = {
