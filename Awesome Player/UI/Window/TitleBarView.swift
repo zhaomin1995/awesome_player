@@ -31,7 +31,7 @@ class TitleBarView: NSView {
         wantsLayer = true
         layer?.backgroundColor = NSColor.black.withAlphaComponent(0.5).cgColor
 
-        titleLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        titleLabel.font = .systemFont(ofSize: 15, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.alignment = .center
         titleLabel.lineBreakMode = .byTruncatingTail
