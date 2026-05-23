@@ -7,49 +7,81 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000001; };
-		A1000002 /* AVPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002; };
-		A1000003 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000003; };
-		A1000004 /* PlaybackButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000004; };
-		A1000005 /* SeekSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000005; };
-		A1000006 /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000006; };
-		A1000007 /* VolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000007; };
-		A1000008 /* OSDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000008; };
-		A1000009 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000009; };
-		A1000010 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000010; };
-		A1000011 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000011; };
-		A1000012 /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000012; };
-		A1000013 /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000013; };
-		A1000014 /* TitleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000014; };
-		A1000015 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000015; };
-		A1000016 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000016; };
-		A1000017 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000018; };
+		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10001; };
+		A10002 /* AudioCompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10002; };
+		A10003 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10003; };
+		A10004 /* AudioEqualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10004; };
+		A10005 /* AudioPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10005; };
+		A10006 /* AudioPitchShifter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10006; };
+		A10007 /* AudioSpatializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10007; };
+		A10008 /* AudioTrackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10008; };
+		A10009 /* MediaInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10009; };
+		A10010 /* PlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10010; };
+		A10011 /* SubtitleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10011; };
+		A10012 /* SubtitleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10012; };
+		A10013 /* ABLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10013; };
+		A10014 /* AVPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10014; };
+		A10015 /* PlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10015; };
+		A10016 /* VideoEQProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10016; };
+		A10017 /* ABLoopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10017; };
+		A10018 /* CastButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10018; };
+		A10019 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10019; };
+		A10020 /* PlaybackButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10020; };
+		A10021 /* SeekSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10021; };
+		A10022 /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10022; };
+		A10023 /* VolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10023; };
+		A10024 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10024; };
+		A10025 /* OSDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10025; };
+		A10026 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10026; };
+		A10027 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10027; };
+		A10028 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10028; };
+		A10029 /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10029; };
+		A10030 /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10030; };
+		A10031 /* TitleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10031; };
+		A10032 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10032; };
+		A10033 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10033; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B1000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B1000002 /* AVPlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerEngine.swift; sourceTree = "<group>"; };
-		B1000003 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
-		B1000004 /* PlaybackButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackButtons.swift; sourceTree = "<group>"; };
-		B1000005 /* SeekSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekSliderView.swift; sourceTree = "<group>"; };
-		B1000006 /* SpeedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedButton.swift; sourceTree = "<group>"; };
-		B1000007 /* VolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSliderView.swift; sourceTree = "<group>"; };
-		B1000008 /* OSDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSDView.swift; sourceTree = "<group>"; };
-		B1000009 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
-		B1000010 /* SubtitleOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleOverlayView.swift; sourceTree = "<group>"; };
-		B1000011 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
-		B1000012 /* PlayerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerWindow.swift; sourceTree = "<group>"; };
-		B1000013 /* PlayerWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerWindowController.swift; sourceTree = "<group>"; };
-		B1000014 /* TitleBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBarView.swift; sourceTree = "<group>"; };
-		B1000015 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
-		B1000016 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		B1000017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B1000018 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
-		B1000099 /* DVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F10001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F10002 /* AudioCompressor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCompressor.swift; sourceTree = "<group>"; };
+		F10003 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
+		F10004 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
+		F10005 /* AudioPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPassthrough.swift; sourceTree = "<group>"; };
+		F10006 /* AudioPitchShifter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPitchShifter.swift; sourceTree = "<group>"; };
+		F10007 /* AudioSpatializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSpatializer.swift; sourceTree = "<group>"; };
+		F10008 /* AudioTrackManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTrackManager.swift; sourceTree = "<group>"; };
+		F10009 /* MediaInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaInfo.swift; sourceTree = "<group>"; };
+		F10010 /* PlaylistManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistManager.swift; sourceTree = "<group>"; };
+		F10011 /* SubtitleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleManager.swift; sourceTree = "<group>"; };
+		F10012 /* SubtitleParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleParser.swift; sourceTree = "<group>"; };
+		F10013 /* ABLoopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABLoopController.swift; sourceTree = "<group>"; };
+		F10014 /* AVPlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerEngine.swift; sourceTree = "<group>"; };
+		F10015 /* PlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerEngine.swift; sourceTree = "<group>"; };
+		F10016 /* VideoEQProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEQProcessor.swift; sourceTree = "<group>"; };
+		F10017 /* ABLoopButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABLoopButton.swift; sourceTree = "<group>"; };
+		F10018 /* CastButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastButton.swift; sourceTree = "<group>"; };
+		F10019 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
+		F10020 /* PlaybackButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackButtons.swift; sourceTree = "<group>"; };
+		F10021 /* SeekSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekSliderView.swift; sourceTree = "<group>"; };
+		F10022 /* SpeedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedButton.swift; sourceTree = "<group>"; };
+		F10023 /* VolumeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSliderView.swift; sourceTree = "<group>"; };
+		F10024 /* MenuManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuManager.swift; sourceTree = "<group>"; };
+		F10025 /* OSDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSDView.swift; sourceTree = "<group>"; };
+		F10026 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		F10027 /* SubtitleOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleOverlayView.swift; sourceTree = "<group>"; };
+		F10028 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		F10029 /* PlayerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerWindow.swift; sourceTree = "<group>"; };
+		F10030 /* PlayerWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerWindowController.swift; sourceTree = "<group>"; };
+		F10031 /* TitleBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBarView.swift; sourceTree = "<group>"; };
+		F10032 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
+		F10033 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F10034 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F10099 /* DVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F1000001 /* Frameworks */ = {
+		FB0001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -59,163 +91,179 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		G1000000 = {
+		G00000 = {
 			isa = PBXGroup;
 			children = (
-				G1000001 /* DVPlayer */,
-				G1000099 /* Products */,
+				G00001 /* DVPlayer */,
+				G00099 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		G1000001 /* DVPlayer */ = {
+		G00001 /* DVPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				G1000002 /* App */,
-				G1000003 /* Player */,
-				G1000004 /* Audio */,
-				G1000005 /* Casting */,
-				G1000006 /* Media */,
-				G1000007 /* UI */,
-				G1000008 /* FFmpeg */,
-				G1000009 /* Utilities */,
+				G00010 /* App */,
+				G00020 /* Player */,
+				G00030 /* Audio */,
+				G00040 /* Casting */,
+				G00050 /* Media */,
+				G00060 /* UI */,
+				G00070 /* FFmpeg */,
+				G00080 /* Utilities */,
 			);
 			path = DVPlayer;
 			sourceTree = "<group>";
 		};
-		G1000002 /* App */ = {
+		G00010 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				B1000001 /* AppDelegate.swift */,
-				B1000017 /* Info.plist */,
+				F10001 /* AppDelegate.swift */,
+				F10034 /* Info.plist */,
 			);
 			path = App;
 			sourceTree = "<group>";
 		};
-		G1000003 /* Player */ = {
+		G00020 /* Player */ = {
 			isa = PBXGroup;
 			children = (
-				B1000002 /* AVPlayerEngine.swift */,
+				F10013 /* ABLoopController.swift */,
+				F10014 /* AVPlayerEngine.swift */,
+				F10015 /* PlayerEngine.swift */,
+				F10016 /* VideoEQProcessor.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
 		};
-		G1000004 /* Audio */ = {
+		G00030 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				F10002 /* AudioCompressor.swift */,
+				F10003 /* AudioEngine.swift */,
+				F10004 /* AudioEqualizer.swift */,
+				F10005 /* AudioPassthrough.swift */,
+				F10006 /* AudioPitchShifter.swift */,
+				F10007 /* AudioSpatializer.swift */,
+				F10008 /* AudioTrackManager.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
 		};
-		G1000005 /* Casting */ = {
+		G00040 /* Casting */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Casting;
 			sourceTree = "<group>";
 		};
-		G1000006 /* Media */ = {
+		G00050 /* Media */ = {
 			isa = PBXGroup;
 			children = (
+				F10009 /* MediaInfo.swift */,
+				F10010 /* PlaylistManager.swift */,
+				F10011 /* SubtitleManager.swift */,
+				F10012 /* SubtitleParser.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
 		};
-		G1000007 /* UI */ = {
+		G00060 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				G1000010 /* Window */,
-				G1000011 /* Player */,
-				G1000012 /* Controls */,
-				G1000013 /* Panels */,
-				G1000014 /* OSD */,
-				G1000015 /* Menu */,
-				G1000016 /* Preferences */,
+				G00061 /* Window */,
+				G00062 /* Player */,
+				G00063 /* Controls */,
+				G00064 /* Panels */,
+				G00065 /* OSD */,
+				G00066 /* Menu */,
+				G00067 /* Preferences */,
 			);
 			path = UI;
 			sourceTree = "<group>";
 		};
-		G1000008 /* FFmpeg */ = {
+		G00061 /* Window */ = {
 			isa = PBXGroup;
 			children = (
-			);
-			path = FFmpeg;
-			sourceTree = "<group>";
-		};
-		G1000009 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				B1000015 /* Defaults.swift */,
-				B1000016 /* Extensions.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		G1000010 /* Window */ = {
-			isa = PBXGroup;
-			children = (
-				B1000012 /* PlayerWindow.swift */,
-				B1000013 /* PlayerWindowController.swift */,
-				B1000014 /* TitleBarView.swift */,
+				F10029 /* PlayerWindow.swift */,
+				F10030 /* PlayerWindowController.swift */,
+				F10031 /* TitleBarView.swift */,
 			);
 			path = Window;
 			sourceTree = "<group>";
 		};
-		G1000011 /* Player */ = {
+		G00062 /* Player */ = {
 			isa = PBXGroup;
 			children = (
-				B1000009 /* PlayerViewController.swift */,
-				B1000010 /* SubtitleOverlayView.swift */,
-				B1000011 /* VideoView.swift */,
+				F10026 /* PlayerViewController.swift */,
+				F10027 /* SubtitleOverlayView.swift */,
+				F10028 /* VideoView.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
 		};
-		G1000012 /* Controls */ = {
+		G00063 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				B1000003 /* ControlBarView.swift */,
-				B1000004 /* PlaybackButtons.swift */,
-				B1000005 /* SeekSliderView.swift */,
-				B1000006 /* SpeedButton.swift */,
-				B1000007 /* VolumeSliderView.swift */,
+				F10017 /* ABLoopButton.swift */,
+				F10018 /* CastButton.swift */,
+				F10019 /* ControlBarView.swift */,
+				F10020 /* PlaybackButtons.swift */,
+				F10021 /* SeekSliderView.swift */,
+				F10022 /* SpeedButton.swift */,
+				F10023 /* VolumeSliderView.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
 		};
-		G1000013 /* Panels */ = {
+		G00064 /* Panels */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Panels;
 			sourceTree = "<group>";
 		};
-		G1000014 /* OSD */ = {
+		G00065 /* OSD */ = {
 			isa = PBXGroup;
 			children = (
-				B1000008 /* OSDView.swift */,
+				F10025 /* OSDView.swift */,
 			);
 			path = OSD;
 			sourceTree = "<group>";
 		};
-		G1000015 /* Menu */ = {
+		G00066 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
-				B1000018 /* MenuManager.swift */,
+				F10024 /* MenuManager.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
 		};
-		G1000016 /* Preferences */ = {
+		G00067 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Preferences;
 			sourceTree = "<group>";
 		};
-		G1000099 /* Products */ = {
+		G00070 /* FFmpeg */ = {
 			isa = PBXGroup;
 			children = (
-				B1000099 /* DVPlayer.app */,
+			);
+			path = FFmpeg;
+			sourceTree = "<group>";
+		};
+		G00080 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F10032 /* Defaults.swift */,
+				F10033 /* Extensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		G00099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F10099 /* DVPlayer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,13 +271,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		T1000001 /* DVPlayer */ = {
+		T00001 /* DVPlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C1000003 /* Build configuration list for PBXNativeTarget "DVPlayer" */;
+			buildConfigurationList = CL0002 /* Build configuration list for PBXNativeTarget "DVPlayer" */;
 			buildPhases = (
-				S1000001 /* Sources */,
-				F1000001 /* Frameworks */,
-				R1000001 /* Resources */,
+				S00001 /* Sources */,
+				FB0001 /* Frameworks */,
+				R00001 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -237,20 +285,20 @@
 			);
 			name = DVPlayer;
 			productName = DVPlayer;
-			productReference = B1000099 /* DVPlayer.app */;
+			productReference = F10099 /* DVPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		P1000001 /* Project object */ = {
+		P00001 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = C1000001 /* Build configuration list for PBXProject "DVPlayer" */;
+			buildConfigurationList = CL0001 /* Build configuration list for PBXProject "DVPlayer" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -258,18 +306,18 @@
 				en,
 				Base,
 			);
-			mainGroup = G1000000;
-			productRefGroup = G1000099 /* Products */;
+			mainGroup = G00000;
+			productRefGroup = G00099 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				T1000001 /* DVPlayer */,
+				T00001 /* DVPlayer */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		R1000001 /* Resources */ = {
+		R00001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -279,34 +327,50 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		S1000001 /* Sources */ = {
+		S00001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1000001 /* AppDelegate.swift in Sources */,
-				A1000002 /* AVPlayerEngine.swift in Sources */,
-				A1000003 /* ControlBarView.swift in Sources */,
-				A1000004 /* PlaybackButtons.swift in Sources */,
-				A1000005 /* SeekSliderView.swift in Sources */,
-				A1000006 /* SpeedButton.swift in Sources */,
-				A1000007 /* VolumeSliderView.swift in Sources */,
-				A1000008 /* OSDView.swift in Sources */,
-				A1000009 /* PlayerViewController.swift in Sources */,
-				A1000010 /* SubtitleOverlayView.swift in Sources */,
-				A1000011 /* VideoView.swift in Sources */,
-				A1000012 /* PlayerWindow.swift in Sources */,
-				A1000013 /* PlayerWindowController.swift in Sources */,
-				A1000014 /* TitleBarView.swift in Sources */,
-				A1000015 /* Defaults.swift in Sources */,
-				A1000016 /* Extensions.swift in Sources */,
-				A1000017 /* MenuManager.swift in Sources */,
+				A10001 /* AppDelegate.swift in Sources */,
+				A10002 /* AudioCompressor.swift in Sources */,
+				A10003 /* AudioEngine.swift in Sources */,
+				A10004 /* AudioEqualizer.swift in Sources */,
+				A10005 /* AudioPassthrough.swift in Sources */,
+				A10006 /* AudioPitchShifter.swift in Sources */,
+				A10007 /* AudioSpatializer.swift in Sources */,
+				A10008 /* AudioTrackManager.swift in Sources */,
+				A10009 /* MediaInfo.swift in Sources */,
+				A10010 /* PlaylistManager.swift in Sources */,
+				A10011 /* SubtitleManager.swift in Sources */,
+				A10012 /* SubtitleParser.swift in Sources */,
+				A10013 /* ABLoopController.swift in Sources */,
+				A10014 /* AVPlayerEngine.swift in Sources */,
+				A10015 /* PlayerEngine.swift in Sources */,
+				A10016 /* VideoEQProcessor.swift in Sources */,
+				A10017 /* ABLoopButton.swift in Sources */,
+				A10018 /* CastButton.swift in Sources */,
+				A10019 /* ControlBarView.swift in Sources */,
+				A10020 /* PlaybackButtons.swift in Sources */,
+				A10021 /* SeekSliderView.swift in Sources */,
+				A10022 /* SpeedButton.swift in Sources */,
+				A10023 /* VolumeSliderView.swift in Sources */,
+				A10024 /* MenuManager.swift in Sources */,
+				A10025 /* OSDView.swift in Sources */,
+				A10026 /* PlayerViewController.swift in Sources */,
+				A10027 /* SubtitleOverlayView.swift in Sources */,
+				A10028 /* VideoView.swift in Sources */,
+				A10029 /* PlayerWindow.swift in Sources */,
+				A10030 /* PlayerWindowController.swift in Sources */,
+				A10031 /* TitleBarView.swift in Sources */,
+				A10032 /* Defaults.swift in Sources */,
+				A10033 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		C1000010 /* Debug */ = {
+		BC0010 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -333,7 +397,7 @@
 			};
 			name = Debug;
 		};
-		C1000011 /* Release */ = {
+		BC0011 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -353,7 +417,7 @@
 			};
 			name = Release;
 		};
-		C1000020 /* Debug */ = {
+		BC0020 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -374,7 +438,7 @@
 			};
 			name = Debug;
 		};
-		C1000021 /* Release */ = {
+		BC0021 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -398,20 +462,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C1000001 /* Build configuration list for PBXProject "DVPlayer" */ = {
+		CL0001 /* Build configuration list for PBXProject "DVPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C1000010 /* Debug */,
-				C1000011 /* Release */,
+				BC0010 /* Debug */,
+				BC0011 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C1000003 /* Build configuration list for PBXNativeTarget "DVPlayer" */ = {
+		CL0002 /* Build configuration list for PBXNativeTarget "DVPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C1000020 /* Debug */,
-				C1000021 /* Release */,
+				BC0020 /* Debug */,
+				BC0021 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -419,5 +483,5 @@
 /* End XCConfigurationList section */
 
 	};
-	rootObject = P1000001 /* Project object */;
+	rootObject = P00001 /* Project object */;
 }
