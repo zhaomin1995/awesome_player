@@ -167,11 +167,9 @@ class MenuManager {
         let fit = menu.addItem(withTitle: "Fit to Screen", action: #selector(AppDelegate.fitToScreen(_:)), keyEquivalent: "4")
         menu.addItem(.separator())
 
-        // Fill Screen
+        // Fill Screen & Aspect Ratio
         menu.addItem(withTitle: "Fill Screen", action: #selector(AppDelegate.fillScreen(_:)), keyEquivalent: "f")
-        menu.addItem(.separator())
 
-        // Aspect Ratio submenu
         let aspectItem = NSMenuItem(title: "Aspect Ratio", action: nil, keyEquivalent: "")
         let aspectMenu = NSMenu(title: "Aspect Ratio")
         for ratio in ["Default", "4:3", "16:9", "16:10", "2.35:1", "2.39:1"] {
