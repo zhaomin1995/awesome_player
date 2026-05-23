@@ -48,6 +48,11 @@ class PlayerViewController: NSViewController {
         registerForDraggedTypes()
     }
 
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        view.window?.makeFirstResponder(self)
+    }
+
     private func setupVideoView() {
         videoView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(videoView)
