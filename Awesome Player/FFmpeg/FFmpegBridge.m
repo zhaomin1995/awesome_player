@@ -225,6 +225,18 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
         stream_mapping[i] = stream_index++;
         AVStream *out_stream = avformat_new_stream(ofmt_ctx, NULL);
 
+        if (codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+            avcodec_parameters_copy(out_stream->codecpar, codecpar);
+            // Use hvc1 tag for HEVC so AVPlayer recognizes it properly
+            // (hev1 with DV side data can cause black screen if DV boxes are missing)
+            if (codecpar->codec_id == AV_CODEC_ID_HEVC) {
+                out_stream->codecpar->codec_tag = MKTAG('h','v','c','1');
+            } else {
+                out_stream->codecpar->codec_tag = 0;
+            }
+            continue;
+        }
+
         if (codecpar->codec_type == AVMEDIA_TYPE_AUDIO && !isAudioCodecMP4Compatible(codecpar->codec_id)) {
             // Transcode to AAC
             NSLog(@"[FFmpegBridge] Audio codec %d not MP4-compatible, transcoding to AAC", codecpar->codec_id);
