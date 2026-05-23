@@ -60,11 +60,14 @@ class PlayerWindowController: NSWindowController {
 
     func toggleFullscreen() {
         window?.toggleFullScreen(nil)
+        // Start idle timer immediately so controls auto-hide in fullscreen
+        resetIdleTimer()
     }
 
     private func showControls() {
         guard !controlsVisible else { return }
         controlsVisible = true
+        NSCursor.unhide()
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.25
             titleBarView.animator().alphaValue = 1.0
@@ -82,6 +85,10 @@ class PlayerWindowController: NSWindowController {
             playerViewController.hideControlBar(animated: true)
         }
         window?.standardWindowButton(.closeButton)?.superview?.alphaValue = 0.0
+        // Hide cursor in fullscreen for immersive viewing
+        if window?.styleMask.contains(.fullScreen) == true {
+            NSCursor.hide()
+        }
     }
 
     private func resetIdleTimer() {
