@@ -8,7 +8,7 @@ BUILD_DIR="/tmp/ffmpeg-build-$$"
 FFMPEG_VERSION="7.1.1"
 FFMPEG_URL="https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz"
 
-echo "=== Building FFmpeg ${FFMPEG_VERSION} for DVPlayer ==="
+echo "=== Building FFmpeg ${FFMPEG_VERSION} for Awesome Player ==="
 echo "Output: ${VENDOR_DIR}"
 
 mkdir -p "$BUILD_DIR"
@@ -19,7 +19,7 @@ curl -L -o "ffmpeg-${FFMPEG_VERSION}.tar.xz" "$FFMPEG_URL"
 tar xf "ffmpeg-${FFMPEG_VERSION}.tar.xz"
 cd "ffmpeg-${FFMPEG_VERSION}"
 
-echo "--- Configuring FFmpeg (minimal build for DVPlayer) ---"
+echo "--- Configuring FFmpeg (minimal build for Awesome Player) ---"
 ./configure \
     --prefix="$VENDOR_DIR" \
     --enable-shared \

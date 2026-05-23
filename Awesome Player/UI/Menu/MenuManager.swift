@@ -22,7 +22,7 @@ class MenuManager {
         let menuItem = NSMenuItem()
         let menu = NSMenu()
 
-        menu.addItem(withTitle: "About DVPlayer", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: "About Awesome Player", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
         menu.addItem(.separator())
         menu.addItem(withTitle: "Preferences…", action: #selector(AppDelegate.showPreferences(_:)), keyEquivalent: ",")
         menu.addItem(.separator())
@@ -32,12 +32,12 @@ class MenuManager {
         NSApplication.shared.servicesMenu = servicesMenu
         menu.addItem(services)
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Hide DVPlayer", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
+        menu.addItem(withTitle: "Hide Awesome Player", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
         let hideOthers = menu.addItem(withTitle: "Hide Others", action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
         hideOthers.keyEquivalentModifierMask = [.command, .option]
         menu.addItem(withTitle: "Show All", action: #selector(NSApplication.unhideAllApplications(_:)), keyEquivalent: "")
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit DVPlayer", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit Awesome Player", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
 
         menuItem.submenu = menu
         return menuItem
@@ -218,7 +218,7 @@ class MenuManager {
     private static func createHelpMenu() -> NSMenuItem {
         let menuItem = NSMenuItem(title: "Help", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "Help")
-        menu.addItem(withTitle: "DVPlayer Help", action: #selector(NSApplication.showHelp(_:)), keyEquivalent: "?")
+        menu.addItem(withTitle: "Awesome Player Help", action: #selector(NSApplication.showHelp(_:)), keyEquivalent: "?")
         NSApplication.shared.helpMenu = menu
         menuItem.submenu = menu
         return menuItem

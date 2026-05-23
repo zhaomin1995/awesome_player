@@ -106,8 +106,8 @@
 		F10047 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		F10048 /* FFmpegBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFmpegBridge.m; sourceTree = "<group>"; };
 		F10049 /* FFmpegBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFmpegBridge.h; sourceTree = "<group>"; };
-		F10050 /* DVPlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DVPlayer-Bridging-Header.h"; sourceTree = "<group>"; };
-		F10099 /* DVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F10050 /* AwesomePlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AwesomePlayer-Bridging-Header.h"; sourceTree = "<group>"; };
+		F10099 /* Awesome Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awesome Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,12 +124,12 @@
 		G00000 = {
 			isa = PBXGroup;
 			children = (
-				G00001 /* DVPlayer */,
+				G00001 /* Awesome Player */,
 				G00099 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		G00001 /* DVPlayer */ = {
+		G00001 /* Awesome Player */ = {
 			isa = PBXGroup;
 			children = (
 				G00010 /* App */,
@@ -141,7 +141,7 @@
 				G00070 /* FFmpeg */,
 				G00080 /* Utilities */,
 			);
-			path = DVPlayer;
+			path = "Awesome Player";
 			sourceTree = "<group>";
 		};
 		G00010 /* App */ = {
@@ -292,7 +292,7 @@
 			children = (
 				F10048 /* FFmpegBridge.m */,
 				F10049 /* FFmpegBridge.h */,
-				F10050 /* DVPlayer-Bridging-Header.h */,
+				F10050 /* AwesomePlayer-Bridging-Header.h */,
 			);
 			path = FFmpeg;
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 		G00099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F10099 /* DVPlayer.app */,
+				F10099 /* Awesome Player.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -317,7 +317,7 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		T00001 /* DVPlayer */ = {
+		T00001 /* Awesome Player */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CL0002 /* Build configuration list for PBXNativeTarget "DVPlayer" */;
 			buildPhases = (
@@ -329,9 +329,9 @@
 			);
 			dependencies = (
 			);
-			name = DVPlayer;
-			productName = DVPlayer;
-			productReference = F10099 /* DVPlayer.app */;
+			name = "Awesome Player";
+			productName = "Awesome Player";
+			productReference = F10099 /* Awesome Player.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -357,7 +357,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				T00001 /* DVPlayer */,
+				T00001 /* Awesome Player */,
 			);
 		};
 /* End PBXProject section */
@@ -485,16 +485,16 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DVPlayer/App/Info.plist;
+				INFOPLIST_FILE = "Awesome Player/App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dvplayer.DVPlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "DVPlayer/FFmpeg/DVPlayer-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/include";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/lib";
 				OTHER_LDFLAGS = (
@@ -516,16 +516,16 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DVPlayer/App/Info.plist;
+				INFOPLIST_FILE = "Awesome Player/App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dvplayer.DVPlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "DVPlayer/FFmpeg/DVPlayer-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/include";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/lib";
 				OTHER_LDFLAGS = (

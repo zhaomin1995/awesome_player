@@ -7,7 +7,7 @@ protocol TitleBarDelegate: AnyObject {
 class TitleBarView: NSView {
     weak var delegate: TitleBarDelegate?
 
-    private let titleLabel = NSTextField(labelWithString: "DVPlayer")
+    private let titleLabel = NSTextField(labelWithString: "Awesome Player")
     private let pinButton = NSButton()
     private let dvBadge = BadgeView(text: "DV")
     private let hdrBadge = BadgeView(text: "HDR")

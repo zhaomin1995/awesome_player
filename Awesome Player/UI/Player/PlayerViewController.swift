@@ -197,20 +197,20 @@ class PlayerViewController: NSViewController {
     private var playbackStatusObservation: NSKeyValueObservation?
 
     private func playWithEngine(_ engine: AVPlayerEngine, url: URL) {
-        print("[DVPlayer] Opening: \(url.path)")
+        print("[AwesomePlayer] Opening: \(url.path)")
         engine.open(url: url)
         videoView.setPlayer(engine.player)
 
         playbackStatusObservation = engine.player?.currentItem?.observe(\.status, options: [.new]) { [weak self] item, _ in
             guard item.status == .readyToPlay else {
                 if item.status == .failed {
-                    print("[DVPlayer] Player item FAILED: \(item.error?.localizedDescription ?? "?")")
+                    print("[AwesomePlayer] Player item FAILED: \(item.error?.localizedDescription ?? "?")")
                 }
                 return
             }
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                print("[DVPlayer] Ready to play! Duration: \(engine.duration)s")
+                print("[AwesomePlayer] Ready to play! Duration: \(engine.duration)s")
                 self.controlBarView.setDuration(engine.duration)
                 engine.play()
                 self.controlBarView.setPlaying(true)
