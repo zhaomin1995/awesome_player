@@ -10,8 +10,8 @@ xcuserdata/
 *.swp
 *~
 
-# Vendor (FFmpeg) - built locally, not committed
-Vendor/
+# Vendor pkgconfig (not needed at runtime)
+Vendor/ffmpeg/lib/pkgconfig/
 
 # Build products
 *.app

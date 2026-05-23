@@ -1,0 +1,14 @@
+prefix=/Users/zhaominxiao/github/video_player/Vendor/ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/zhaominxiao/github/video_player/Vendor/ffmpeg/lib
+includedir=/Users/zhaominxiao/github/video_player/Vendor/ffmpeg/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 61.19.101
+Requires: 
+Requires.private: libswresample >= 5.3.100, libavutil >= 59.39.100
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -liconv -lm -framework AudioToolbox -pthread -lz -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -framework CoreServices
+Cflags: -I${includedir}
