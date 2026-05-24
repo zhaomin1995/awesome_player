@@ -43,9 +43,7 @@ class ControlBarView: NSView {
     private func setupViews() {
         wantsLayer = true
 
-        gradientView.translatesAutoresizingMaskIntoConstraints = false
-        gradientView.isHidden = true
-        addSubview(gradientView)
+        // Gradient scrim removed — user wants only the control bar visible
 
         effectView.wantsLayer = true
         effectView.layer?.cornerRadius = 10
@@ -111,16 +109,10 @@ class ControlBarView: NSView {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            // Gradient scrim extends above the control bar for smooth fade
-            gradientView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            gradientView.heightAnchor.constraint(equalToConstant: 140),
-
-            effectView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            effectView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            effectView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            effectView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.7),
             effectView.topAnchor.constraint(equalTo: topAnchor),
-            effectView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            effectView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
 
             seekSlider.topAnchor.constraint(equalTo: effectView.topAnchor, constant: 8),
             seekSlider.leadingAnchor.constraint(equalTo: effectView.leadingAnchor, constant: 12),
@@ -165,11 +157,9 @@ class ControlBarView: NSView {
     /// The gradient scrim is only needed during playback to darken the video behind controls.
     func setVideoActive(_ active: Bool) {
         if active {
-            effectView.layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.95).cgColor
-            gradientView.isHidden = false
+            effectView.layer?.backgroundColor = NSColor(white: 0.1, alpha: 0.85).cgColor
         } else {
             effectView.layer?.backgroundColor = NSColor.clear.cgColor
-            gradientView.isHidden = true
         }
     }
 
@@ -201,6 +191,14 @@ class ControlBarView: NSView {
 
     func setSpeed(_ speed: Float) {
         speedButton.setSpeed(speed)
+    }
+
+    func showAirPlayPicker() {
+        castButton.showPicker()
+    }
+
+    func setPlayer(_ player: AVPlayer?) {
+        castButton.setPlayer(player)
     }
 
     private func formatTime(_ seconds: Double) -> String {

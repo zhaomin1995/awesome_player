@@ -6,6 +6,7 @@ class PlayerWindowController: NSWindowController {
     private var titleBarTopConstraint: NSLayoutConstraint?
     private var mouseIdleTimer: Timer?
     private var controlsVisible = true
+    private var globalMouseMonitor: Any?
 
     init() {
         let playerWindow = PlayerWindow()
@@ -15,6 +16,12 @@ class PlayerWindowController: NSWindowController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        if let monitor = globalMouseMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
     }
 
     private func setupWindow() {
@@ -43,12 +50,33 @@ class PlayerWindowController: NSWindowController {
             self?.resetIdleTimer()
         }
 
+        // Monitor mouse globally to detect when it leaves the window
+        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [weak self] _ in
+            guard let self = self, let window = self.window else { return }
+            let mouse = NSEvent.mouseLocation
+            if !window.frame.contains(mouse) && self.controlsVisible {
+                self.mouseIdleTimer?.invalidate()
+                self.hideControls()
+            }
+        }
+
         playerViewController.onFileDropped = { [weak self] url in
             self?.openFile(url: url)
         }
 
         playerViewController.onDoubleClick = { [weak self] in
             self?.toggleFullscreen()
+        }
+
+        // Start auto-hide timer when playback begins so controls fade
+        // even if the user never moves the mouse after opening a file
+        playerViewController.onPlaybackStateChanged = { [weak self] isPlaying in
+            if isPlaying {
+                self?.resetIdleTimer()
+            } else {
+                self?.mouseIdleTimer?.invalidate()
+                self?.showControls()
+            }
         }
     }
 
@@ -103,7 +131,11 @@ class PlayerWindowController: NSWindowController {
 
     private func resetIdleTimer() {
         mouseIdleTimer?.invalidate()
-        mouseIdleTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] _ in
+        let pref = UserDefaults.standard.integer(forKey: Defaults.fullscreenControlBar)
+        // 0 = auto-hide 3s, 1 = auto-hide 5s, 2 = always show
+        if pref == 2 { return }
+        let interval: TimeInterval = pref == 1 ? 5.0 : 3.0
+        mouseIdleTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
             self?.hideControls()
         }
     }

@@ -7,59 +7,67 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10001; };
-		A10060 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10060; };
-		A10002 /* AudioCompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10002; };
-		A10003 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10003; };
-		A10004 /* AudioEqualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10004; };
-		A10005 /* AudioPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10005; };
-		A10006 /* AudioPitchShifter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10006; };
-		A10007 /* AudioSpatializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10007; };
-		A10008 /* AudioTrackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10008; };
-		A10009 /* MediaInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10009; };
-		A10010 /* PlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10010; };
-		A10011 /* SubtitleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10011; };
-		A10012 /* SubtitleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10012; };
-		A10013 /* ABLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10013; };
-		A10014 /* AVPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10014; };
-		A10015 /* PlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10015; };
-		A10016 /* VideoEQProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10016; };
-		A10017 /* ABLoopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10017; };
-		A10018 /* CastButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10018; };
-		A10019 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10019; };
-		A10020 /* PlaybackButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10020; };
-		A10021 /* SeekSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10021; };
-		A10022 /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10022; };
-		A10023 /* VolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10023; };
-		A10024 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10024; };
-		A10025 /* OSDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10025; };
-		A10026 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10026; };
-		A10027 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10027; };
-		A10028 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10028; };
-		A10029 /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10029; };
-		A10030 /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10030; };
-		A10031 /* TitleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10031; };
-		A10032 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10032; };
-		A10033 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10033; };
-		A10034 /* CastingHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10035; };
-		A10035 /* CastingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10036; };
-		A10036 /* ChromecastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10037; };
-		A10037 /* DLNAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10038; };
-		A10040 /* PanelContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10040; };
-		A10041 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10041; };
-		A10042 /* AudioPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10042; };
-		A10043 /* SubtitlePanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10043; };
-		A10044 /* VideoPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10044; };
-		A10045 /* MediaInfoPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10045; };
-		A10046 /* CastPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10046; };
-		A10047 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10047; };
-		A10048 /* FFmpegBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F10048; };
-		A10070 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10070; };
+		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10001 /* AppDelegate.swift */; };
+		A10002 /* AudioCompressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10002 /* AudioCompressor.swift */; };
+		A10003 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10003 /* AudioEngine.swift */; };
+		A10004 /* AudioEqualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10004 /* AudioEqualizer.swift */; };
+		A10005 /* AudioPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10005 /* AudioPassthrough.swift */; };
+		A10006 /* AudioPitchShifter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10006 /* AudioPitchShifter.swift */; };
+		A10007 /* AudioSpatializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10007 /* AudioSpatializer.swift */; };
+		A10008 /* AudioTrackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10008 /* AudioTrackManager.swift */; };
+		A10009 /* MediaInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10009 /* MediaInfo.swift */; };
+		A10010 /* PlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10010 /* PlaylistManager.swift */; };
+		A10011 /* SubtitleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10011 /* SubtitleManager.swift */; };
+		A10012 /* SubtitleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10012 /* SubtitleParser.swift */; };
+		A10013 /* ABLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10013 /* ABLoopController.swift */; };
+		A10014 /* AVPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10014 /* AVPlayerEngine.swift */; };
+		A10015 /* PlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10015 /* PlayerEngine.swift */; };
+		A10016 /* VideoEQProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10016 /* VideoEQProcessor.swift */; };
+		A10017 /* ABLoopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10017 /* ABLoopButton.swift */; };
+		A10018 /* CastButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10018 /* CastButton.swift */; };
+		A10019 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10019 /* ControlBarView.swift */; };
+		A10020 /* PlaybackButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10020 /* PlaybackButtons.swift */; };
+		A10021 /* SeekSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10021 /* SeekSliderView.swift */; };
+		A10022 /* SpeedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10022 /* SpeedButton.swift */; };
+		A10023 /* VolumeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10023 /* VolumeSliderView.swift */; };
+		A10024 /* MenuManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10024 /* MenuManager.swift */; };
+		A10025 /* OSDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10025 /* OSDView.swift */; };
+		A10026 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10026 /* PlayerViewController.swift */; };
+		A10027 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10027 /* SubtitleOverlayView.swift */; };
+		A10028 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10028 /* VideoView.swift */; };
+		A10029 /* PlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10029 /* PlayerWindow.swift */; };
+		A10030 /* PlayerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10030 /* PlayerWindowController.swift */; };
+		A10031 /* TitleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10031 /* TitleBarView.swift */; };
+		A10032 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10032 /* Defaults.swift */; };
+		A10033 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10033 /* Extensions.swift */; };
+		A10034 /* CastingHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10035 /* CastingHTTPServer.swift */; };
+		A10035 /* CastingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10036 /* CastingManager.swift */; };
+		A10036 /* ChromecastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10037 /* ChromecastManager.swift */; };
+		A10037 /* DLNAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10038 /* DLNAManager.swift */; };
+		A10040 /* PanelContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10040 /* PanelContainerView.swift */; };
+		A10041 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10041 /* PlaylistPanelView.swift */; };
+		A10042 /* AudioPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10042 /* AudioPanelView.swift */; };
+		A10043 /* SubtitlePanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10043 /* SubtitlePanelView.swift */; };
+		A10044 /* VideoPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10044 /* VideoPanelView.swift */; };
+		A10045 /* MediaInfoPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10045 /* MediaInfoPanelView.swift */; };
+		A10046 /* CastPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10046 /* CastPanelView.swift */; };
+		A10047 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10047 /* PreferencesWindowController.swift */; };
+		A10048 /* FFmpegBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F10048 /* FFmpegBridge.m */; };
+		A10060 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10060 /* main.swift */; };
+		A10070 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10070 /* WelcomeView.swift */; };
+		E55EEC072FC230F3000EE159 /* AudioPassthroughManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55EEC062FC230F3000EE159 /* AudioPassthroughManager.swift */; };
+		E55EEC0A2FC2B701000EE159 /* FFmpegDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E55EEC092FC2B701000EE159 /* FFmpegDecoder.m */; };
+		E55EEC0C2FC2B729000EE159 /* FFmpegPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55EEC0B2FC2B729000EE159 /* FFmpegPlayerEngine.swift */; };
+		E55EEC0E2FC2DFF3000EE159 /* VLCPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55EEC0D2FC2DFF3000EE159 /* VLCPlayerEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E55EEC062FC230F3000EE159 /* AudioPassthroughManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPassthroughManager.swift; sourceTree = "<group>"; };
+		E55EEC082FC2B701000EE159 /* FFmpegDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFmpegDecoder.h; sourceTree = "<group>"; };
+		E55EEC092FC2B701000EE159 /* FFmpegDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFmpegDecoder.m; sourceTree = "<group>"; };
+		E55EEC0B2FC2B729000EE159 /* FFmpegPlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegPlayerEngine.swift; sourceTree = "<group>"; };
+		E55EEC0D2FC2DFF3000EE159 /* VLCPlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCPlayerEngine.swift; sourceTree = "<group>"; };
 		F10001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F10060 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		F10002 /* AudioCompressor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCompressor.swift; sourceTree = "<group>"; };
 		F10003 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		F10004 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
@@ -107,8 +115,9 @@
 		F10047 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		F10048 /* FFmpegBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFmpegBridge.m; sourceTree = "<group>"; };
 		F10049 /* FFmpegBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFmpegBridge.h; sourceTree = "<group>"; };
-		F10070 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F10050 /* AwesomePlayer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AwesomePlayer-Bridging-Header.h"; sourceTree = "<group>"; };
+		F10060 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F10070 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F10099 /* Awesome Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awesome Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -161,6 +170,8 @@
 			children = (
 				F10013 /* ABLoopController.swift */,
 				F10014 /* AVPlayerEngine.swift */,
+				E55EEC0D2FC2DFF3000EE159 /* VLCPlayerEngine.swift */,
+				E55EEC0B2FC2B729000EE159 /* FFmpegPlayerEngine.swift */,
 				F10015 /* PlayerEngine.swift */,
 				F10016 /* VideoEQProcessor.swift */,
 			);
@@ -173,6 +184,7 @@
 				F10002 /* AudioCompressor.swift */,
 				F10003 /* AudioEngine.swift */,
 				F10004 /* AudioEqualizer.swift */,
+				E55EEC062FC230F3000EE159 /* AudioPassthroughManager.swift */,
 				F10005 /* AudioPassthrough.swift */,
 				F10006 /* AudioPitchShifter.swift */,
 				F10007 /* AudioSpatializer.swift */,
@@ -233,7 +245,7 @@
 				F10026 /* PlayerViewController.swift */,
 				F10027 /* SubtitleOverlayView.swift */,
 				F10028 /* VideoView.swift */,
-			F10070 /* WelcomeView.swift */,
+				F10070 /* WelcomeView.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -294,6 +306,8 @@
 			isa = PBXGroup;
 			children = (
 				F10048 /* FFmpegBridge.m */,
+				E55EEC082FC2B701000EE159 /* FFmpegDecoder.h */,
+				E55EEC092FC2B701000EE159 /* FFmpegDecoder.m */,
 				F10049 /* FFmpegBridge.h */,
 				F10050 /* AwesomePlayer-Bridging-Header.h */,
 			);
@@ -322,7 +336,7 @@
 /* Begin PBXNativeTarget section */
 		T00001 /* Awesome Player */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CL0002 /* Build configuration list for PBXNativeTarget "DVPlayer" */;
+			buildConfigurationList = CL0002 /* Build configuration list for PBXNativeTarget "Awesome Player" */;
 			buildPhases = (
 				S00001 /* Sources */,
 				FB0001 /* Frameworks */,
@@ -348,7 +362,7 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = CL0001 /* Build configuration list for PBXProject "DVPlayer" */;
+			buildConfigurationList = CL0001 /* Build configuration list for PBXProject "Awesome Player" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -376,6 +390,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		SH0001 /* Copy FFmpeg Dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy FFmpeg Dylibs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nfor dylib in libavformat libavcodec libavutil libswresample libswscale; do\n    SRC=$(find \"${PROJECT_DIR}/Vendor/ffmpeg/lib\" -name \"${dylib}.*.*.*.dylib\" -not -type l | head -1)\n    [ -n \"$SRC\" ] && cp -f \"$SRC\" \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		S00001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -389,6 +420,7 @@
 				A10006 /* AudioPitchShifter.swift in Sources */,
 				A10007 /* AudioSpatializer.swift in Sources */,
 				A10008 /* AudioTrackManager.swift in Sources */,
+				E55EEC0E2FC2DFF3000EE159 /* VLCPlayerEngine.swift in Sources */,
 				A10009 /* MediaInfo.swift in Sources */,
 				A10010 /* PlaylistManager.swift in Sources */,
 				A10011 /* SubtitleManager.swift in Sources */,
@@ -397,10 +429,12 @@
 				A10014 /* AVPlayerEngine.swift in Sources */,
 				A10015 /* PlayerEngine.swift in Sources */,
 				A10016 /* VideoEQProcessor.swift in Sources */,
+				E55EEC072FC230F3000EE159 /* AudioPassthroughManager.swift in Sources */,
 				A10017 /* ABLoopButton.swift in Sources */,
 				A10018 /* CastButton.swift in Sources */,
 				A10019 /* ControlBarView.swift in Sources */,
 				A10020 /* PlaybackButtons.swift in Sources */,
+				E55EEC0A2FC2B701000EE159 /* FFmpegDecoder.m in Sources */,
 				A10021 /* SeekSliderView.swift in Sources */,
 				A10022 /* SpeedButton.swift in Sources */,
 				A10023 /* VolumeSliderView.swift in Sources */,
@@ -419,6 +453,7 @@
 				A10036 /* ChromecastManager.swift in Sources */,
 				A10037 /* DLNAManager.swift in Sources */,
 				A10040 /* PanelContainerView.swift in Sources */,
+				E55EEC0C2FC2B729000EE159 /* FFmpegPlayerEngine.swift in Sources */,
 				A10041 /* PlaylistPanelView.swift in Sources */,
 				A10042 /* AudioPanelView.swift in Sources */,
 				A10043 /* SubtitlePanelView.swift in Sources */,
@@ -433,23 +468,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		SH0001 /* Copy FFmpeg Dylibs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy FFmpeg Dylibs";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nfor dylib in libavformat libavcodec libavutil libswresample libswscale; do\n    SRC=$(find \"${PROJECT_DIR}/Vendor/ffmpeg/lib\" -name \"${dylib}.*.*.*.dylib\" -not -type l | head -1)\n    [ -n \"$SRC\" ] && cp -f \"$SRC\" \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\ndone\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		BC0010 /* Debug */ = {
@@ -507,25 +525,35 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/include",
+					"$(SRCROOT)/Vendor/libvlc/include",
+				);
 				INFOPLIST_FILE = "Awesome Player/App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/lib",
+					"$(SRCROOT)/Vendor/libvlc/lib",
+				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/include";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/lib";
 				OTHER_LDFLAGS = (
 					"-lavformat",
 					"-lavcodec",
 					"-lavutil",
 					"-lswresample",
 					"-lswscale",
+					"-lvlc",
+					"-lvlccore",
+					"-rpath",
+					"@executable_path/../lib",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -538,25 +566,35 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/include",
+					"$(SRCROOT)/Vendor/libvlc/include",
+				);
 				INFOPLIST_FILE = "Awesome Player/App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/lib",
+					"$(SRCROOT)/Vendor/libvlc/lib",
+				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/include";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/ffmpeg/lib";
 				OTHER_LDFLAGS = (
 					"-lavformat",
 					"-lavcodec",
 					"-lavutil",
 					"-lswresample",
 					"-lswscale",
+					"-lvlc",
+					"-lvlccore",
+					"-rpath",
+					"@executable_path/../lib",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -564,7 +602,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CL0001 /* Build configuration list for PBXProject "DVPlayer" */ = {
+		CL0001 /* Build configuration list for PBXProject "Awesome Player" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC0010 /* Debug */,
@@ -573,7 +611,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CL0002 /* Build configuration list for PBXNativeTarget "DVPlayer" */ = {
+		CL0002 /* Build configuration list for PBXNativeTarget "Awesome Player" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC0020 /* Debug */,
@@ -583,7 +621,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = P00001 /* Project object */;
 }

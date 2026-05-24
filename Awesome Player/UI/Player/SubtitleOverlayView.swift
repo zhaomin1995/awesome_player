@@ -16,8 +16,19 @@ class SubtitleOverlayView: NSView {
     private func setupViews() {
         wantsLayer = true
 
-        label.font = .systemFont(ofSize: 24, weight: .medium)
-        label.textColor = .white
+        let fontSize = CGFloat(UserDefaults.standard.double(forKey: Defaults.subtitleFontSize))
+        let fontIndex = UserDefaults.standard.integer(forKey: Defaults.subtitleFont)
+        let fontNames = ["", "HelveticaNeue", "Arial", "SFProText-Regular", "PingFangSC-Regular"]
+        if fontIndex > 0 && fontIndex < fontNames.count,
+           let font = NSFont(name: fontNames[fontIndex], size: fontSize > 0 ? fontSize : 24) {
+            label.font = font
+        } else {
+            label.font = .systemFont(ofSize: fontSize > 0 ? fontSize : 24, weight: .medium)
+        }
+
+        let colorIndex = UserDefaults.standard.integer(forKey: Defaults.subtitleColor)
+        let colors: [NSColor] = [.white, .yellow, .green, .cyan]
+        label.textColor = colorIndex < colors.count ? colors[colorIndex] : .white
         label.alignment = .center
         label.backgroundColor = .clear
         label.isBezeled = false

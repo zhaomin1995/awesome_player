@@ -31,7 +31,22 @@ class AudioDeviceMenuDelegate: NSObject, NSMenuDelegate {
         AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &defaultAddress, 0, nil, &defaultSize, &defaultDevice)
 
         for deviceID in deviceIDs {
-            // Check if device has output channels
+            // Filter out virtual and aggregate devices (e.g. ZoomAudioDevice, BlackHole)
+            var transportType: UInt32 = 0
+            var transportSize = UInt32(MemoryLayout<UInt32>.size)
+            var transportAddress = AudioObjectPropertyAddress(
+                mSelector: kAudioDevicePropertyTransportType,
+                mScope: kAudioObjectPropertyScopeGlobal,
+                mElement: kAudioObjectPropertyElementMain
+            )
+            if AudioObjectGetPropertyData(deviceID, &transportAddress, 0, nil, &transportSize, &transportType) == noErr {
+                if transportType == kAudioDeviceTransportTypeVirtual ||
+                   transportType == kAudioDeviceTransportTypeAggregate {
+                    continue
+                }
+            }
+
+            // Check if device has output streams
             var streamSize: UInt32 = 0
             var streamAddress = AudioObjectPropertyAddress(
                 mSelector: kAudioDevicePropertyStreams,
@@ -64,6 +79,156 @@ class AudioDeviceMenuDelegate: NSObject, NSMenuDelegate {
             none.isEnabled = false
             menu.addItem(none)
         }
+    }
+}
+
+/// Discovers AirPlay devices via Bonjour (_airplay._tcp) and lists them in the menu.
+/// Clicking a device triggers the AVRoutePickerView in the control bar.
+class AirPlayMenuDelegate: NSObject, NSMenuDelegate, NetServiceBrowserDelegate, NetServiceDelegate {
+    static let shared = AirPlayMenuDelegate()
+
+    private var browser: NetServiceBrowser?
+    private var services: [NetService] = []
+    private var resolvedDevices: [(name: String, host: String)] = []
+
+    override init() {
+        super.init()
+        startDiscovery()
+    }
+
+    private func startDiscovery() {
+        browser = NetServiceBrowser()
+        browser?.delegate = self
+        browser?.searchForServices(ofType: "_airplay._tcp.", inDomain: "local.")
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+
+        if resolvedDevices.isEmpty {
+            let scanning = NSMenuItem(title: "Scanning…", action: nil, keyEquivalent: "")
+            scanning.isEnabled = false
+            menu.addItem(scanning)
+            // Restart discovery in case it timed out
+            startDiscovery()
+        } else {
+            for device in resolvedDevices {
+                menu.addItem(withTitle: device.name, action: #selector(AppDelegate.showAirPlay(_:)), keyEquivalent: "")
+            }
+        }
+    }
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
+        services.append(service)
+        service.delegate = self
+        service.resolve(withTimeout: 5.0)
+    }
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool) {
+        services.removeAll { $0 == service }
+        resolvedDevices.removeAll { $0.name == service.name }
+    }
+
+    func netServiceDidResolveAddress(_ sender: NetService) {
+        let name = sender.name
+        let host = sender.hostName ?? sender.name
+        if !resolvedDevices.contains(where: { $0.name == name }) {
+            resolvedDevices.append((name: name, host: host))
+        }
+    }
+}
+
+/// Discovers Chromecast devices via Bonjour (_googlecast._tcp) and lists them in the menu.
+/// Extracts the friendly name from the TXT record's "fn" key, falling back to
+/// stripping the UUID suffix from the mDNS service name.
+class ChromecastMenuDelegate: NSObject, NSMenuDelegate, NetServiceBrowserDelegate, NetServiceDelegate {
+    static let shared = ChromecastMenuDelegate()
+
+    private var browser: NetServiceBrowser?
+    private var services: [NetService] = []
+    private var resolvedDevices: [(name: String, host: String, port: Int)] = []
+
+    override init() {
+        super.init()
+        startDiscovery()
+    }
+
+    private func startDiscovery() {
+        browser = NetServiceBrowser()
+        browser?.delegate = self
+        browser?.searchForServices(ofType: "_googlecast._tcp.", inDomain: "local.")
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+
+        if resolvedDevices.isEmpty {
+            let scanning = NSMenuItem(title: "Scanning…", action: nil, keyEquivalent: "")
+            scanning.isEnabled = false
+            menu.addItem(scanning)
+            startDiscovery()
+        } else {
+            for device in resolvedDevices {
+                let item = menu.addItem(withTitle: device.name, action: #selector(AppDelegate.castToChromecast(_:)), keyEquivalent: "")
+                item.representedObject = device
+            }
+        }
+    }
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
+        services.append(service)
+        service.delegate = self
+        service.resolve(withTimeout: 5.0)
+    }
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didRemove service: NetService, moreComing: Bool) {
+        services.removeAll { $0 == service }
+        resolvedDevices.removeAll { $0.host == service.hostName }
+    }
+
+    func netServiceDidResolveAddress(_ sender: NetService) {
+        var host = sender.hostName ?? sender.name
+        // Strip trailing dot from mDNS hostname
+        if host.hasSuffix(".") { host = String(host.dropLast()) }
+
+        // Try to extract the IPv4 address directly from the resolved addresses
+        if let addresses = sender.addresses {
+            for addrData in addresses {
+                addrData.withUnsafeBytes { ptr in
+                    guard let sa = ptr.baseAddress?.assumingMemoryBound(to: sockaddr.self) else { return }
+                    if sa.pointee.sa_family == UInt8(AF_INET) {
+                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                        if getnameinfo(sa, socklen_t(sa.pointee.sa_len), &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
+                            host = String(cString: hostname)
+                        }
+                    }
+                }
+            }
+        }
+
+        let friendlyName = Self.friendlyName(for: sender)
+        if !resolvedDevices.contains(where: { $0.host == host }) {
+            resolvedDevices.append((name: friendlyName, host: host, port: sender.port))
+        }
+    }
+
+    static func friendlyName(for service: NetService) -> String {
+        // Try TXT record "fn" (friendly name) key first
+        if let txtData = service.txtRecordData() {
+            let dict = NetService.dictionary(fromTXTRecord: txtData)
+            if let fnData = dict["fn"], let fn = String(data: fnData, encoding: .utf8), !fn.isEmpty {
+                return fn
+            }
+        }
+        // Fall back to stripping UUID suffix (e.g. "S90F-2ab6a79c..." → "S90F")
+        let raw = service.name
+        if let dashIdx = raw.firstIndex(of: "-") {
+            let suffix = raw[raw.index(after: dashIdx)...]
+            if suffix.count > 20 {
+                return String(raw[..<dashIdx])
+            }
+        }
+        return raw
     }
 }
 
@@ -114,7 +279,7 @@ class MenuManager {
         let menuItem = NSMenuItem(title: "File", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "File")
 
-        menu.addItem(withTitle: "Open File…", action: #selector(AppDelegate.openDocument(_:)), keyEquivalent: "o")
+        menu.addItem(withTitle: "Open File…", action: #selector(AppDelegate.openFileAction(_:)), keyEquivalent: "o")
         menu.addItem(withTitle: "Open URL…", action: #selector(AppDelegate.openURL(_:)), keyEquivalent: "u")
 
         let recentItem = NSMenuItem(title: "Open Recent", action: nil, keyEquivalent: "")
@@ -141,8 +306,10 @@ class MenuManager {
         menu.addItem(withTitle: "Play / Pause", action: #selector(AppDelegate.togglePlayPause(_:)), keyEquivalent: " ")
 
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Seek Forward 5s", action: #selector(AppDelegate.seekForward5(_:)), keyEquivalent: String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)))
-        menu.addItem(withTitle: "Seek Backward 5s", action: #selector(AppDelegate.seekBackward5(_:)), keyEquivalent: String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)))
+        let seekFwd = menu.addItem(withTitle: "Seek Forward 5s", action: #selector(AppDelegate.seekForward5(_:)), keyEquivalent: String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)))
+        seekFwd.keyEquivalentModifierMask = []
+        let seekBwd = menu.addItem(withTitle: "Seek Backward 5s", action: #selector(AppDelegate.seekBackward5(_:)), keyEquivalent: String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)))
+        seekBwd.keyEquivalentModifierMask = []
 
         menu.addItem(.separator())
         menu.addItem(withTitle: "Jump to Time…", action: #selector(AppDelegate.jumpToTime(_:)), keyEquivalent: "j")
@@ -151,7 +318,8 @@ class MenuManager {
         let speedMenu = NSMenuItem(title: "Speed", action: nil, keyEquivalent: "")
         let speedSubmenu = NSMenu(title: "Speed")
         for speed in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0] {
-            speedSubmenu.addItem(withTitle: String(format: "%.2gx", speed), action: #selector(AppDelegate.setSpeed(_:)), keyEquivalent: "")
+            let item = speedSubmenu.addItem(withTitle: String(format: "%.2gx", speed), action: #selector(AppDelegate.setSpeed(_:)), keyEquivalent: "")
+            if speed == 1.0 { item.state = .on }
         }
         speedMenu.submenu = speedSubmenu
         menu.addItem(speedMenu)
@@ -179,8 +347,10 @@ class MenuManager {
         // Equalizer submenu
         let eqItem = NSMenuItem(title: "Equalizer", action: nil, keyEquivalent: "")
         let eqMenu = NSMenu(title: "Equalizer")
-        for preset in ["Flat", "Bass Boost", "Treble Boost", "Vocal", "Rock", "Jazz", "Classical", "Electronic"] {
-            eqMenu.addItem(withTitle: preset, action: #selector(AppDelegate.setEQPreset(_:)), keyEquivalent: "")
+        let currentEQ = UserDefaults.standard.integer(forKey: Defaults.defaultEQPreset)
+        for (i, preset) in ["Flat", "Bass Boost", "Treble Boost", "Vocal", "Rock", "Jazz", "Classical", "Electronic"].enumerated() {
+            let item = eqMenu.addItem(withTitle: preset, action: #selector(AppDelegate.setEQPreset(_:)), keyEquivalent: "")
+            if i == currentEQ { item.state = .on }
         }
         eqItem.submenu = eqMenu
         menu.addItem(eqItem)
@@ -203,8 +373,10 @@ class MenuManager {
         menu.addItem(.separator())
 
         // Volume section
-        menu.addItem(withTitle: "Increase Volume", action: #selector(AppDelegate.volumeUp(_:)), keyEquivalent: String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)))
-        menu.addItem(withTitle: "Decrease Volume", action: #selector(AppDelegate.volumeDown(_:)), keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)))
+        let volUp = menu.addItem(withTitle: "Increase Volume", action: #selector(AppDelegate.volumeUp(_:)), keyEquivalent: String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)))
+        volUp.keyEquivalentModifierMask = []
+        let volDown = menu.addItem(withTitle: "Decrease Volume", action: #selector(AppDelegate.volumeDown(_:)), keyEquivalent: String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)))
+        volDown.keyEquivalentModifierMask = []
         menu.addItem(withTitle: "Mute", action: #selector(AppDelegate.toggleMute(_:)), keyEquivalent: "m")
 
         menuItem.submenu = menu
@@ -241,8 +413,9 @@ class MenuManager {
 
         let aspectItem = NSMenuItem(title: "Aspect Ratio", action: nil, keyEquivalent: "")
         let aspectMenu = NSMenu(title: "Aspect Ratio")
-        for ratio in ["Default", "4:3", "16:9", "16:10", "2.35:1", "2.39:1"] {
-            aspectMenu.addItem(withTitle: ratio, action: #selector(AppDelegate.setAspectRatio(_:)), keyEquivalent: "")
+        for (i, ratio) in ["Default", "4:3", "16:9", "16:10", "2.35:1", "2.39:1"].enumerated() {
+            let item = aspectMenu.addItem(withTitle: ratio, action: #selector(AppDelegate.setAspectRatio(_:)), keyEquivalent: "")
+            if i == 0 { item.state = .on }
         }
         aspectItem.submenu = aspectMenu
         menu.addItem(aspectItem)
@@ -292,9 +465,10 @@ class MenuManager {
         // Display Type submenu
         let displayItem = NSMenuItem(title: "Display Type", action: nil, keyEquivalent: "")
         let displayMenu = NSMenu(title: "Display Type")
-        displayMenu.addItem(withTitle: "Bottom of Video", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
-        displayMenu.addItem(withTitle: "Bottom of Screen", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
-        displayMenu.addItem(withTitle: "Letterbox", action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
+        for (i, pos) in ["Bottom of Video", "Bottom of Screen", "Letterbox"].enumerated() {
+            let item = displayMenu.addItem(withTitle: pos, action: #selector(AppDelegate.setSubtitlePosition(_:)), keyEquivalent: "")
+            if i == 0 { item.state = .on }
+        }
         displayItem.submenu = displayMenu
         menu.addItem(displayItem)
 
@@ -340,8 +514,21 @@ class MenuManager {
         let menuItem = NSMenuItem(title: "Cast", action: nil, keyEquivalent: "")
         let menu = NSMenu(title: "Cast")
 
-        menu.addItem(withTitle: "AirPlay", action: #selector(AppDelegate.showAirPlay(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Chromecast", action: #selector(AppDelegate.showChromecast(_:)), keyEquivalent: "")
+        let airplayItem = NSMenuItem(title: "AirPlay", action: nil, keyEquivalent: "")
+        let airplaySubmenu = NSMenu(title: "AirPlay")
+        airplaySubmenu.delegate = AirPlayMenuDelegate.shared
+        airplayItem.submenu = airplaySubmenu
+        menu.addItem(airplayItem)
+
+        menu.addItem(withTitle: "Play on External Display", action: #selector(AppDelegate.playOnExternalDisplay(_:)), keyEquivalent: "")
+        menu.addItem(.separator())
+
+        let chromecastItem = NSMenuItem(title: "Chromecast", action: nil, keyEquivalent: "")
+        let chromecastSubmenu = NSMenu(title: "Chromecast")
+        chromecastSubmenu.delegate = ChromecastMenuDelegate.shared
+        chromecastItem.submenu = chromecastSubmenu
+        menu.addItem(chromecastItem)
+
         menu.addItem(withTitle: "DLNA", action: #selector(AppDelegate.showDLNA(_:)), keyEquivalent: "")
         menu.addItem(.separator())
         menu.addItem(withTitle: "Disconnect", action: #selector(AppDelegate.disconnectCast(_:)), keyEquivalent: "")

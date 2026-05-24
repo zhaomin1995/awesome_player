@@ -1,9 +1,12 @@
 import Cocoa
 import AVFoundation
+import CoreAudio
+import UniformTypeIdentifiers
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowController: PlayerWindowController?
     private var preferencesController: PreferencesWindowController?
+    private let castingManager = CastingManager()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Defaults.registerDefaults()
@@ -36,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        UserDefaults.standard.bool(forKey: Defaults.quitOnLastWindowClosed)
     }
 
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {
@@ -56,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - File Menu
 
-    @IBAction func openDocument(_ sender: Any?) {
+    @objc func openFileAction(_ sender: Any?) {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
@@ -66,9 +69,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc func openURL(_ sender: Any?) {}
-    @objc func addSubtitleFile(_ sender: Any?) {}
-    @objc func saveScreenshot(_ sender: Any?) {}
+    @objc func openURL(_ sender: Any?) {
+        let alert = NSAlert()
+        alert.messageText = "Open URL"
+        alert.informativeText = "Enter a media URL:"
+        alert.addButton(withTitle: "Open")
+        alert.addButton(withTitle: "Cancel")
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 400, height: 24))
+        input.placeholderString = "https://example.com/video.mp4"
+        alert.accessoryView = input
+        if alert.runModal() == .alertFirstButtonReturn,
+           !input.stringValue.isEmpty,
+           let url = URL(string: input.stringValue) {
+            windowController?.openFile(url: url)
+        }
+    }
+
+    @objc func addSubtitleFile(_ sender: Any?) {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [
+            UTType(filenameExtension: "srt"),
+            UTType(filenameExtension: "ass"),
+            UTType(filenameExtension: "ssa"),
+            UTType(filenameExtension: "vtt"),
+            UTType(filenameExtension: "sub"),
+        ].compactMap { $0 }
+        panel.begin { [weak self] response in
+            guard response == .OK, let url = panel.url else { return }
+            self?.windowController?.playerViewController.loadSubtitleFile(url)
+        }
+    }
+
+    @objc func saveScreenshot(_ sender: Any?) {
+        windowController?.playerViewController.saveScreenshot()
+    }
 
     // MARK: - Playback Menu
 
@@ -81,9 +117,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func seekBackward5(_ sender: Any?) {
         windowController?.playerViewController.seek(by: -5)
     }
-    @objc func jumpToTime(_ sender: Any?) {}
-    @objc func setSpeed(_ sender: Any?) {}
-    @objc func toggleABRepeat(_ sender: Any?) {}
+    @objc func jumpToTime(_ sender: Any?) {
+        let alert = NSAlert()
+        alert.messageText = "Jump to Time"
+        alert.informativeText = "Enter time (e.g. 1:30 or 90):"
+        alert.addButton(withTitle: "Jump")
+        alert.addButton(withTitle: "Cancel")
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
+        input.placeholderString = "0:00"
+        alert.accessoryView = input
+        if alert.runModal() == .alertFirstButtonReturn {
+            windowController?.playerViewController.seekToAbsoluteTime(parseTimeInput(input.stringValue))
+        }
+    }
+
+    @objc func setSpeed(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem, let menu = item.menu else { return }
+        for mi in menu.items { mi.state = .off }
+        item.state = .on
+        let title = item.title.replacingOccurrences(of: "x", with: "")
+        if let speed = Float(title) {
+            windowController?.playerViewController.setSpeed(speed)
+        }
+    }
+
+    @objc func toggleABRepeat(_ sender: Any?) {
+        windowController?.playerViewController.toggleABLoop()
+    }
 
     // MARK: - Audio Menu
 
@@ -96,53 +156,225 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func toggleMute(_ sender: Any?) {
         windowController?.playerViewController.toggleMute()
     }
-    @objc func showAudioPanel(_ sender: Any?) {}
-    @objc func togglePassthrough(_ sender: Any?) {}
-    @objc func setEQPreset(_ sender: Any?) {}
-    @objc func selectOutputDevice(_ sender: Any?) {}
-    @objc func audioSyncPull(_ sender: Any?) {}
-    @objc func audioSyncPush(_ sender: Any?) {}
-    @objc func audioSyncRevert(_ sender: Any?) {}
+    @objc func showAudioPanel(_ sender: Any?) {
+        windowController?.playerViewController.showOSD("Audio panel")
+    }
+
+    @objc func togglePassthrough(_ sender: Any?) {
+        windowController?.playerViewController.togglePassthrough()
+    }
+
+    @objc func setEQPreset(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem, let menu = item.menu else { return }
+        for mi in menu.items { mi.state = .off }
+        item.state = .on
+        UserDefaults.standard.set(menu.index(of: item), forKey: Defaults.defaultEQPreset)
+        windowController?.playerViewController.showOSD("EQ: \(item.title)")
+    }
+
+    @objc func selectOutputDevice(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem else { return }
+        var deviceID = AudioDeviceID(item.tag)
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDefaultOutputDevice,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        AudioObjectSetPropertyData(
+            AudioObjectID(kAudioObjectSystemObject),
+            &address, 0, nil,
+            UInt32(MemoryLayout<AudioDeviceID>.size),
+            &deviceID
+        )
+        windowController?.playerViewController.showOSD("Output: \(item.title)")
+    }
+
+    @objc func audioSyncPull(_ sender: Any?) {
+        let step = UserDefaults.standard.double(forKey: Defaults.audioDelayStep)
+        windowController?.playerViewController.adjustAudioDelay(by: -(step > 0 ? step / 1000 : 0.1))
+    }
+
+    @objc func audioSyncPush(_ sender: Any?) {
+        let step = UserDefaults.standard.double(forKey: Defaults.audioDelayStep)
+        windowController?.playerViewController.adjustAudioDelay(by: step > 0 ? step / 1000 : 0.1)
+    }
+
+    @objc func audioSyncRevert(_ sender: Any?) {
+        windowController?.playerViewController.resetAudioDelay()
+    }
 
     // MARK: - Video Menu
 
-    @objc func setAspectRatio(_ sender: Any?) {}
-    @objc func setHalfSize(_ sender: Any?) {}
-    @objc func setOriginalSize(_ sender: Any?) {}
-    @objc func setDoubleSize(_ sender: Any?) {}
-    @objc func fitToScreen(_ sender: Any?) {}
-    @objc func fillScreen(_ sender: Any?) {}
-    @objc func showVideoEQ(_ sender: Any?) {}
-    @objc func togglePiP(_ sender: Any?) {}
-    @objc func rotateLeft(_ sender: Any?) {}
-    @objc func rotateRight(_ sender: Any?) {}
-    @objc func flipHorizontal(_ sender: Any?) {}
-    @objc func flipVertical(_ sender: Any?) {}
-    @objc func revertTransform(_ sender: Any?) {}
+    @objc func setAspectRatio(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem, let menu = item.menu else { return }
+        for mi in menu.items { mi.state = .off }
+        item.state = .on
+        windowController?.playerViewController.setAspectRatio(item.title)
+    }
+
+    @objc func setHalfSize(_ sender: Any?) {
+        windowController?.playerViewController.setVideoWindowSize(scale: 0.5)
+    }
+
+    @objc func setOriginalSize(_ sender: Any?) {
+        windowController?.playerViewController.setVideoWindowSize(scale: 1.0)
+    }
+
+    @objc func setDoubleSize(_ sender: Any?) {
+        windowController?.playerViewController.setVideoWindowSize(scale: 2.0)
+    }
+
+    @objc func fitToScreen(_ sender: Any?) {
+        windowController?.playerViewController.fitWindowToScreen()
+    }
+
+    @objc func fillScreen(_ sender: Any?) {
+        windowController?.playerViewController.toggleFillScreen()
+    }
+
+    @objc func showVideoEQ(_ sender: Any?) {
+        windowController?.playerViewController.showOSD("Video equalizer")
+    }
+
+    @objc func togglePiP(_ sender: Any?) {
+        windowController?.playerViewController.togglePiP()
+    }
+
+    @objc func rotateLeft(_ sender: Any?) {
+        windowController?.playerViewController.rotateVideo(by: -90)
+    }
+
+    @objc func rotateRight(_ sender: Any?) {
+        windowController?.playerViewController.rotateVideo(by: 90)
+    }
+
+    @objc func flipHorizontal(_ sender: Any?) {
+        windowController?.playerViewController.flipVideo(horizontal: true)
+    }
+
+    @objc func flipVertical(_ sender: Any?) {
+        windowController?.playerViewController.flipVideo(horizontal: false)
+    }
+
+    @objc func revertTransform(_ sender: Any?) {
+        windowController?.playerViewController.revertVideoTransform()
+    }
 
     // MARK: - Subtitle Menu
 
-    @objc func toggleSubtitles(_ sender: Any?) {}
-    @objc func setSubtitlePosition(_ sender: Any?) {}
-    @objc func subtitleSyncPull(_ sender: Any?) {}
-    @objc func subtitleSyncPush(_ sender: Any?) {}
-    @objc func subtitleSyncRevert(_ sender: Any?) {}
+    @objc func toggleSubtitles(_ sender: Any?) {
+        windowController?.playerViewController.toggleSubtitleVisibility()
+    }
+
+    @objc func setSubtitlePosition(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem, let menu = item.menu else { return }
+        for mi in menu.items { mi.state = .off }
+        item.state = .on
+        windowController?.playerViewController.showOSD("Subtitle: \(item.title)")
+    }
+
+    @objc func subtitleSyncPull(_ sender: Any?) {
+        let step = UserDefaults.standard.double(forKey: Defaults.subtitleDelayStep)
+        windowController?.playerViewController.adjustSubtitleDelay(by: -(step > 0 ? step : 0.1))
+    }
+
+    @objc func subtitleSyncPush(_ sender: Any?) {
+        let step = UserDefaults.standard.double(forKey: Defaults.subtitleDelayStep)
+        windowController?.playerViewController.adjustSubtitleDelay(by: step > 0 ? step : 0.1)
+    }
+
+    @objc func subtitleSyncRevert(_ sender: Any?) {
+        windowController?.playerViewController.resetSubtitleDelay()
+    }
 
     // MARK: - Playlist Menu
 
-    @objc func setRepeatOff(_ sender: Any?) {}
-    @objc func setRepeatOne(_ sender: Any?) {}
-    @objc func setRepeatAll(_ sender: Any?) {}
-    @objc func toggleShuffle(_ sender: Any?) {}
-    @objc func previousTrack(_ sender: Any?) {}
-    @objc func nextTrack(_ sender: Any?) {}
+    @objc func setRepeatOff(_ sender: Any?) {
+        windowController?.playerViewController.setRepeatMode(.off)
+    }
+
+    @objc func setRepeatOne(_ sender: Any?) {
+        windowController?.playerViewController.setRepeatMode(.one)
+    }
+
+    @objc func setRepeatAll(_ sender: Any?) {
+        windowController?.playerViewController.setRepeatMode(.all)
+    }
+
+    @objc func toggleShuffle(_ sender: Any?) {
+        windowController?.playerViewController.toggleShuffle()
+    }
+
+    @objc func previousTrack(_ sender: Any?) {
+        windowController?.playerViewController.playPreviousTrack()
+    }
+
+    @objc func nextTrack(_ sender: Any?) {
+        windowController?.playerViewController.playNextTrack()
+    }
 
     // MARK: - Cast Menu
 
-    @objc func showAirPlay(_ sender: Any?) {}
-    @objc func showChromecast(_ sender: Any?) {}
-    @objc func showDLNA(_ sender: Any?) {}
-    @objc func disconnectCast(_ sender: Any?) {}
+    @objc func showAirPlay(_ sender: Any?) {
+        // AVRoutePickerView on macOS only routes audio — for video, the user
+        // needs Screen Mirroring from Control Center or an external display.
+        // Trigger the picker for audio, then open Screen Mirroring if video
+        // doesn't activate.
+        windowController?.playerViewController.showAirPlayPicker()
+
+        // Also open the Displays settings so the user can add the TV as a display
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            guard let vc = self?.windowController?.playerViewController,
+                  !(vc.playerEngine?.player?.isExternalPlaybackActive ?? false) else { return }
+            vc.showOSD("Tip: Use Control Center > Screen Mirroring to show video on TV", duration: 5.0)
+        }
+    }
+
+    @objc func playOnExternalDisplay(_ sender: Any?) {
+        windowController?.playerViewController.moveToExternalDisplay()
+    }
+
+    @objc func castToChromecast(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem,
+              let device = item.representedObject as? (name: String, host: String, port: Int) else { return }
+        guard let vc = windowController?.playerViewController else { return }
+        guard let fileURL = vc.currentFileURL else {
+            vc.showOSD("No file playing")
+            return
+        }
+
+        // Use the currently playing file — for remuxed MKVs, use the temp MP4
+        let castURL: URL
+        if let currentItem = vc.playerEngine?.player?.currentItem,
+           let asset = currentItem.asset as? AVURLAsset {
+            castURL = asset.url
+        } else {
+            castURL = fileURL
+        }
+
+        let castDevice = CastDevice(id: device.host, name: device.name, type: .chromecast, host: device.host, port: device.port)
+        castingManager.delegate = self
+        castingManager.connect(to: castDevice)
+        castingManager.cast(fileURL: castURL, to: castDevice)
+        vc.showOSD("Casting to \(device.name)…", duration: 3.0)
+    }
+
+    @objc func showChromecast(_ sender: Any?) {
+        castingManager.delegate = self
+        castingManager.startDiscovery()
+        windowController?.playerViewController.showOSD("Searching for Chromecast devices…", duration: 3.0)
+    }
+
+    @objc func showDLNA(_ sender: Any?) {
+        castingManager.delegate = self
+        castingManager.startDiscovery()
+        windowController?.playerViewController.showOSD("Searching for DLNA devices…", duration: 3.0)
+    }
+
+    @objc func disconnectCast(_ sender: Any?) {
+        castingManager.disconnect()
+        windowController?.playerViewController.showOSD("Disconnected")
+    }
 
     // MARK: - Window Menu
 
@@ -195,11 +427,50 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Preferences
 
+    private func parseTimeInput(_ input: String) -> Double {
+        let parts = input.components(separatedBy: ":")
+        switch parts.count {
+        case 1: return Double(parts[0]) ?? 0
+        case 2:
+            return (Double(parts[0]) ?? 0) * 60 + (Double(parts[1]) ?? 0)
+        case 3:
+            return (Double(parts[0]) ?? 0) * 3600 + (Double(parts[1]) ?? 0) * 60 + (Double(parts[2]) ?? 0)
+        default: return 0
+        }
+    }
+
     @objc func showPreferences(_ sender: Any?) {
         if preferencesController == nil {
             preferencesController = PreferencesWindowController()
         }
         preferencesController?.showWindow(nil)
         preferencesController?.window?.makeKeyAndOrderFront(nil)
+    }
+}
+
+// MARK: - CastingManagerDelegate
+
+extension AppDelegate: CastingManagerDelegate {
+    func castingManager(_ manager: CastingManager, didDiscoverDevice device: CastDevice) {
+        windowController?.playerViewController.showOSD("Found: \(device.name)")
+    }
+
+    func castingManager(_ manager: CastingManager, didRemoveDevice deviceId: String) {
+    }
+
+    func castingManager(_ manager: CastingManager, didChangeState state: CastState) {
+        switch state {
+        case .connected(let device):
+            windowController?.playerViewController.showOSD("Connected to \(device.name)")
+        case .playing(let device):
+            windowController?.playerViewController.showOSD("Casting to \(device.name)")
+        case .disconnected:
+            windowController?.playerViewController.showOSD("Cast disconnected")
+        case .connecting:
+            windowController?.playerViewController.showOSD("Connecting…")
+        }
+    }
+
+    func castingManager(_ manager: CastingManager, didUpdatePosition position: Double, duration: Double) {
     }
 }

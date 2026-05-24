@@ -35,6 +35,20 @@ class CastButton: NSView {
         ])
     }
 
+    func showPicker() {
+        // Programmatically trigger the AVRoutePickerView's internal button
+        for subview in routePickerView?.subviews ?? [] {
+            if let button = subview as? NSButton {
+                button.performClick(nil)
+                return
+            }
+        }
+    }
+
+    func setPlayer(_ player: AVPlayer?) {
+        routePickerView?.player = player
+    }
+
     func setEnabled(_ enabled: Bool) {
         isAirPlayAvailable = enabled
         routePickerView?.alphaValue = enabled ? 1.0 : 0.4

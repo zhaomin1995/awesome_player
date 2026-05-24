@@ -10,6 +10,7 @@ protocol AVPlayerEngineDelegate: AnyObject {
     func playerEngineTimeDidChange(current: Double, duration: Double)
     func playerEngineDidFinishPlaying()
     func playerEngineDidUpdateStatus(isPlaying: Bool)
+    func playerEngineExternalPlaybackChanged(isActive: Bool)
 }
 
 class AVPlayerEngine: NSObject {
@@ -22,6 +23,7 @@ class AVPlayerEngine: NSObject {
     private var statusObservation: NSKeyValueObservation?
     private var rateObservation: NSKeyValueObservation?
     private var itemStatusObservation: NSKeyValueObservation?
+    private var externalPlaybackObservation: NSKeyValueObservation?
 
     var isPlaying: Bool {
         player?.rate != 0
@@ -86,6 +88,7 @@ class AVPlayerEngine: NSObject {
         setupNotifications()
         observeStatus()
         observeItemStatus()
+        observeExternalPlayback()
 
         // Load duration asynchronously — AVAsset.duration blocks until the
         // asset header is fully parsed, which is slow for large/network files.
@@ -123,6 +126,7 @@ class AVPlayerEngine: NSObject {
         statusObservation = nil
         rateObservation = nil
         itemStatusObservation = nil
+        externalPlaybackObservation = nil
         player?.pause()
         player = nil
         playerItem = nil
@@ -193,6 +197,18 @@ class AVPlayerEngine: NSObject {
                     self.cachedDuration = dur
                     self.delegate?.playerEngineTimeDidChange(current: self.currentTime, duration: dur)
                 }
+            }
+        }
+    }
+
+    /// Detect when AirPlay video streaming activates/deactivates so the UI
+    /// can show feedback and the local player layer can go blank gracefully.
+    private func observeExternalPlayback() {
+        externalPlaybackObservation = player?.observe(\.isExternalPlaybackActive, options: [.new]) { [weak self] player, _ in
+            DispatchQueue.main.async {
+                let active = player.isExternalPlaybackActive
+                print("[AVPlayerEngine] External playback: \(active)")
+                self?.delegate?.playerEngineExternalPlaybackChanged(isActive: active)
             }
         }
     }

@@ -40,10 +40,18 @@ class VideoView: NSView {
 
     override func layout() {
         super.layout()
-        playerLayer?.frame = bounds
+        layer?.sublayers?.forEach { $0.frame = bounds }
     }
 
     func setVideoGravity(_ gravity: AVLayerVideoGravity) {
         playerLayer?.videoGravity = gravity
+    }
+
+    func getPlayerLayer() -> AVPlayerLayer? {
+        playerLayer
+    }
+
+    func setLayerTransform(_ transform: CATransform3D) {
+        playerLayer?.transform = transform
     }
 }

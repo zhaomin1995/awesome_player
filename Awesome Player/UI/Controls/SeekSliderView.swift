@@ -83,6 +83,8 @@ class SeekSliderView: NSView {
         }
     }
 
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     override func mouseDown(with event: NSEvent) {
         isDragging = true
         updateDragProgress(with: event)

@@ -27,6 +27,10 @@ class PreferencesWindowController: NSWindowController {
         window.center()
         super.init(window: window)
         setupTabs()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.resizeWindowToFitTab(animated: false)
+        }
     }
 
     required init?(coder: NSCoder) { fatalError() }
@@ -70,15 +74,54 @@ class PreferencesWindowController: NSWindowController {
             if name == sender.itemIdentifier.rawValue {
                 tabView.selectTabViewItem(at: i)
                 window?.title = name
-                // Trigger relayout for newly visible tab content
-                DispatchQueue.main.async {
-                    self.tabView.selectedTabViewItem?.view?.subviews.forEach { subview in
-                        subview.needsLayout = true
-                        NotificationCenter.default.post(name: NSView.frameDidChangeNotification, object: subview)
-                    }
-                }
+                resizeWindowToFitTab(animated: true)
                 break
             }
+        }
+    }
+
+    private func resizeWindowToFitTab(animated: Bool) {
+        guard let window = window,
+              let tabContent = tabView.selectedTabViewItem?.view else { return }
+
+        tabContent.layoutSubtreeIfNeeded()
+
+        // Find the actual content height by looking through scroll view → document view → stack
+        var contentHeight: CGFloat = 0
+        for sub in tabContent.subviews {
+            if let scrollView = sub as? NSScrollView,
+               let docView = scrollView.documentView {
+                docView.layoutSubtreeIfNeeded()
+                let fitting = docView.fittingSize
+                contentHeight = max(contentHeight, fitting.height)
+            } else {
+                let fitting = sub.fittingSize
+                contentHeight = max(contentHeight, fitting.height)
+            }
+        }
+        contentHeight += 24
+
+        let maxHeight = (window.screen?.visibleFrame.height ?? 800) * 0.7
+        contentHeight = min(contentHeight, maxHeight)
+        contentHeight = max(contentHeight, 300)
+
+        let toolbarHeight = window.frame.height - window.contentLayoutRect.height
+        let newWindowHeight = contentHeight + toolbarHeight
+        let frame = NSRect(
+            x: window.frame.origin.x,
+            y: window.frame.origin.y + window.frame.height - newWindowHeight,
+            width: window.frame.width,
+            height: newWindowHeight
+        )
+
+        if animated {
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.25
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                window.animator().setFrame(frame, display: true)
+            }
+        } else {
+            window.setFrame(frame, display: true)
         }
     }
 }
@@ -464,11 +507,34 @@ extension NSView {
     }
 
     func embed(_ stack: NSStackView) {
-        stack.translatesAutoresizingMaskIntoConstraints = true
-        stack.autoresizingMask = [.width]
-        stack.frame = NSRect(x: 20, y: 0, width: max(bounds.width - 40, 600), height: 10000)
-        stack.frame.size.height = stack.fittingSize.height
-        addSubview(stack)
+        let spacer = NSView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        stack.addArrangedSubview(spacer)
+
+        let container = FlippedView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 8),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+        ])
+
+        let scrollView = NSScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = true
+        scrollView.autoresizingMask = [.width, .height]
+        scrollView.frame = bounds
+        scrollView.hasVerticalScroller = true
+        scrollView.drawsBackground = false
+        scrollView.documentView = container
+        addSubview(scrollView)
+
+        // Pin container width to scroll view so it doesn't scroll horizontally
+        container.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
     }
 
     func addSectionHeader(_ stack: NSStackView, _ title: String) {

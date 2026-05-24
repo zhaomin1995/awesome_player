@@ -65,8 +65,13 @@ class CastingManager {
     }
 
     func cast(fileURL: URL, to device: CastDevice) {
+        castLog("[CastingManager] Starting HTTP server for: \(fileURL.path)")
         httpServer.start(servingFile: fileURL) { [weak self] serverURL in
-            guard let self = self, let url = serverURL else { return }
+            guard let self = self, let url = serverURL else {
+                castLog("[CastingManager] HTTP server failed to start")
+                return
+            }
+            castLog("[CastingManager] HTTP server ready at: \(url.absoluteString)")
 
             switch device.type {
             case .chromecast:
@@ -151,6 +156,7 @@ extension CastingManager: ChromecastManagerDelegate {
 
     func chromecastDidConnect(_ device: CastDevice) {
         state = .connected(device)
+        castLog("[CastingManager] Chromecast connected: \(device.name) at \(device.host):\(device.port)")
         delegate?.castingManager(self, didChangeState: state)
     }
 

@@ -63,10 +63,10 @@ class GradientScrimView: NSView {
         gradient.frame = bounds
         gradient.colors = [
             NSColor.clear.cgColor,
-            NSColor.black.withAlphaComponent(0.6).cgColor,
-            NSColor.black.withAlphaComponent(0.85).cgColor,
+            NSColor.black.withAlphaComponent(0.3).cgColor,
+            NSColor.black.withAlphaComponent(0.5).cgColor,
         ]
-        gradient.locations = [0.0, 0.5, 1.0]
+        gradient.locations = [0.0, 0.7, 1.0]
         gradient.startPoint = CGPoint(x: 0.5, y: 0)
         gradient.endPoint = CGPoint(x: 0.5, y: 1)
         layer?.sublayers?.removeAll()
@@ -76,5 +76,9 @@ class GradientScrimView: NSView {
     override func layout() {
         super.layout()
         layer?.sublayers?.first?.frame = bounds
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
     }
 }
