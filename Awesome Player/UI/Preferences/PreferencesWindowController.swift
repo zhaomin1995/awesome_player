@@ -602,12 +602,3 @@ extension NSView {
 class FlippedView: NSView {
     override var isFlipped: Bool { true }
 }
-
-extension NSPopUpButton {
-    func configured(_ block: (NSPopUpButton) -> Void) -> NSPopUpButton {
-        block(self)
-        isEnabled = true
-        widthAnchor.constraint(greaterThanOrEqualToConstant: 150).isActive = true
-        return self
-    }
-}

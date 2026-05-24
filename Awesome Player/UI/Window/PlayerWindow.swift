@@ -11,12 +11,12 @@ class PlayerWindow: NSWindow {
     override var canBecomeMain: Bool { true }
 
     init() {
-        let screen = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
-        // 70% of screen width, 16:9 aspect ratio
-        let w = screen.width * 0.7
-        let h = w * 9.0 / 16.0
-        let x = screen.origin.x + (screen.width - w) / 2
-        let y = screen.origin.y + (screen.height - h) / 2
+        let fullScreen = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 1920, height: 1080)
+        let visible = NSScreen.main?.visibleFrame ?? fullScreen
+        let w = fullScreen.width * 0.7
+        let h = fullScreen.height * 0.7
+        let x = visible.origin.x + (visible.width - w) / 2
+        let y = visible.origin.y + (visible.height - h) / 2
         let contentRect = NSRect(x: x, y: y, width: w, height: h)
 
         super.init(

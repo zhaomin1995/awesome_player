@@ -18,7 +18,6 @@ class ControlBarView: NSView {
     weak var delegate: ControlBarDelegate?
 
     /// Semi-transparent gradient behind controls so they're readable over any video content
-    private let gradientView = GradientScrimView()
     /// Container for all control elements; background toggled between clear and opaque
     private let effectView = NSView()
     private let seekSlider = SeekSliderView()

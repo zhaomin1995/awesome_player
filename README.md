@@ -1,47 +1,34 @@
 # Awesome Player
 
-A full-featured macOS video player that combines **Dolby Vision** playback with **AirPlay** streaming — something no existing player offers. Inspired by Movist Pro's polished UI and VLC's codec breadth.
+A full-featured macOS video player that combines **Dolby Vision** playback with **VLC-quality codec support** — instant MKV playback, AirPlay streaming, Chromecast casting, and a polished Movist Pro-style UI.
 
 ## Features
 
 ### Playback
-- **Dolby Vision / HDR10 / HLG** support via AVPlayer + VideoToolbox
-- **MKV, AVI, MP4, MOV** and 30+ container formats via FFmpeg remuxing
-- Automatic **Vorbis/DTS/WMA → AAC** audio transcoding for incompatible codecs
+- **Instant MKV/AVI/WebM playback** via integrated libvlc — no remuxing, no delay
+- **Dolby Vision / HDR10 / HLG** for native MP4/MOV via AVPlayer + VideoToolbox
+- **30+ container formats** and all codecs VLC supports (H.264, HEVC, VP9, AV1, etc.)
 - Keyboard shortcuts: Space (play/pause), arrows (seek/volume), M (mute), F (fullscreen)
-- A-B loop repeat, playback speed control (0.25x–4x)
+- A-B loop, playback speed (0.25x–4x), configurable seek intervals
 
 ### Casting
-- **AirPlay** — native via AVPlayer (Dolby Vision streams to Apple TV)
-- **Chromecast** — Bonjour discovery + Cast V2 protocol over TLS
-- **DLNA/UPnP** — SSDP discovery + AVTransport SOAP control
+- **AirPlay** — native via AVPlayer with external display fallback
+- **Chromecast** — Cast V2 protocol over TLS with device discovery
+- **DLNA/UPnP** — SSDP discovery + AVTransport control
+- **Play on External Display** — move to any connected screen in fullscreen
 
 ### Audio
-- 10-band parametric equalizer with 8 presets
-- Dynamics compressor, spatializer/reverb, stereo widener
-- Pitch shifter (semitone steps), loudness normalization
-- Audio passthrough detection (AC3/E-AC3/DTS over HDMI)
-- Real-time output device enumeration and selection
-
-### Video
-- CIFilter-based video EQ: brightness, contrast, saturation, hue, sharpness, gamma
-- Rotate left/right, flip horizontal/vertical
-- Aspect ratio presets, half/actual/double/fit-to-screen sizing
-
-### Subtitles
-- **Text**: SRT, ASS/SSA, WebVTT parsers
-- **Bitmap**: PGS (Blu-ray), VobSub (DVD) via FFmpeg
-- Auto-discovery of matching subtitle files
-- Configurable delay, encoding, font, position
+- 10-band EQ with 8 presets (Flat, Bass Boost, Rock, Jazz, etc.)
+- Audio passthrough detection for AC3/E-AC3 over HDMI
+- Real-time output device selection (filters virtual devices)
 
 ### UI (Movist Pro Style)
-- Borderless window with transparent title bar and custom traffic lights
-- Dark radial gradient welcome screen with centered play icon
-- Auto-hiding control bar with dark vibrancy background
-- 6 slide-up panels: Playlist, Audio, Subtitle, Video EQ, Media Info, Cast
-- 11-tab preferences window
-- OSD messages with fade animations
+- Borderless window with transparent title bar
+- Auto-hiding controls (1s idle or mouse exit)
+- 9-tab preferences with animated tab switching
+- Seek OSD with timestamp and percentage
 - DV/HDR/Atmos codec badges in title bar
+- All menu items functional with stateful checkmarks
 
 ## Requirements
 
@@ -51,33 +38,20 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 ## Build & Run
 
 ```bash
-git clone https://github.com/zhaomin1995/awesome_player.git
-cd awesome_player
+git clone https://github.com/zhaomin1995/video_player.git
+cd video_player
 open "Awesome Player.xcodeproj"
+# Press ⌘R to build and run
 ```
 
-In Xcode, add a **Run Script** build phase to copy FFmpeg dylibs:
-```bash
-mkdir -p "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}"
-for dylib in libavformat libavcodec libavutil libswresample libswscale; do
-    SRC=$(find "${PROJECT_DIR}/Vendor/ffmpeg/lib" -name "${dylib}.*.*.*.dylib" -not -type l | head -1)
-    [ -n "$SRC" ] && cp -f "$SRC" "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/"
-done
-```
-
-Then press **⌘R** to build and run.
-
-**No Homebrew or external dependencies needed** — FFmpeg libraries are bundled in the repo.
+**No external dependencies needed** — FFmpeg and libvlc libraries are bundled in the repo. A build phase script automatically copies all dylibs and plugins into the app bundle.
 
 ## Architecture
 
 ```
-File Input → Codec Probe (FFmpeg) → Format Router
-                                     ├── AVPlayer-compatible? → AVPlayer (DV + AirPlay)
-                                     └── Not compatible? → FFmpeg Decoder (local only)
-
-MKV with HEVC → remux to temp MP4 → AVPlayer (preserves DV metadata)
-MKV with Vorbis audio → transcode to AAC (via AVAudioFifo) → AVPlayer
+File Input → Format Check
+               ├── MP4/MOV? → AVPlayer (Dolby Vision + AirPlay)
+               └── MKV/AVI/WebM? → libvlc (VLC engine, instant playback)
 ```
 
 ## Tech Stack
@@ -85,14 +59,14 @@ MKV with Vorbis audio → transcode to AAC (via AVAudioFifo) → AVPlayer
 | Component | Technology |
 |-----------|-----------|
 | UI Framework | AppKit (programmatic, no storyboards) |
-| Video Playback | AVFoundation / AVPlayer |
-| Hardware Decoding | VideoToolbox |
+| Native Playback | AVFoundation / AVPlayer |
+| Universal Playback | libvlc (VLC 3.0) |
+| Hardware Decoding | VideoToolbox (via AVPlayer and libvlc) |
 | HDR Rendering | AVPlayerLayer with EDR |
-| Container Demuxing | FFmpeg 7.1.1 (libavformat) |
-| Audio Transcoding | FFmpeg (libavcodec + libswresample) |
-| Audio Processing | AVAudioEngine (EQ, compressor, reverb, pitch) |
-| Casting | Network.framework (NWConnection, NWListener) |
-| Video Filters | CoreImage (CIFilter) |
+| Media Probing | FFmpeg 7.1.1 (libavformat) |
+| Remuxing Fallback | FFmpeg (libavcodec + libswresample) |
+| Chromecast | Cast V2 protobuf over TLS |
+| DLNA | SSDP + UPnP SOAP |
 
 ## License
 

@@ -24,7 +24,6 @@ class PlayerViewController: NSViewController {
 
     private var player: AVPlayer?
     private(set) var playerEngine: AVPlayerEngine?
-    private var ffmpegEngine: FFmpegPlayerEngine?
     private var vlcEngine: VLCPlayerEngine?
     private var timeObserver: Any?
 
@@ -289,8 +288,6 @@ class PlayerViewController: NSViewController {
 
         abLoopController.gap = UserDefaults.standard.double(forKey: Defaults.abLoopGap)
 
-        ffmpegEngine?.stop()
-        ffmpegEngine = nil
         vlcEngine?.stop()
         vlcEngine = nil
 
@@ -439,12 +436,7 @@ class PlayerViewController: NSViewController {
             if engine.isPlaying { engine.pause(); osdView.show(message: "Paused") }
             else { engine.play(); osdView.show(message: "Playing") }
             controlBarView.setPlaying(engine.isPlaying)
-        } else if let engine = ffmpegEngine {
-            if engine.isPlaying { engine.pause(); osdView.show(message: "Paused") }
-            else { engine.play(); osdView.show(message: "Playing") }
-            controlBarView.setPlaying(engine.isPlaying)
-        }
-    }
+        }    }
 
     func seek(by seconds: Double) {
         var newTime: Double = 0
@@ -454,10 +446,6 @@ class PlayerViewController: NSViewController {
             newTime = engine.currentTime
             dur = engine.duration
         } else if let engine = vlcEngine {
-            engine.seek(by: seconds)
-            newTime = engine.currentTime
-            dur = engine.duration
-        } else if let engine = ffmpegEngine {
             engine.seek(by: seconds)
             newTime = engine.currentTime
             dur = engine.duration
@@ -481,8 +469,6 @@ class PlayerViewController: NSViewController {
             v = max(0, min(1, engine.volume + delta)); engine.volume = v
         } else if let engine = vlcEngine {
             v = max(0, min(1, engine.volume + delta)); engine.volume = v
-        } else if let engine = ffmpegEngine {
-            v = max(0, min(1, engine.volume + delta)); engine.volume = v
         }
         controlBarView.setVolume(v)
         osdView.show(message: "Volume: \(Int(v * 100))%")
@@ -497,12 +483,7 @@ class PlayerViewController: NSViewController {
             engine.isMuted.toggle()
             controlBarView.setMuted(engine.isMuted)
             osdView.show(message: engine.isMuted ? "Muted" : "Unmuted")
-        } else if let engine = ffmpegEngine {
-            engine.isMuted.toggle()
-            controlBarView.setMuted(engine.isMuted)
-            osdView.show(message: engine.isMuted ? "Muted" : "Unmuted")
-        }
-    }
+        }    }
 
     func adjustSpeed(by delta: Float) {
         guard let engine = playerEngine else { return }
@@ -791,10 +772,7 @@ extension PlayerViewController: ControlBarDelegate {
             engine.seekToFraction(fraction)
         } else if let engine = vlcEngine {
             engine.seekToFraction(fraction)
-        } else if let engine = ffmpegEngine {
-            engine.seekToFraction(fraction)
-        }
-    }
+        }    }
 
     func controlBarVolumeChanged(to volume: Float) {
         playerEngine?.volume = volume
@@ -890,32 +868,6 @@ extension PlayerViewController: VLCPlayerEngineDelegate {
         controlBarView.setPlaying(false)
     }
     func vlcEngineDidUpdateStatus(isPlaying: Bool) {
-        controlBarView.setPlaying(isPlaying)
-        onPlaybackStateChanged?(isPlaying)
-    }
-}
-
-// MARK: - FFmpegPlayerEngineDelegate
-
-extension PlayerViewController: FFmpegPlayerEngineDelegate {
-    func ffmpegEngineTimeDidChange(current: Double, duration: Double) {
-        controlBarView.updateTime(current: current, duration: duration)
-    }
-
-    func ffmpegEngineDidFinishPlaying() {
-        controlBarView.setPlaying(false)
-        let action = UserDefaults.standard.integer(forKey: Defaults.mediaEndAction)
-        switch action {
-        case 2: playNextTrack()
-        case 3:
-            ffmpegEngine?.seekTo(time: 0)
-            ffmpegEngine?.play()
-            controlBarView.setPlaying(true)
-        default: break
-        }
-    }
-
-    func ffmpegEngineDidUpdateStatus(isPlaying: Bool) {
         controlBarView.setPlaying(isPlaying)
         onPlaybackStateChanged?(isPlaying)
     }
