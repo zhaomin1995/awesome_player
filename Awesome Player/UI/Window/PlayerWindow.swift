@@ -39,6 +39,21 @@ class PlayerWindow: NSWindow {
         // Required for mouseMoved events (used to show/hide controls on hover)
         acceptsMouseMovedEvents = true
         tabbingMode = .disallowed
+        registerForDraggedTypes([.fileURL])
+    }
+
+    var onFileDropped: ((URL) -> Void)?
+
+    func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        guard sender.draggingPasteboard.canReadObject(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) else { return [] }
+        return .copy
+    }
+
+    func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        guard let urls = sender.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL],
+              let url = urls.first else { return false }
+        onFileDropped?(url)
+        return true
     }
 
     /// Intentionally a no-op: locking contentAspectRatio prevents free resizing.

@@ -64,6 +64,10 @@ class PlayerWindowController: NSWindowController {
             self?.openFile(url: url)
         }
 
+        (window as? PlayerWindow)?.onFileDropped = { [weak self] url in
+            self?.openFile(url: url)
+        }
+
         playerViewController.onDoubleClick = { [weak self] in
             self?.toggleFullscreen()
         }

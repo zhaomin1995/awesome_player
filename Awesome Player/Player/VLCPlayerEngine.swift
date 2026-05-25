@@ -11,6 +11,20 @@ protocol VLCPlayerEngineDelegate: AnyObject {
 class VLCPlayerEngine {
     weak var delegate: VLCPlayerEngineDelegate?
 
+    private static var sharedVLCInstance: OpaquePointer? = {
+        let pluginPath = Bundle.main.bundlePath + "/Contents/plugins"
+        let args: [String] = ["--no-video-title-show", "--no-stats", "--no-snapshot-preview", "--vout=macosx"]
+        setenv("VLC_PLUGIN_PATH", pluginPath, 1)
+        var cStrings = args.map { strdup($0) }
+        defer { cStrings.forEach { free($0) } }
+        var ptrs = cStrings.map { UnsafePointer<CChar>($0) as UnsafePointer<CChar>? }
+        let inst = ptrs.withUnsafeMutableBufferPointer { buf in
+            libvlc_new(Int32(args.count), buf.baseAddress!)
+        }
+        if inst != nil { print("[VLCEngine] Shared libvlc instance created") }
+        return inst
+    }()
+
     private var instance: OpaquePointer?
     private var player: OpaquePointer?
     private var media: OpaquePointer?
@@ -72,36 +86,15 @@ class VLCPlayerEngine {
     }
 
     init() {
-        let pluginPath = Bundle.main.bundlePath + "/Contents/plugins"
-
-        let args: [String] = [
-            "--no-video-title-show",
-            "--no-stats",
-            "--no-snapshot-preview",
-            "--vout=macosx",
-        ]
-
-        setenv("VLC_PLUGIN_PATH", pluginPath, 1)
-
-        // Convert Swift strings to C strings for libvlc_new
-        var cStrings = args.map { strdup($0) }
-        defer { cStrings.forEach { free($0) } }
-        var optionalPtrs = cStrings.map { UnsafePointer<CChar>($0) as UnsafePointer<CChar>? }
-        instance = optionalPtrs.withUnsafeMutableBufferPointer { buf in
-            libvlc_new(Int32(args.count), buf.baseAddress!)
-        }
-
+        instance = Self.sharedVLCInstance
         if instance == nil {
-            print("[VLCEngine] Failed to create libvlc instance")
-        } else {
-            print("[VLCEngine] libvlc instance created")
+            print("[VLCEngine] Failed to get libvlc instance")
         }
     }
 
     deinit {
         stop()
-        if let inst = instance { libvlc_release(inst) }
-        instance = nil
+        // Don't release shared instance
     }
 
     func open(url: URL) -> Bool {
@@ -120,10 +113,8 @@ class VLCPlayerEngine {
         renderView.wantsLayer = true
         libvlc_media_player_set_nsobject(p, Unmanaged.passUnretained(renderView).toOpaque())
 
-        // Parse to get duration
-        libvlc_media_parse(media)
-        let dur = libvlc_media_get_duration(media)
-        if dur > 0 { duration = Double(dur) / 1000.0 }
+        // Skip parse — timer will update duration
+        duration = 0
 
         print("[VLCEngine] Opened: \(url.lastPathComponent), duration=\(duration)s")
         return true

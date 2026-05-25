@@ -209,6 +209,10 @@ class ControlBarView: NSView {
         castButton.setPlayer(player)
     }
 
+    func setAirPlayAvailable(_ available: Bool) {
+        castButton.setEnabled(available)
+    }
+
     private func formatTime(_ seconds: Double) -> String {
         guard seconds.isFinite, seconds >= 0 else { return "0:00" }
         let totalSeconds = Int(seconds)

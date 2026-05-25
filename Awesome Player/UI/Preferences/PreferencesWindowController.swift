@@ -261,7 +261,7 @@ class AudioPrefsView: NSView {
         addPopupRow(stack, "Audio passthrough:", key: Defaults.passthroughMode, items: ["Auto-detect", "Always On", "Off"])
 
         addSectionHeader(stack, "Equalizer")
-        addPopupRow(stack, "Default EQ preset:", key: Defaults.defaultEQPreset, items: AudioEqualizer.presets.map { $0.name })
+        addPopupRow(stack, "Default EQ preset:", key: Defaults.defaultEQPreset, items: ["Flat", "Bass Boost", "Treble Boost", "Vocal", "Rock", "Jazz", "Classical", "Electronic"])
 
         addSectionHeader(stack, "Audio Processing")
         addToggleRow(stack, "Enable compressor (night mode)", key: Defaults.compressorEnabled)

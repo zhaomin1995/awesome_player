@@ -41,9 +41,19 @@ class PlayerViewController: NSViewController {
     private var playlistPanelConstraint: NSLayoutConstraint?
     private var audioDelayOffset: Double = 0
     private let passthroughManager = AudioPassthroughManager()
+    private var hasResizedForCurrentFile = false
 
     var isPaused: Bool {
-        player?.rate == 0
+        if let vlc = vlcEngine { return !vlc.isPlaying }
+        return (player?.rate ?? 0) == 0
+    }
+
+    private func resizeWindowToFitVideo(_ videoSize: NSSize) {
+        guard let window = view.window, let screenFrame = (window.screen ?? NSScreen.main)?.visibleFrame else { return }
+        let scale = min(screenFrame.width * 0.7 / videoSize.width, screenFrame.height * 0.7 / videoSize.height, 2.0)
+        let newSize = NSSize(width: max(640, videoSize.width * scale), height: max(360, videoSize.height * scale))
+        window.setContentSize(newSize)
+        window.center()
     }
 
     // MARK: - Preference Readers
@@ -382,6 +392,7 @@ class PlayerViewController: NSViewController {
     func openFile(url: URL) {
         saveCurrentPosition()
         currentFileURL = url
+        hasResizedForCurrentFile = false
         welcomeView.isHidden = true
         controlBarView.setVideoActive(true)
         playerEngine?.stop()
@@ -412,6 +423,7 @@ class PlayerViewController: NSViewController {
                 controlBarView.setSpeed(Float(speed))
             }
             playWithEngine(engine, url: url, fallbackRemux: false)
+            controlBarView.setAirPlayAvailable(true)
         } else {
             // MKV/AVI/WebM — use VLC engine for instant playback
             playerEngine?.stop()
@@ -434,6 +446,7 @@ class PlayerViewController: NSViewController {
                     vlcView.trailingAnchor.constraint(equalTo: videoView.trailingAnchor),
                 ])
 
+                controlBarView.setAirPlayAvailable(false)
                 controlBarView.setDuration(engine.duration)
                 engine.volume = Float(vol > 0 ? vol : 1.0)
                 controlBarView.setVolume(engine.volume)
@@ -561,14 +574,10 @@ class PlayerViewController: NSViewController {
                     self.controlBarView.setPlaying(true)
                 }
 
-                // Resize window to fit video at up to 70% of screen, capped at native resolution
-                if let window = self.view.window as? PlayerWindow, let videoSize = engine.videoSize {
-                    window.setAspectRatio(videoSize)
-                    let screenFrame = NSScreen.main?.visibleFrame ?? .zero
-                    let scale = min(screenFrame.width * 0.7 / videoSize.width, screenFrame.height * 0.7 / videoSize.height, 1.0)
-                    let newSize = NSSize(width: videoSize.width * scale, height: videoSize.height * scale)
-                    window.setContentSize(newSize)
-                    window.center()
+                // Resize window to fit video at up to 70% of screen
+                if let videoSize = engine.videoSize {
+                    self.hasResizedForCurrentFile = true
+                    self.resizeWindowToFitVideo(videoSize)
                 }
             }
         }
@@ -1130,6 +1139,11 @@ extension PlayerViewController: AVPlayerEngineDelegate {
 
 extension PlayerViewController: VLCPlayerEngineDelegate {
     func vlcEngineTimeDidChange(current: Double, duration: Double) {
+        if !hasResizedForCurrentFile, let videoSize = vlcEngine?.videoSize, videoSize.width > 0 {
+            hasResizedForCurrentFile = true
+            resizeWindowToFitVideo(videoSize)
+        }
+
         controlBarView.updateTime(current: current, duration: duration)
 
         if subtitleManager.hasSubtitles, subtitleManager.isVisible,

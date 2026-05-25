@@ -10,7 +10,6 @@
 		A10014 /* AVPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10014 /* AVPlayerEngine.swift */; };
 		A10080 /* VLCPlayerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10080 /* VLCPlayerEngine.swift */; };
 		A10001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10001 /* AppDelegate.swift */; };
-		A10004 /* AudioEqualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10004 /* AudioEqualizer.swift */; };
 		A10005 /* AudioPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10005 /* AudioPassthrough.swift */; };
 		A10009 /* MediaInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10009 /* MediaInfo.swift */; };
 		A10010 /* PlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10010 /* PlaylistManager.swift */; };
@@ -54,7 +53,6 @@
 		F10080 /* VLCPlayerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCPlayerEngine.swift; sourceTree = "<group>"; };
 		E55EEC062FC230F3000EE159 /* AudioPassthroughManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPassthroughManager.swift; sourceTree = "<group>"; };
 		F10001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F10004 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
 		F10005 /* AudioPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPassthrough.swift; sourceTree = "<group>"; };
 		F10009 /* MediaInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaInfo.swift; sourceTree = "<group>"; };
 		F10010 /* PlaylistManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistManager.swift; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 		G00030 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				F10004 /* AudioEqualizer.swift */,
 				E55EEC062FC230F3000EE159 /* AudioPassthroughManager.swift */,
 				F10005 /* AudioPassthrough.swift */,
 			);
@@ -375,7 +372,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10001 /* AppDelegate.swift in Sources */,
-				A10004 /* AudioEqualizer.swift in Sources */,
 				A10005 /* AudioPassthrough.swift in Sources */,
 				A10009 /* MediaInfo.swift in Sources */,
 				A10010 /* PlaylistManager.swift in Sources */,
