@@ -14,9 +14,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         applyTheme()
         MenuManager.setupMainMenu()
 
+        UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
+
         windowController = PlayerWindowController()
         windowController?.showWindow(nil)
         windowController?.window?.makeKeyAndOrderFront(nil)
+
+        // Force window to 0.7x screen size, overriding any macOS state restoration
+        if let window = windowController?.window, let screen = window.screen ?? NSScreen.main {
+            let w = screen.frame.width * 0.7
+            let h = screen.frame.height * 0.7
+            let x = screen.visibleFrame.origin.x + (screen.visibleFrame.width - w) / 2
+            let y = screen.visibleFrame.origin.y + (screen.visibleFrame.height - h) / 2
+            window.setFrame(NSRect(x: x, y: y, width: w, height: h), display: true)
+        }
 
         nowPlayingController.playerViewController = windowController?.playerViewController
         nowPlayingController.setup()
