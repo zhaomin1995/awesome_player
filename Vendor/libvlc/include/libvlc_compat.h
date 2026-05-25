@@ -142,6 +142,51 @@ void libvlc_video_set_scale(libvlc_media_player_t *p_mi, float f_factor);
 int libvlc_video_take_snapshot(libvlc_media_player_t *p_mi, unsigned num,
                                const char *psz_filepath, unsigned int i_width, unsigned int i_height);
 
+// Frame stepping
+void libvlc_media_player_next_frame(libvlc_media_player_t *p_mi);
+
+// Event manager
+typedef struct libvlc_event_manager_t libvlc_event_manager_t;
+typedef int64_t libvlc_time_t;
+
+typedef struct libvlc_event_t {
+    int type;
+    void *p_obj;
+    union {
+        struct { float new_cache; } media_player_buffering;
+        struct { double new_position; } media_player_position_changed;
+        struct { libvlc_time_t new_time; } media_player_time_changed;
+        struct { libvlc_time_t new_length; } media_player_length_changed;
+        struct { int new_count; } media_player_vout;
+    } u;
+} libvlc_event_t;
+
+enum {
+    libvlc_MediaPlayerPlaying       = 0x100 + 4,
+    libvlc_MediaPlayerPaused        = 0x100 + 5,
+    libvlc_MediaPlayerStopped       = 0x100 + 6,
+    libvlc_MediaPlayerTimeChanged   = 0x100 + 11,
+    libvlc_MediaPlayerPositionChanged = 0x100 + 12,
+    libvlc_MediaPlayerLengthChanged = 0x100 + 17,
+    libvlc_MediaPlayerEndReached    = 0x100 + 9,
+};
+
+typedef void (*libvlc_callback_t)(const libvlc_event_t *, void *);
+
+libvlc_event_manager_t *libvlc_media_player_event_manager(libvlc_media_player_t *p_mi);
+int libvlc_event_attach(libvlc_event_manager_t *p_event_manager, int i_event_type,
+                        libvlc_callback_t f_callback, void *user_data);
+void libvlc_event_detach(libvlc_event_manager_t *p_event_manager, int i_event_type,
+                         libvlc_callback_t f_callback, void *user_data);
+
+// Chapter navigation
+int libvlc_media_player_get_chapter_count(libvlc_media_player_t *p_mi);
+int libvlc_media_player_get_chapter(libvlc_media_player_t *p_mi);
+void libvlc_media_player_set_chapter(libvlc_media_player_t *p_mi, int i_chapter);
+
+// Audio filters (via media options)
+void libvlc_media_add_option(libvlc_media_t *p_md, const char *psz_options);
+
 // External subtitle/audio slave
 typedef enum libvlc_media_slave_type_t {
     libvlc_media_slave_type_subtitle = 0,

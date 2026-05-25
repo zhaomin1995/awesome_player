@@ -676,4 +676,38 @@ static BOOL isAudioCodecMP4Compatible(enum AVCodecID codec_id) {
 #endif
 }
 
++ (NSArray<NSDictionary *> *)chaptersForFile:(NSString *)path {
+    NSMutableArray *chapters = [NSMutableArray array];
+
+#if HAS_FFMPEG
+    AVFormatContext *fmt_ctx = NULL;
+    if (avformat_open_input(&fmt_ctx, [path UTF8String], NULL, NULL) < 0) return chapters;
+    avformat_find_stream_info(fmt_ctx, NULL);
+
+    for (unsigned i = 0; i < fmt_ctx->nb_chapters; i++) {
+        AVChapter *ch = fmt_ctx->chapters[i];
+        double timeBase = av_q2d(ch->time_base);
+        double startTime = ch->start * timeBase;
+        double endTime = ch->end * timeBase;
+
+        NSMutableDictionary *info = [NSMutableDictionary dictionary];
+        info[@"index"] = @(i);
+        info[@"startTime"] = @(startTime);
+        info[@"endTime"] = @(endTime);
+
+        const AVDictionaryEntry *title = av_dict_get(ch->metadata, "title", NULL, 0);
+        if (title) {
+            info[@"title"] = [NSString stringWithUTF8String:title->value];
+        } else {
+            info[@"title"] = [NSString stringWithFormat:@"Chapter %u", i + 1];
+        }
+        [chapters addObject:info];
+    }
+
+    avformat_close_input(&fmt_ctx);
+#endif
+
+    return chapters;
+}
+
 @end

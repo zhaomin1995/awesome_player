@@ -53,6 +53,9 @@ typedef struct {
                                    fromFile:(NSString *)path
                                       error:(NSError **)error;
 
+// Chapter extraction
++ (NSArray<NSDictionary *> *)chaptersForFile:(NSString *)path;
+
 @end
 
 NS_ASSUME_NONNULL_END

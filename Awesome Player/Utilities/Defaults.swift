@@ -80,6 +80,9 @@ enum Defaults {
     static let mediaKeyEnabled = "keyboard.mediaKeyEnabled"
     static let escapeKeyBehavior = "keyboard.escapeKeyBehavior"
 
+    // MARK: - Keyboard Shortcuts
+    static let customShortcuts = "keyboard.customShortcuts"
+
     // MARK: - Mouse
     static let singleClickAction = "mouse.singleClickAction"
     static let doubleClickAction = "mouse.doubleClickAction"

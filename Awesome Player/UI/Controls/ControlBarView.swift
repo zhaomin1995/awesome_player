@@ -213,6 +213,10 @@ class ControlBarView: NSView {
         castButton.setEnabled(available)
     }
 
+    func setSeekBarAsset(_ asset: AVAsset?) {
+        seekSlider.currentAsset = asset
+    }
+
     private func formatTime(_ seconds: Double) -> String {
         guard seconds.isFinite, seconds >= 0 else { return "0:00" }
         let totalSeconds = Int(seconds)

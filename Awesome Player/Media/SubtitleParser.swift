@@ -10,15 +10,75 @@ struct SubtitleEntry {
 class SubtitleParser {
     static func parse(url: URL) -> [SubtitleEntry] {
         let ext = url.pathExtension.lowercased()
-        guard let content = try? String(contentsOf: url, encoding: .utf8) else {
-            if let data = try? Data(contentsOf: url) {
-                if let str = String(data: data, encoding: .isoLatin1) {
-                    return parseContent(str, format: ext)
-                }
-            }
-            return []
-        }
+        guard let data = try? Data(contentsOf: url) else { return [] }
+        let content = decodeString(from: data)
         return parseContent(content, format: ext)
+    }
+
+    /// Detects encoding using BOM, UTF-8 validation, and CJK heuristics
+    static func decodeString(from data: Data) -> String {
+        // BOM detection
+        if data.count >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF {
+            return String(data: data, encoding: .utf8) ?? ""
+        }
+        if data.count >= 2 {
+            if data[0] == 0xFF && data[1] == 0xFE {
+                return String(data: data, encoding: .utf16LittleEndian) ?? ""
+            }
+            if data[0] == 0xFE && data[1] == 0xFF {
+                return String(data: data, encoding: .utf16BigEndian) ?? ""
+            }
+        }
+
+        // Try UTF-8 first
+        if let str = String(data: data, encoding: .utf8) {
+            return str
+        }
+
+        // Heuristic: detect CJK encodings by high-byte patterns
+        let encoding = detectEncoding(data)
+        if let str = String(data: data, encoding: encoding) {
+            return str
+        }
+
+        // Last resort
+        return String(data: data, encoding: .isoLatin1) ?? ""
+    }
+
+    private static func detectEncoding(_ data: Data) -> String.Encoding {
+        var gbkScore = 0
+        var big5Score = 0
+        var sjisScore = 0
+        let bytes = [UInt8](data)
+        var i = 0
+        while i < bytes.count - 1 {
+            let b1 = bytes[i]
+            let b2 = bytes[i + 1]
+            if b1 >= 0x81 && b1 <= 0xFE {
+                // GBK range
+                if b2 >= 0x40 && b2 <= 0xFE && b2 != 0x7F { gbkScore += 1 }
+                // Big5 range
+                if (b2 >= 0x40 && b2 <= 0x7E) || (b2 >= 0xA1 && b2 <= 0xFE) { big5Score += 1 }
+                // Shift-JIS range
+                if ((b1 >= 0x81 && b1 <= 0x9F) || (b1 >= 0xE0 && b1 <= 0xEF)) &&
+                   ((b2 >= 0x40 && b2 <= 0x7E) || (b2 >= 0x80 && b2 <= 0xFC)) { sjisScore += 1 }
+                i += 2
+            } else {
+                i += 1
+            }
+        }
+
+        let maxScore = max(gbkScore, big5Score, sjisScore)
+        if maxScore == 0 { return .isoLatin1 }
+
+        if sjisScore == maxScore { return .shiftJIS }
+        if big5Score == maxScore && big5Score > gbkScore {
+            return String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.big5.rawValue)))
+        }
+        if gbkScore == maxScore {
+            return String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)))
+        }
+        return .isoLatin1
     }
 
     static func parseSRTString(_ content: String) -> [SubtitleEntry] {

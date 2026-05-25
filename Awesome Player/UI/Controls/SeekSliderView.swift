@@ -1,4 +1,5 @@
 import Cocoa
+import AVFoundation
 
 class SeekSliderView: NSView {
     var onSeek: ((Double) -> Void)?
@@ -16,6 +17,32 @@ class SeekSliderView: NSView {
     private var trackingArea: NSTrackingArea?
     private var tooltipView: NSView?
     private var tooltipLabel: NSTextField?
+
+    // Thumbnail preview
+    private var thumbnailView: NSImageView?
+    private var thumbnailContainer: NSView?
+    private var imageGenerator: AVAssetImageGenerator?
+    private var thumbnailCache: [Int: NSImage] = [:]
+    private var pendingThumbnailTime: Double?
+    /// Set by PlayerViewController when a file opens
+    var currentAsset: AVAsset? {
+        didSet {
+            thumbnailCache.removeAll()
+            if let asset = currentAsset {
+                let gen = AVAssetImageGenerator(asset: asset)
+                gen.appliesPreferredTrackTransform = true
+                gen.maximumSize = CGSize(width: 240, height: 135)
+                gen.requestedTimeToleranceBefore = CMTimeMake(value: 1, timescale: 1)
+                gen.requestedTimeToleranceAfter = CMTimeMake(value: 1, timescale: 1)
+                imageGenerator = gen
+            } else {
+                imageGenerator = nil
+            }
+        }
+    }
+
+    /// For VLC path: use snapshot-based thumbnails
+    var vlcEngine: VLCPlayerEngine?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -49,6 +76,7 @@ class SeekSliderView: NSView {
     override func mouseExited(with event: NSEvent) {
         isHovered = false
         hideTooltip()
+        hideThumbnail()
         needsDisplay = true
     }
 
@@ -60,6 +88,7 @@ class SeekSliderView: NSView {
         let fraction = max(0, min(1, Double((location.x - trackX) / trackWidth)))
         let time = fraction * duration
         showTooltip(at: location.x, time: time)
+        requestThumbnail(at: time, xPosition: location.x)
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -108,6 +137,13 @@ class SeekSliderView: NSView {
     override func mouseDragged(with event: NSEvent) {
         updateDragProgress(with: event)
         needsDisplay = true
+
+        if duration > 0 {
+            let location = convert(event.locationInWindow, from: nil)
+            let time = dragProgress * duration
+            showTooltip(at: location.x, time: time)
+            requestThumbnail(at: time, xPosition: location.x)
+        }
     }
 
     override func mouseUp(with event: NSEvent) {
@@ -115,6 +151,7 @@ class SeekSliderView: NSView {
         updateDragProgress(with: event)
         progress = dragProgress
         onSeek?(progress)
+        hideThumbnail()
         needsDisplay = true
     }
 
@@ -164,7 +201,8 @@ class SeekSliderView: NSView {
         label.stringValue = h > 0 ? String(format: "%d:%02d:%02d", h, m, s) : String(format: "%d:%02d", m, s)
 
         let tipWidth: CGFloat = h > 0 ? 80 : 60
-        let localPoint = NSPoint(x: x, y: bounds.maxY + 4)
+        let thumbnailHeight: CGFloat = (thumbnailContainer?.isHidden == false) ? 90 : 0
+        let localPoint = NSPoint(x: x, y: bounds.maxY + 4 + thumbnailHeight)
         let superPoint = convert(localPoint, to: superview)
         tip.frame = NSRect(
             x: max(0, min(superPoint.x - tipWidth / 2, (superview?.bounds.width ?? 300) - tipWidth)),
@@ -176,5 +214,81 @@ class SeekSliderView: NSView {
 
     private func hideTooltip() {
         tooltipView?.isHidden = true
+    }
+
+    // MARK: - Thumbnail Preview
+
+    private func requestThumbnail(at time: Double, xPosition: CGFloat) {
+        guard imageGenerator != nil || vlcEngine != nil else { return }
+
+        let cacheKey = Int(time / 2) // Cache at 2-second granularity
+
+        if let cached = thumbnailCache[cacheKey] {
+            showThumbnail(cached, at: xPosition)
+            return
+        }
+
+        guard let gen = imageGenerator else { return }
+
+        pendingThumbnailTime = time
+        let cmTime = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
+
+        gen.generateCGImagesAsynchronously(forTimes: [NSValue(time: cmTime)]) { [weak self] _, cgImage, _, _, _ in
+            guard let self = self, let cgImage = cgImage else { return }
+            let image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+            DispatchQueue.main.async {
+                self.thumbnailCache[cacheKey] = image
+                if let pending = self.pendingThumbnailTime, abs(pending - time) < 3 {
+                    self.showThumbnail(image, at: xPosition)
+                }
+            }
+        }
+    }
+
+    private func showThumbnail(_ image: NSImage, at x: CGFloat) {
+        let thumbWidth: CGFloat = 160
+        let thumbHeight: CGFloat = 90
+
+        if thumbnailContainer == nil {
+            let container = NSView(frame: .zero)
+            container.wantsLayer = true
+            container.layer?.backgroundColor = NSColor(white: 0.05, alpha: 0.95).cgColor
+            container.layer?.cornerRadius = 6
+            container.layer?.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
+            container.layer?.borderWidth = 1
+
+            let imageView = NSImageView(frame: .zero)
+            imageView.imageScaling = .scaleProportionallyUpOrDown
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(imageView)
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: container.topAnchor, constant: 3),
+                imageView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -3),
+                imageView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 3),
+                imageView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -3),
+            ])
+
+            thumbnailView = imageView
+            thumbnailContainer = container
+            superview?.addSubview(container)
+        }
+
+        guard let container = thumbnailContainer, let imageView = thumbnailView else { return }
+
+        imageView.image = image
+
+        let localPoint = NSPoint(x: x, y: bounds.maxY + 4)
+        let superPoint = convert(localPoint, to: superview)
+        container.frame = NSRect(
+            x: max(0, min(superPoint.x - thumbWidth / 2, (superview?.bounds.width ?? 300) - thumbWidth)),
+            y: superPoint.y,
+            width: thumbWidth, height: thumbHeight
+        )
+        container.isHidden = false
+    }
+
+    private func hideThumbnail() {
+        thumbnailContainer?.isHidden = true
+        pendingThumbnailTime = nil
     }
 }

@@ -32,7 +32,7 @@ class VideoView: NSView {
         if let contentLayer = self.layer {
             layer.contentsScale = contentLayer.contentsScale
             contentLayer.addSublayer(layer)
-            layer.wantsExtendedDynamicRangeContent = true
+            applyHDRToneMapping(to: layer)
         }
 
         playerLayer = layer
@@ -53,5 +53,18 @@ class VideoView: NSView {
 
     func setLayerTransform(_ transform: CATransform3D) {
         playerLayer?.transform = transform
+    }
+
+    func applyHDRToneMapping(to layer: AVPlayerLayer? = nil) {
+        let target = layer ?? playerLayer
+        let mode = UserDefaults.standard.integer(forKey: Defaults.hdrToneMappingMode)
+        switch mode {
+        case 1: // Always HDR — enable EDR
+            target?.wantsExtendedDynamicRangeContent = true
+        case 2: // Force SDR — disable EDR
+            target?.wantsExtendedDynamicRangeContent = false
+        default: // System — let macOS decide
+            target?.wantsExtendedDynamicRangeContent = true
+        }
     }
 }

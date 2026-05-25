@@ -42,6 +42,7 @@ class PlayerViewController: NSViewController {
     private var audioDelayOffset: Double = 0
     private let passthroughManager = AudioPassthroughManager()
     private var hasResizedForCurrentFile = false
+    private(set) var chapters: [[String: Any]] = []
 
     var isPaused: Bool {
         if let vlc = vlcEngine { return !vlc.isPlaying }
@@ -247,87 +248,63 @@ class PlayerViewController: NSViewController {
     }
 
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        guard let chars = event.charactersIgnoringModifiers else { return super.performKeyEquivalent(with: event) }
-        let mods = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            .subtracting([.numericPad, .function])
-        switch (chars, mods) {
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), []):
-            seek(by: -shortSeek); return true
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), []):
-            seek(by: shortSeek); return true
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), .shift):
-            seek(by: -longSeek); return true
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), .shift):
-            seek(by: longSeek); return true
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), .command):
-            seek(by: -longSeek * 2); return true
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), .command):
-            seek(by: longSeek * 2); return true
-        case (String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), []):
-            adjustVolume(by: 0.05); return true
-        case (String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), []):
-            adjustVolume(by: -0.05); return true
-        default:
-            return super.performKeyEquivalent(with: event)
+        if let action = KeyBindingManager.shared.action(for: event) {
+            handlePlayerAction(action)
+            return true
         }
+        return super.performKeyEquivalent(with: event)
     }
 
     override func keyDown(with event: NSEvent) {
+        if let action = KeyBindingManager.shared.action(for: event) {
+            handlePlayerAction(action)
+            return
+        }
+
         guard let characters = event.charactersIgnoringModifiers else {
             super.keyDown(with: event)
             return
         }
 
-        let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
-            .subtracting([.numericPad, .function])
-
-        switch (characters, modifiers) {
-        case (" ", []):
-            togglePlayPause()
-        case ("f", []), ("f", .command):
-            onDoubleClick?()
-        case ("m", []):
-            toggleMute()
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), []):
-            seek(by: -shortSeek)
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), []):
-            seek(by: shortSeek)
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), .shift):
-            seek(by: -longSeek)
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), .shift):
-            seek(by: longSeek)
-        case (String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)), .command):
-            seek(by: -longSeek * 2)
-        case (String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)), .command):
-            seek(by: longSeek * 2)
-        case (String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)), []):
-            adjustVolume(by: 0.05)
-        case (String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)), []):
-            adjustVolume(by: -0.05)
-        case ("[", []):
-            adjustSpeed(by: -0.25)
-        case ("]", []):
-            adjustSpeed(by: 0.25)
-        case ("\\", []):
-            setSpeed(1.0)
-        case (".", []):
-            stepFrame(forward: true)
-        case (",", []):
-            stepFrame(forward: false)
-        case (String(Character(UnicodeScalar(27))), []): // Escape
+        // Escape handling (not rebindable)
+        if characters == String(Character(UnicodeScalar(27))) {
             let behavior = UserDefaults.standard.integer(forKey: Defaults.escapeKeyBehavior)
             switch behavior {
-            case 0: // Exit fullscreen
+            case 0:
                 if view.window?.styleMask.contains(.fullScreen) ?? false { onDoubleClick?() }
-            case 1: // Close panel
+            case 1:
                 if playlistPanel?.isHidden == false { togglePlaylistPanel() }
-            case 2: // Stop playback
+            case 2:
                 playerEngine?.stop(); vlcEngine?.stop()
                 welcomeView.isHidden = false; controlBarView.setVideoActive(false)
             default: break
             }
-        default:
-            super.keyDown(with: event)
+            return
+        }
+
+        super.keyDown(with: event)
+    }
+
+    private func handlePlayerAction(_ action: PlayerAction) {
+        switch action {
+        case .playPause: togglePlayPause()
+        case .seekForwardShort: seek(by: shortSeek)
+        case .seekBackwardShort: seek(by: -shortSeek)
+        case .seekForwardLong: seek(by: longSeek)
+        case .seekBackwardLong: seek(by: -longSeek)
+        case .seekForwardExtraLong: seek(by: longSeek * 2)
+        case .seekBackwardExtraLong: seek(by: -longSeek * 2)
+        case .volumeUp: adjustVolume(by: 0.05)
+        case .volumeDown: adjustVolume(by: -0.05)
+        case .mute: toggleMute()
+        case .fullscreen: onDoubleClick?()
+        case .speedUp: adjustSpeed(by: 0.25)
+        case .speedDown: adjustSpeed(by: -0.25)
+        case .speedReset: setSpeed(1.0)
+        case .frameForward: stepFrame(forward: true)
+        case .frameBackward: stepFrame(forward: false)
+        case .nextChapter: seekToNextChapter()
+        case .previousChapter: seekToPreviousChapter()
         }
     }
 
@@ -508,6 +485,22 @@ class PlayerViewController: NSViewController {
             }
         }
 
+        // Load chapters
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let chs = FFmpegBridge.chapters(forFile: url.path) as? [[String: Any]] ?? []
+            DispatchQueue.main.async {
+                self?.chapters = chs
+            }
+        }
+
+        // Set up seek bar thumbnails
+        if url.isNativeAVPlayerFormat {
+            let asset = AVURLAsset(url: url)
+            controlBarView.setSeekBarAsset(asset)
+        } else {
+            controlBarView.setSeekBarAsset(nil)
+        }
+
         // Evaluate passthrough and update title bar badges
         let isNative = url.isNativeAVPlayerFormat
         Task {
@@ -655,7 +648,8 @@ class PlayerViewController: NSViewController {
             v = max(0, min(maxVol, engine.volume + delta)); engine.volume = v
         }
         controlBarView.setVolume(v)
-        osdView.show(message: "Volume: \(Int(v * 100))%")
+        let icon = v == 0 ? "speaker.slash.fill" : (v < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
+        osdView.showBar(icon: icon, fraction: Double(v / maxVol))
     }
 
     func toggleMute() {
@@ -932,6 +926,42 @@ class PlayerViewController: NSViewController {
             engine.stepFrame(forward: forward)
             controlBarView.setPlaying(false)
             osdView.show(message: forward ? "Frame ▶" : "◀ Frame")
+        } else if let engine = vlcEngine, forward {
+            engine.stepFrame()
+            controlBarView.setPlaying(false)
+            osdView.show(message: "Frame ▶")
+        }
+    }
+
+    // MARK: - Chapter Navigation
+
+    func seekToChapter(at index: Int) {
+        guard index >= 0 && index < chapters.count,
+              let startTime = chapters[index]["startTime"] as? Double else { return }
+        let title = chapters[index]["title"] as? String ?? "Chapter \(index + 1)"
+        playerEngine?.seekTo(time: startTime)
+        vlcEngine?.seekTo(time: startTime)
+        osdView.show(message: "Chapter: \(title)")
+    }
+
+    func seekToNextChapter() {
+        let current = playerEngine?.currentTime ?? vlcEngine?.currentTime ?? 0
+        if let next = chapters.firstIndex(where: { ($0["startTime"] as? Double ?? 0) > current + 1 }) {
+            seekToChapter(at: next)
+        } else {
+            osdView.show(message: "No next chapter")
+        }
+    }
+
+    func seekToPreviousChapter() {
+        let current = playerEngine?.currentTime ?? vlcEngine?.currentTime ?? 0
+        let candidates = chapters.enumerated().filter { ($0.element["startTime"] as? Double ?? 0) < current - 2 }
+        if let prev = candidates.last {
+            seekToChapter(at: prev.offset)
+        } else if !chapters.isEmpty {
+            seekToChapter(at: 0)
+        } else {
+            osdView.show(message: "No previous chapter")
         }
     }
 

@@ -1,5 +1,6 @@
 /// VLC-based playback engine using libvlc from VLC.app.
 /// Handles any container/codec VLC supports — instant playback, no remuxing.
+/// Uses libvlc event manager for time/position updates instead of polling.
 import Cocoa
 
 protocol VLCPlayerEngineDelegate: AnyObject {
@@ -28,7 +29,7 @@ class VLCPlayerEngine {
     private var instance: OpaquePointer?
     private var player: OpaquePointer?
     private var media: OpaquePointer?
-    private var timeUpdateTimer: Timer?
+    private var eventManager: OpaquePointer?
 
     private(set) var isPlaying = false
     private(set) var duration: Double = 0
@@ -94,7 +95,6 @@ class VLCPlayerEngine {
 
     deinit {
         stop()
-        // Don't release shared instance
     }
 
     func open(url: URL) -> Bool {
@@ -106,17 +106,26 @@ class VLCPlayerEngine {
             return false
         }
 
+        // Apply audio normalization if enabled
+        if let m = media {
+            if UserDefaults.standard.bool(forKey: Defaults.normalizationEnabled) {
+                libvlc_media_add_option(m, "--audio-filter=normvol")
+            }
+            if UserDefaults.standard.bool(forKey: Defaults.compressorEnabled) {
+                libvlc_media_add_option(m, "--audio-filter=compressor")
+            }
+        }
+
         player = libvlc_media_player_new_from_media(media)
         guard let p = player else { return false }
 
-        // Point libvlc at our NSView for video rendering
         renderView.wantsLayer = true
         libvlc_media_player_set_nsobject(p, Unmanaged.passUnretained(renderView).toOpaque())
 
-        // Skip parse — timer will update duration
         duration = 0
+        attachEvents()
 
-        print("[VLCEngine] Opened: \(url.lastPathComponent), duration=\(duration)s")
+        print("[VLCEngine] Opened: \(url.lastPathComponent)")
         return true
     }
 
@@ -124,7 +133,6 @@ class VLCPlayerEngine {
         guard let p = player else { return }
         libvlc_media_player_play(p)
         isPlaying = true
-        startTimeUpdates()
         delegate?.vlcEngineDidUpdateStatus(isPlaying: true)
     }
 
@@ -150,8 +158,7 @@ class VLCPlayerEngine {
     }
 
     func stop() {
-        timeUpdateTimer?.invalidate()
-        timeUpdateTimer = nil
+        detachEvents()
         if let eq = equalizer {
             libvlc_audio_equalizer_release(eq)
             equalizer = nil
@@ -163,7 +170,79 @@ class VLCPlayerEngine {
         if let m = media { libvlc_media_release(m) }
         player = nil
         media = nil
+        eventManager = nil
         isPlaying = false
+    }
+
+    // MARK: - Frame Stepping
+
+    func stepFrame() {
+        guard let p = player else { return }
+        if isPlaying { pause() }
+        libvlc_media_player_next_frame(p)
+    }
+
+    // MARK: - Event-Driven Updates
+
+    private func attachEvents() {
+        guard let p = player else { return }
+        eventManager = libvlc_media_player_event_manager(p)
+        guard let em = eventManager else { return }
+
+        let ctx = Unmanaged.passUnretained(self).toOpaque()
+
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerTimeChanged), vlcTimeChanged, ctx)
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerLengthChanged), vlcLengthChanged, ctx)
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerEndReached), vlcEndReached, ctx)
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerPlaying), vlcPlaying, ctx)
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerPaused), vlcPaused, ctx)
+        libvlc_event_attach(em, Int32(libvlc_MediaPlayerStopped), vlcStopped, ctx)
+    }
+
+    private func detachEvents() {
+        guard let em = eventManager else { return }
+        let ctx = Unmanaged.passUnretained(self).toOpaque()
+
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerTimeChanged), vlcTimeChanged, ctx)
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerLengthChanged), vlcLengthChanged, ctx)
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerEndReached), vlcEndReached, ctx)
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerPlaying), vlcPlaying, ctx)
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerPaused), vlcPaused, ctx)
+        libvlc_event_detach(em, Int32(libvlc_MediaPlayerStopped), vlcStopped, ctx)
+    }
+
+    fileprivate func handleTimeChanged(_ timeMs: Int64) {
+        let time = Double(timeMs) / 1000.0
+        guard let p = player else { return }
+        let len = Double(libvlc_media_player_get_length(p)) / 1000.0
+        if len > 0 { duration = len }
+        delegate?.vlcEngineTimeDidChange(current: time, duration: duration)
+    }
+
+    fileprivate func handleLengthChanged(_ lengthMs: Int64) {
+        let len = Double(lengthMs) / 1000.0
+        if len > 0 { duration = len }
+    }
+
+    fileprivate func handleEndReached() {
+        isPlaying = false
+        delegate?.vlcEngineDidFinishPlaying()
+        delegate?.vlcEngineDidUpdateStatus(isPlaying: false)
+    }
+
+    fileprivate func handlePlaying() {
+        isPlaying = true
+        delegate?.vlcEngineDidUpdateStatus(isPlaying: true)
+    }
+
+    fileprivate func handlePaused() {
+        isPlaying = false
+        delegate?.vlcEngineDidUpdateStatus(isPlaying: false)
+    }
+
+    fileprivate func handleStopped() {
+        isPlaying = false
+        delegate?.vlcEngineDidUpdateStatus(isPlaying: false)
     }
 
     // MARK: - Track Switching
@@ -336,22 +415,60 @@ class VLCPlayerEngine {
         }
     }
 
-    private func startTimeUpdates() {
-        timeUpdateTimer?.invalidate()
-        timeUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
-            guard let self = self, let p = self.player else { return }
-            let state = libvlc_media_player_get_state(p)
-            if state == libvlc_Ended {
-                self.isPlaying = false
-                self.timeUpdateTimer?.invalidate()
-                self.delegate?.vlcEngineDidFinishPlaying()
-                self.delegate?.vlcEngineDidUpdateStatus(isPlaying: false)
-                return
-            }
-            let time = Double(libvlc_media_player_get_time(p)) / 1000.0
-            let len = Double(libvlc_media_player_get_length(p)) / 1000.0
-            if len > 0 { self.duration = len }
-            self.delegate?.vlcEngineTimeDidChange(current: time, duration: self.duration)
-        }
+    // MARK: - Chapters
+
+    func getChapterCount() -> Int {
+        guard let p = player else { return 0 }
+        return Int(libvlc_media_player_get_chapter_count(p))
     }
+
+    func getCurrentChapter() -> Int {
+        guard let p = player else { return -1 }
+        return Int(libvlc_media_player_get_chapter(p))
+    }
+
+    func setChapter(_ index: Int) {
+        guard let p = player else { return }
+        libvlc_media_player_set_chapter(p, Int32(index))
+    }
+}
+
+// MARK: - C Callbacks (must be free functions, not closures)
+
+private func vlcTimeChanged(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let event = event, let userData = userData else { return }
+    let timeMs = event.pointee.u.media_player_time_changed.new_time
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handleTimeChanged(timeMs) }
+}
+
+private func vlcLengthChanged(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let event = event, let userData = userData else { return }
+    let lengthMs = event.pointee.u.media_player_length_changed.new_length
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handleLengthChanged(lengthMs) }
+}
+
+private func vlcEndReached(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let userData = userData else { return }
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handleEndReached() }
+}
+
+private func vlcPlaying(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let userData = userData else { return }
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handlePlaying() }
+}
+
+private func vlcPaused(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let userData = userData else { return }
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handlePaused() }
+}
+
+private func vlcStopped(_ event: UnsafePointer<libvlc_event_t>?, _ userData: UnsafeMutableRawPointer?) {
+    guard let userData = userData else { return }
+    let engine = Unmanaged<VLCPlayerEngine>.fromOpaque(userData).takeUnretainedValue()
+    DispatchQueue.main.async { engine.handleStopped() }
 }

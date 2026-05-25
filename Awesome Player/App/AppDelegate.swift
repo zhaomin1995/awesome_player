@@ -203,6 +203,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         windowController?.playerViewController.toggleABLoop()
     }
 
+    @objc func nextChapter(_ sender: Any?) {
+        windowController?.playerViewController.seekToNextChapter()
+    }
+
+    @objc func previousChapter(_ sender: Any?) {
+        windowController?.playerViewController.seekToPreviousChapter()
+    }
+
     // MARK: - Audio Menu
 
     @objc func volumeUp(_ sender: Any?) {

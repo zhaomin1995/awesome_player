@@ -390,6 +390,59 @@ class TrackMenuDelegate: NSObject, NSMenuDelegate {
     }
 }
 
+class ChapterMenuDelegate: NSObject, NSMenuDelegate {
+    static let shared = ChapterMenuDelegate()
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        guard let wc = NSApp.mainWindow?.windowController as? PlayerWindowController else {
+            addNoneItem(to: menu)
+            return
+        }
+        let chapters = wc.playerViewController.chapters
+        if chapters.isEmpty {
+            addNoneItem(to: menu)
+            return
+        }
+
+        let current = wc.playerViewController.playerEngine?.currentTime ?? wc.playerViewController.vlcEngine?.currentTime ?? 0
+
+        for (i, chapter) in chapters.enumerated() {
+            let title = chapter["title"] as? String ?? "Chapter \(i + 1)"
+            let startTime = chapter["startTime"] as? Double ?? 0
+            let timeStr = formatTime(startTime)
+            let item = menu.addItem(withTitle: "\(title)  (\(timeStr))", action: #selector(chapterSelected(_:)), keyEquivalent: "")
+            item.tag = i
+            item.target = self
+
+            let endTime = chapter["endTime"] as? Double ?? Double.greatestFiniteMagnitude
+            if current >= startTime && current < endTime {
+                item.state = .on
+            }
+        }
+    }
+
+    @objc private func chapterSelected(_ sender: NSMenuItem) {
+        guard let wc = NSApp.mainWindow?.windowController as? PlayerWindowController else { return }
+        wc.playerViewController.seekToChapter(at: sender.tag)
+    }
+
+    private func addNoneItem(to menu: NSMenu) {
+        let item = NSMenuItem(title: "(No Chapters)", action: nil, keyEquivalent: "")
+        item.isEnabled = false
+        menu.addItem(item)
+    }
+
+    private func formatTime(_ seconds: Double) -> String {
+        let total = Int(seconds)
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        let s = total % 60
+        if h > 0 { return String(format: "%d:%02d:%02d", h, m, s) }
+        return String(format: "%d:%02d", m, s)
+    }
+}
+
 class MenuManager {
     static func setupMainMenu() {
         let mainMenu = NSMenu()
@@ -484,6 +537,13 @@ class MenuManager {
 
         menu.addItem(.separator())
         menu.addItem(withTitle: "A-B Repeat", action: #selector(AppDelegate.toggleABRepeat(_:)), keyEquivalent: "r")
+
+        menu.addItem(.separator())
+        let chapterItem = NSMenuItem(title: "Chapter", action: nil, keyEquivalent: "")
+        let chapterSubmenu = NSMenu(title: "Chapter")
+        chapterSubmenu.delegate = ChapterMenuDelegate.shared
+        chapterItem.submenu = chapterSubmenu
+        menu.addItem(chapterItem)
 
         menuItem.submenu = menu
         return menuItem

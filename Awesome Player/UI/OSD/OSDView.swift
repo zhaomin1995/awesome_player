@@ -5,6 +5,12 @@ class OSDView: NSView {
     private let effectView = NSVisualEffectView()
     private var hideTimer: Timer?
 
+    private let barContainer = NSView()
+    private let barFill = NSView()
+    private let barIcon = NSImageView()
+    private var barFillWidthConstraint: NSLayoutConstraint?
+    private let barWidth: CGFloat = 180
+
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setupViews()
@@ -34,6 +40,32 @@ class OSDView: NSView {
         label.translatesAutoresizingMaskIntoConstraints = false
         effectView.addSubview(label)
 
+        // Bar overlay for volume/brightness
+        barContainer.wantsLayer = true
+        barContainer.translatesAutoresizingMaskIntoConstraints = false
+        barContainer.isHidden = true
+        effectView.addSubview(barContainer)
+
+        barIcon.translatesAutoresizingMaskIntoConstraints = false
+        barIcon.contentTintColor = .white
+        barContainer.addSubview(barIcon)
+
+        let barTrack = NSView()
+        barTrack.wantsLayer = true
+        barTrack.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.2).cgColor
+        barTrack.layer?.cornerRadius = 2.5
+        barTrack.translatesAutoresizingMaskIntoConstraints = false
+        barContainer.addSubview(barTrack)
+
+        barFill.wantsLayer = true
+        barFill.layer?.backgroundColor = NSColor.white.cgColor
+        barFill.layer?.cornerRadius = 2.5
+        barFill.translatesAutoresizingMaskIntoConstraints = false
+        barTrack.addSubview(barFill)
+
+        let fillWidth = barFill.widthAnchor.constraint(equalToConstant: 0)
+        barFillWidthConstraint = fillWidth
+
         NSLayoutConstraint.activate([
             effectView.topAnchor.constraint(equalTo: topAnchor),
             effectView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -44,16 +76,65 @@ class OSDView: NSView {
             label.bottomAnchor.constraint(equalTo: effectView.bottomAnchor, constant: -8),
             label.leadingAnchor.constraint(equalTo: effectView.leadingAnchor, constant: 16),
             label.trailingAnchor.constraint(equalTo: effectView.trailingAnchor, constant: -16),
+
+            barContainer.topAnchor.constraint(equalTo: effectView.topAnchor, constant: 8),
+            barContainer.bottomAnchor.constraint(equalTo: effectView.bottomAnchor, constant: -8),
+            barContainer.leadingAnchor.constraint(equalTo: effectView.leadingAnchor, constant: 12),
+            barContainer.trailingAnchor.constraint(equalTo: effectView.trailingAnchor, constant: -12),
+            barContainer.widthAnchor.constraint(greaterThanOrEqualToConstant: barWidth),
+            barContainer.heightAnchor.constraint(equalToConstant: 20),
+
+            barIcon.leadingAnchor.constraint(equalTo: barContainer.leadingAnchor),
+            barIcon.centerYAnchor.constraint(equalTo: barContainer.centerYAnchor),
+            barIcon.widthAnchor.constraint(equalToConstant: 18),
+            barIcon.heightAnchor.constraint(equalToConstant: 18),
+
+            barTrack.leadingAnchor.constraint(equalTo: barIcon.trailingAnchor, constant: 8),
+            barTrack.trailingAnchor.constraint(equalTo: barContainer.trailingAnchor),
+            barTrack.centerYAnchor.constraint(equalTo: barContainer.centerYAnchor),
+            barTrack.heightAnchor.constraint(equalToConstant: 5),
+
+            barFill.leadingAnchor.constraint(equalTo: barTrack.leadingAnchor),
+            barFill.topAnchor.constraint(equalTo: barTrack.topAnchor),
+            barFill.bottomAnchor.constraint(equalTo: barTrack.bottomAnchor),
+            fillWidth,
         ])
     }
 
     func show(message: String, duration: TimeInterval = 1.5) {
         label.stringValue = message
+        label.isHidden = false
+        barContainer.isHidden = true
 
         hideTimer?.invalidate()
 
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.15
+            self.animator().alphaValue = 1.0
+        }
+
+        hideTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.3
+                self?.animator().alphaValue = 0.0
+            }
+        }
+    }
+
+    /// Show an animated bar overlay (for volume, brightness, seek progress)
+    func showBar(icon: String, fraction: Double, duration: TimeInterval = 1.0) {
+        label.isHidden = true
+        barContainer.isHidden = false
+        barIcon.image = NSImage(systemSymbolName: icon, accessibilityDescription: nil)
+
+        let trackWidth = barWidth - 26
+        barFillWidthConstraint?.constant = max(0, min(trackWidth, trackWidth * fraction))
+        barContainer.needsLayout = true
+
+        hideTimer?.invalidate()
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.1
             self.animator().alphaValue = 1.0
         }
 
