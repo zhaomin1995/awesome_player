@@ -358,14 +358,31 @@
 /* Begin PBXShellScriptBuildPhase section */
 		SH0001 /* Copy FFmpeg Dylibs */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"$(PROJECT_DIR)/Awesome Player/App/AppIcon.icns",
+				"$(PROJECT_DIR)/Vendor/ffmpeg/lib/libavformat.61.7.100.dylib",
+				"$(PROJECT_DIR)/Vendor/ffmpeg/lib/libavcodec.61.19.101.dylib",
+				"$(PROJECT_DIR)/Vendor/ffmpeg/lib/libavutil.59.39.100.dylib",
+				"$(PROJECT_DIR)/Vendor/ffmpeg/lib/libswresample.5.3.100.dylib",
+				"$(PROJECT_DIR)/Vendor/ffmpeg/lib/libswscale.8.3.100.dylib",
+				"$(PROJECT_DIR)/Vendor/libvlc/lib/libvlc.5.dylib",
+				"$(PROJECT_DIR)/Vendor/libvlc/lib/libvlccore.9.dylib",
+				"$(PROJECT_DIR)/Vendor/yt-dlp/yt-dlp_macos",
 			);
 			name = "Copy FFmpeg Dylibs";
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/Resources/AppIcon.icns",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/libavformat.61.7.100.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/libavcodec.61.19.101.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/libavutil.59.39.100.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/libswresample.5.3.100.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/libswscale.8.3.100.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/lib/libvlc.5.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/lib/libvlccore.9.dylib",
+				"$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).app/Contents/Resources/yt-dlp/yt-dlp_macos",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
