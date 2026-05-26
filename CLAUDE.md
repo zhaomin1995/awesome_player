@@ -28,20 +28,22 @@ Awesome Player/
 │   ├── Controls/   # ControlBarView, SeekSliderView, VolumeSliderView, PlaybackButtons,
 │   │               # SpeedButton, CastButton
 │   ├── OSD/        # OSDView (on-screen display messages)
-│   ├── Menu/       # MenuManager (all menus with stateful checkmarks),
+│   ├── Menu/       # MenuManager (all menus including Edit with Cut/Copy/Paste),
 │   │               # AudioDeviceMenuDelegate, AirPlayMenuDelegate, ChromecastMenuDelegate,
 │   │               # RecentDocumentsMenuDelegate, TrackMenuDelegate (audio/video/subtitle)
 │   └── Preferences/# PreferencesWindowController (9-tab with animated resizing)
 └── Utilities/      # Extensions, Defaults (90+ preference keys across 9 categories)
 Vendor/
 ├── ffmpeg/         # Bundled FFmpeg headers + dylibs
-└── libvlc/         # Bundled libvlc headers, dylibs, plugins, libvlc_compat.h
+├── libvlc/         # Bundled libvlc headers, dylibs, plugins, libvlc_compat.h
+└── yt-dlp/         # Bundled yt-dlp macOS binary + Python 3.14 runtime (_internal/)
 ```
 
 ### Build & Run
 - macOS 14.0+ target, Xcode (Swift 5 + Obj-C)
 - **Fully self-contained** — all dependencies bundled in `Vendor/`
 - Build phase script auto-copies FFmpeg dylibs, libvlc dylibs, VLC plugins, and app icon
+- User script sandboxing is disabled (`ENABLE_USER_SCRIPT_SANDBOXING = NO`) so build scripts can copy vendor binaries
 - Just clone, open in Xcode, and Cmd+R
 
 ### Key Technical Decisions
@@ -68,7 +70,13 @@ Vendor/
 - Defaults enum has 90+ keys organized into 9 categories matching the 9 preference tabs
 - VideoEQPanelController is a floating NSPanel that adjusts VLC video_adjust parameters in real-time
 - MediaInspectorController is a floating NSPanel that probes the current file via FFmpegBridge
-- yt-dlp resolution for non-direct-media URLs (checks /opt/homebrew/bin, /usr/local/bin, /usr/bin)
+- yt-dlp is bundled in `Vendor/yt-dlp/` as a self-contained distribution (macOS universal binary + Python 3.14 runtime in `_internal/`)
+- yt-dlp resolution for non-direct-media URLs: checks bundled binary first, then system paths (/opt/homebrew/bin, /usr/local/bin, /usr/bin)
+- YouTube URL flow: `yt-dlp -j` fetches format metadata → resolution picker dialog → `yt-dlp --get-url -f FORMAT_ID` gets stream URLs
+- For video-only high-res formats, VLC plays video with `:input-slave=AUDIO_URL` for separate audio stream
+- `libvlc_media_new_location()` used for network URLs (vs `libvlc_media_new_path()` for local files)
+- HTTP(S) URLs without file extensions (e.g., googlevideo.com `/videoplayback`) route to AVPlayer via `isNativeAVPlayerFormat`
+- Process pipe reads use separate threads to avoid deadlock when yt-dlp writes large output
 
 ## Development Guidelines
 
@@ -79,13 +87,18 @@ Vendor/
 - Test with both MP4 (AVPlayer path) and MKV (VLC path) files
 
 ### Common Pitfalls
-- FFmpeg + libvlc dylibs must be in app bundle at runtime (build phase handles this)
+- FFmpeg + libvlc dylibs + yt-dlp distribution must be in app bundle at runtime (build phase handles this)
+- yt-dlp's `_internal/` directory must be alongside the binary (set `currentDirectoryURL` when launching)
 - `@main` on AppDelegate doesn't work without MainMenu.nib — use explicit `main.swift`
 - libvlc headers are 3.x compatible (`libvlc_compat.h`) — don't use 4.x headers
 - VLC plugin path must be set via `VLC_PLUGIN_PATH` env var before `libvlc_new()`
 - `CFBundleIconFile` in Info.plist must match the .icns filename (no extension)
 - VLC instance is a singleton (`sharedVLCInstance`) — don't call libvlc_release on it during normal playback; only in deinit
 - `isPaused` checks AVPlayer rate (rate == 0) on the AVPlayer path; VLC path uses its own `isPlaying` flag
+- `setVideoWindowSize` checks both `playerEngine?.videoSize` and `vlcEngine?.videoSize` for active engine
+- `playbackStatusObservation` (KVO) must be nilled before stopping the player engine to avoid observing deallocated items
+- yt-dlp `--no-playlist` flag is required to prevent resolving entire playlists (which hangs)
+- The PyInstaller-built `yt-dlp_macos` single binary has `semctl` issues on macOS Tahoe; use the zip distribution instead
 - Subtitle preferences (font/size/color) are live-updated via KVO observers on UserDefaults
 - Window drag-and-drop is registered on the DragDropView (which is the root view of PlayerViewController), not on PlayerWindow or individual subviews
 - RecentDocumentsMenuDelegate manages its own UserDefaults key because NSDocumentController requires the document-based app architecture
@@ -94,6 +107,9 @@ Vendor/
 - Audio delay is in microseconds in libvlc but exposed as seconds in VLCPlayerEngine API
 - Subtitle delay step is in seconds; audio delay step is in milliseconds (converted to seconds before applying)
 - Chromecast menu extracts IPv4 address from resolved Bonjour addresses to avoid mDNS hostname resolution issues
+- Edit menu (Cut/Copy/Paste/Select All) is required for text fields in NSAlert dialogs to accept keyboard shortcuts
+- Window size is forced to 0.7x screen after showing to override macOS state restoration (`NSQuitAlwaysKeepsWindows` set to false)
+- `ENABLE_USER_SCRIPT_SANDBOXING` must be `NO` or build scripts can't access `Vendor/` directory
 
 ### Git Repository
 - Repo: https://github.com/zhaomin1995/video_player

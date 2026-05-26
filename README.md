@@ -14,7 +14,7 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - Frame-by-frame stepping forward (`.`) and backward (`,`)
 - Configurable seek intervals (short and long seek with arrow keys)
 - Playback resume with smart thresholds (remembers position per file; requires 3min+ duration, 5-95% position, 1min absolute minimum)
-- **yt-dlp integration** for YouTube and web URL playback (Open URL dialog resolves via yt-dlp)
+- **yt-dlp integration** for YouTube and web URL playback — bundled self-contained binary (no install needed), resolution picker dialog with all available qualities (up to 4K/8K), high-res playback via VLC with separate video+audio stream merging
 - Jump to specific time dialog (supports `h:mm:ss`, `m:ss`, and raw seconds)
 
 ### Audio & Video Tracks
@@ -93,7 +93,7 @@ open "Awesome Player.xcodeproj"
 # Press Cmd+R to build and run
 ```
 
-**No external dependencies needed** — FFmpeg and libvlc libraries are bundled in the repo. A build phase script automatically copies all dylibs and plugins into the app bundle.
+**No external dependencies needed** — FFmpeg, libvlc, and yt-dlp are all bundled in the repo. A build phase script automatically copies all dylibs, plugins, and the yt-dlp distribution into the app bundle.
 
 ## Architecture
 
@@ -101,6 +101,11 @@ open "Awesome Player.xcodeproj"
 File Input --> Format Check
                 +-- MP4/MOV? --> AVPlayer (Dolby Vision + AirPlay + PiP)
                 +-- MKV/AVI/WebM/other? --> libvlc (VLC engine, instant playback)
+                +-- HTTP(S) stream (no ext)? --> AVPlayer (streaming)
+
+YouTube/Web URL --> yt-dlp (bundled) --> Resolution Picker
+                +-- Merged format? --> AVPlayer
+                +-- Video-only + Audio? --> libvlc (input-slave merge)
 
 Both engines share:
   +-- SubtitleManager (external SRT/ASS/VTT overlay)
@@ -128,7 +133,7 @@ Both engines share:
 | Chromecast | Cast V2 protobuf over TLS |
 | DLNA | SSDP + UPnP SOAP (AVTransport) |
 | Audio Devices | CoreAudio (AudioObjectPropertyAddress) |
-| URL Resolution | yt-dlp (optional, for YouTube/web URLs) |
+| URL Resolution | yt-dlp (bundled, self-contained with Python 3.14 runtime) |
 
 ## License
 
