@@ -43,6 +43,18 @@ class VideoView: NSView {
         layer.videoGravity = .resizeAspect
         layer.frame = bounds
         layer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        // Disable implicit animations on size/position changes. During
+        // NSWindow.toggleFullScreen, the layer would otherwise animate its
+        // bounds in parallel with the window animation — AVPlayer's render
+        // pipeline gets confused by the moving target and stalls for ~1-2s.
+        // NSNull tells CoreAnimation "do not animate this property".
+        layer.actions = [
+            "bounds": NSNull(),
+            "position": NSNull(),
+            "frame": NSNull(),
+            "sublayers": NSNull(),
+            "contents": NSNull(),
+        ]
 
         if let contentLayer = self.layer {
             layer.contentsScale = contentLayer.contentsScale
@@ -55,7 +67,13 @@ class VideoView: NSView {
 
     override func layout() {
         super.layout()
+        // Wrap in a no-animation transaction so layout-driven frame changes
+        // (especially during fullscreen transitions) don't trigger implicit
+        // CoreAnimation transitions on the player layer's contents.
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         layer?.sublayers?.forEach { $0.frame = bounds }
+        CATransaction.commit()
     }
 
     func setVideoGravity(_ gravity: AVLayerVideoGravity) {

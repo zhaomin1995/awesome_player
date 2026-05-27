@@ -386,8 +386,6 @@ class PlayerViewController: NSViewController {
         }
         _ = playlistManager.selectItem(at: playlistManager.items.firstIndex(of: url) ?? 0)
 
-        let vol = UserDefaults.standard.double(forKey: Defaults.defaultVolume)
-
         abLoopController.gap = UserDefaults.standard.double(forKey: Defaults.abLoopGap)
 
         vlcEngine?.stop()
@@ -395,89 +393,23 @@ class PlayerViewController: NSViewController {
 
         if url.isNativeAVPlayerFormat {
             // Native MP4/MOV — use AVPlayer for Dolby Vision + AirPlay
-            let engine = AVPlayerEngine()
-            playerEngine = engine
-            engine.delegate = self
-            engine.useKeyframeSeeking = useKeyframeSeeking
-            engine.volume = Float(vol > 0 ? vol : 1.0)
-            controlBarView.setVolume(engine.volume)
-            let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
-            if speed > 0 && speed != 1.0 {
-                engine.rate = Float(speed)
-                controlBarView.setSpeed(Float(speed))
-            }
-            playWithEngine(engine, url: url, fallbackRemux: false)
-            controlBarView.setAirPlayAvailable(true)
-        } else if FFmpegBridge.probeFile(url.path).hasDolbyVision.boolValue {
-            // Dolby Vision in a non-native container (e.g. MKV). libvlc renders
-            // DV Profile 5 with wrong colors (IPT-PQ pixels misinterpreted as
-            // BT.2020). Remux to MP4 so AVPlayer's hardware DV decoder handles it.
-            playerEngine?.stop()
-            playerEngine = nil
-            let engine = AVPlayerEngine()
-            playerEngine = engine
-            engine.delegate = self
-            engine.useKeyframeSeeking = useKeyframeSeeking
-            // AVKit's AirPlay handshake fails against Samsung's third-party
-            // AirPlay 2 receiver for DV content (session opens, no media
-            // flows). We route DV through our own transcode + libvlc renderer
-            // flow instead, so disable AVKit's external playback entirely to
-            // prevent it from auto-engaging and blanking the local view.
-            engine.allowsExternalPlayback = false
-            engine.volume = Float(vol > 0 ? vol : 1.0)
-            controlBarView.setVolume(engine.volume)
-            let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
-            if speed > 0 && speed != 1.0 {
-                engine.rate = Float(speed)
-                controlBarView.setSpeed(Float(speed))
-            }
-            controlBarView.setAirPlayAvailable(true)
-            osdView.show(message: "Preparing Dolby Vision playback…", duration: 60.0)
-            remuxAndPlay(engine: engine, url: url)
+            startAVPlayerEngine(url: url)
         } else {
-            // MKV/AVI/WebM — use VLC engine for instant playback
-            playerEngine?.stop()
-            playerEngine = nil
-
-            let engine = VLCPlayerEngine()
-            vlcEngine = engine
-            engine.delegate = self
-
-            if engine.open(url: url) {
-                // Embed VLC's render view into our video view
-                let vlcView = engine.renderView
-                vlcView.translatesAutoresizingMaskIntoConstraints = false
-                videoView.subviews.forEach { $0.removeFromSuperview() }
-                videoView.addSubview(vlcView)
-                NSLayoutConstraint.activate([
-                    vlcView.topAnchor.constraint(equalTo: videoView.topAnchor),
-                    vlcView.bottomAnchor.constraint(equalTo: videoView.bottomAnchor),
-                    vlcView.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
-                    vlcView.trailingAnchor.constraint(equalTo: videoView.trailingAnchor),
-                ])
-
-                controlBarView.setAirPlayAvailable(false)
-                controlBarView.setDuration(engine.duration)
-                engine.volume = Float(vol > 0 ? vol : 1.0)
-                controlBarView.setVolume(engine.volume)
-                let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
-                if speed > 0 && speed != 1.0 {
-                    engine.rate = Float(speed)
-                    controlBarView.setSpeed(Float(speed))
+            // Non-native (MKV, AVI, etc.): probe for Dolby Vision in the
+            // background so the main thread isn't blocked. avformat_find_stream_info
+            // can take 100-300ms on 4K files because it reads packets to detect
+            // codecs; doing it sync caused a visible UI hitch on every file open.
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                let isDV = FFmpegBridge.probeFile(url.path).hasDolbyVision.boolValue
+                DispatchQueue.main.async {
+                    // Bail out if the user opened a different file mid-probe
+                    guard let self = self, self.currentFileURL == url else { return }
+                    if isDV {
+                        self.startDolbyVisionRemuxFlow(url: url)
+                    } else {
+                        self.startVLCEngine(url: url)
+                    }
                 }
-
-                let eqPreset = UserDefaults.standard.integer(forKey: Defaults.defaultEQPreset)
-                if eqPreset > 0 { engine.setEqualizer(presetIndex: eqPreset) }
-
-                engine.startRendererDiscovery()
-
-                let autoPlay = UserDefaults.standard.bool(forKey: Defaults.autoPlayOnOpen)
-                if autoPlay {
-                    engine.play()
-                    controlBarView.setPlaying(true)
-                }
-            } else {
-                osdView.show(message: "Failed to open file")
             }
         }
 
@@ -499,24 +431,14 @@ class PlayerViewController: NSViewController {
             )
         }
 
-        // Auto-load matching subtitle files, or extract embedded subtitles
+        // Auto-load matching external subtitle files. Embedded subtitle
+        // extraction (for AVPlayer-based paths) is deferred to the engine
+        // helpers because the engine choice is resolved asynchronously for
+        // non-native files — checking `vlcEngine == nil` here would race.
         if UserDefaults.standard.bool(forKey: Defaults.autoLoadSubtitles) {
             let subs = SubtitleManager.findSubtitleFiles(for: url)
             if let first = subs.first {
                 subtitleManager.loadSubtitle(from: first)
-            } else if vlcEngine == nil {
-                // For AVPlayer files, try extracting embedded text subtitles
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    let tracks = FFmpegBridge.subtitleTracks(forFile: url.path)
-                    guard let firstTrack = tracks.first,
-                          let index = firstTrack["index"] as? Int else { return }
-                    if let srtText = try? FFmpegBridge.extractSubtitleTrack(Int32(index), fromFile: url.path) {
-                        DispatchQueue.main.async {
-                            self?.subtitleManager.loadSubtitleFromSRTText(srtText)
-                            self?.osdView.show(message: "Embedded subtitles loaded")
-                        }
-                    }
-                }
             }
         }
 
@@ -575,6 +497,115 @@ class PlayerViewController: NSViewController {
                         codecName: codecName,
                         isAtmos: isAtmos
                     )
+                }
+            }
+        }
+    }
+
+    // MARK: - Engine Selection (called from openFile)
+
+    private func startAVPlayerEngine(url: URL) {
+        let engine = AVPlayerEngine()
+        playerEngine = engine
+        engine.delegate = self
+        engine.useKeyframeSeeking = useKeyframeSeeking
+        let vol = UserDefaults.standard.double(forKey: Defaults.defaultVolume)
+        engine.volume = Float(vol > 0 ? vol : 1.0)
+        controlBarView.setVolume(engine.volume)
+        let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
+        if speed > 0 && speed != 1.0 {
+            engine.rate = Float(speed)
+            controlBarView.setSpeed(Float(speed))
+        }
+        playWithEngine(engine, url: url, fallbackRemux: false)
+        controlBarView.setAirPlayAvailable(true)
+        loadEmbeddedSubtitlesIfNeeded(url: url)
+    }
+
+    /// Dolby Vision in a non-native container (e.g. MKV). libvlc renders
+    /// DV Profile 5 with wrong colors (IPT-PQ pixels misinterpreted as
+    /// BT.2020). Remux to MP4 so AVPlayer's hardware DV decoder handles it.
+    private func startDolbyVisionRemuxFlow(url: URL) {
+        let engine = AVPlayerEngine()
+        playerEngine = engine
+        engine.delegate = self
+        engine.useKeyframeSeeking = useKeyframeSeeking
+        // AVKit's AirPlay handshake fails against Samsung's third-party
+        // AirPlay 2 receiver for DV content (session opens, no media flows).
+        // Disable external playback to prevent AVKit from auto-engaging.
+        engine.allowsExternalPlayback = false
+        let vol = UserDefaults.standard.double(forKey: Defaults.defaultVolume)
+        engine.volume = Float(vol > 0 ? vol : 1.0)
+        controlBarView.setVolume(engine.volume)
+        let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
+        if speed > 0 && speed != 1.0 {
+            engine.rate = Float(speed)
+            controlBarView.setSpeed(Float(speed))
+        }
+        controlBarView.setAirPlayAvailable(true)
+        osdView.show(message: "Preparing Dolby Vision playback…", duration: 60.0)
+        remuxAndPlay(engine: engine, url: url)
+        loadEmbeddedSubtitlesIfNeeded(url: url)
+    }
+
+    private func startVLCEngine(url: URL) {
+        let engine = VLCPlayerEngine()
+        vlcEngine = engine
+        engine.delegate = self
+
+        guard engine.open(url: url) else {
+            osdView.show(message: "Failed to open file")
+            return
+        }
+
+        // Embed VLC's render view into our video view
+        let vlcView = engine.renderView
+        vlcView.translatesAutoresizingMaskIntoConstraints = false
+        videoView.subviews.forEach { $0.removeFromSuperview() }
+        videoView.addSubview(vlcView)
+        NSLayoutConstraint.activate([
+            vlcView.topAnchor.constraint(equalTo: videoView.topAnchor),
+            vlcView.bottomAnchor.constraint(equalTo: videoView.bottomAnchor),
+            vlcView.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
+            vlcView.trailingAnchor.constraint(equalTo: videoView.trailingAnchor),
+        ])
+
+        controlBarView.setAirPlayAvailable(false)
+        controlBarView.setDuration(engine.duration)
+        let vol = UserDefaults.standard.double(forKey: Defaults.defaultVolume)
+        engine.volume = Float(vol > 0 ? vol : 1.0)
+        controlBarView.setVolume(engine.volume)
+        let speed = UserDefaults.standard.double(forKey: Defaults.defaultSpeed)
+        if speed > 0 && speed != 1.0 {
+            engine.rate = Float(speed)
+            controlBarView.setSpeed(Float(speed))
+        }
+
+        let eqPreset = UserDefaults.standard.integer(forKey: Defaults.defaultEQPreset)
+        if eqPreset > 0 { engine.setEqualizer(presetIndex: eqPreset) }
+
+        engine.startRendererDiscovery()
+
+        let autoPlay = UserDefaults.standard.bool(forKey: Defaults.autoPlayOnOpen)
+        if autoPlay {
+            engine.play()
+            controlBarView.setPlaying(true)
+        }
+    }
+
+    /// For AVPlayer-based paths only — VLC handles embedded subtitles natively.
+    /// Skips if an external subtitle file was already loaded in openFile.
+    private func loadEmbeddedSubtitlesIfNeeded(url: URL) {
+        guard UserDefaults.standard.bool(forKey: Defaults.autoLoadSubtitles),
+              !subtitleManager.hasSubtitles else { return }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let tracks = FFmpegBridge.subtitleTracks(forFile: url.path)
+            guard let firstTrack = tracks.first,
+                  let index = firstTrack["index"] as? Int else { return }
+            if let srtText = try? FFmpegBridge.extractSubtitleTrack(Int32(index), fromFile: url.path) {
+                DispatchQueue.main.async {
+                    self?.subtitleManager.loadSubtitleFromSRTText(srtText)
+                    self?.osdView.show(message: "Embedded subtitles loaded")
                 }
             }
         }
@@ -794,40 +825,6 @@ class PlayerViewController: NSViewController {
             if NSScreen.screens.count > 1 {
                 self.moveToExternalDisplay()
             }
-        }
-    }
-
-    private var awaitingExternalDisplay = false
-
-    private func startMonitoringForExternalDisplay() {
-        guard !awaitingExternalDisplay else { return }
-        awaitingExternalDisplay = true
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(screenConfigurationChanged),
-            name: NSApplication.didChangeScreenParametersNotification,
-            object: nil
-        )
-        DispatchQueue.main.asyncAfter(deadline: .now() + 30) { [weak self] in
-            self?.stopMonitoringForExternalDisplay()
-        }
-    }
-
-    private func stopMonitoringForExternalDisplay() {
-        guard awaitingExternalDisplay else { return }
-        awaitingExternalDisplay = false
-        NotificationCenter.default.removeObserver(
-            self,
-            name: NSApplication.didChangeScreenParametersNotification,
-            object: nil
-        )
-    }
-
-    @objc private func screenConfigurationChanged() {
-        guard awaitingExternalDisplay, NSScreen.screens.count > 1 else { return }
-        stopMonitoringForExternalDisplay()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.moveToExternalDisplay()
         }
     }
 
@@ -1390,7 +1387,7 @@ extension PlayerViewController: VLCPlayerEngineDelegate {
             } else {
                 subtitleOverlayView.setText(entry.text)
             }
-        } else if subtitleManager.isVisible {
+        } else {
             subtitleOverlayView.setText(nil)
         }
 

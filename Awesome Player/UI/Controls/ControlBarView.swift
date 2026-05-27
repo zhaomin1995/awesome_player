@@ -56,6 +56,14 @@ class ControlBarView: NSView {
 
         seekSlider.translatesAutoresizingMaskIntoConstraints = false
         seekSlider.onSeek = { [weak self] fraction in
+            // Optimistically update the time label so it reflects the new
+            // position instantly instead of waiting up to 250ms for the next
+            // AVPlayer time-observer fire. Without this, the time label sits
+            // at the old time for a noticeable beat after the click, which
+            // reads as "seek lag" even when the seek itself is fast.
+            if let self = self, self.seekSlider.duration > 0 {
+                self.currentTimeLabel.stringValue = self.formatTime(self.seekSlider.duration * fraction)
+            }
             self?.delegate?.controlBarSeekRequested(to: fraction)
         }
         effectView.addSubview(seekSlider)

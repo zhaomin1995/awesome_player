@@ -164,10 +164,10 @@ class SeekSliderView: NSView {
 
         if !didScrubOnMouseDown || abs(dragProgress - lastSoughtFraction) > 0.001 {
             lastSoughtFraction = progress
-            seekSuppressUntil = Date().addingTimeInterval(0.5)
+            seekSuppressUntil = Date().addingTimeInterval(0.2)
             onSeek?(progress)
         } else {
-            seekSuppressUntil = Date().addingTimeInterval(0.5)
+            seekSuppressUntil = Date().addingTimeInterval(0.2)
         }
 
         didScrubOnMouseDown = false
@@ -178,7 +178,7 @@ class SeekSliderView: NSView {
     private func scrubSeek() {
         lastScrubTime = Date()
         lastSoughtFraction = dragProgress
-        seekSuppressUntil = Date().addingTimeInterval(0.5)
+        seekSuppressUntil = Date().addingTimeInterval(0.2)
         onSeek?(dragProgress)
     }
 

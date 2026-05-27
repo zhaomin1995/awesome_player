@@ -7,7 +7,6 @@ class AudioPassthrough {
         let deviceName: String
         let supportsAC3: Bool
         let supportsEAC3: Bool
-        let supportsDTS: Bool
     }
 
     static func queryOutputDevices() -> [PassthroughCapability] {
@@ -81,7 +80,6 @@ class AudioPassthrough {
 
         var supportsAC3 = false
         var supportsEAC3 = false
-        var supportsDTS = false
 
         for streamID in streamIDs {
             var formatSize: UInt32 = 0
@@ -115,14 +113,13 @@ class AudioPassthrough {
             }
         }
 
-        guard supportsAC3 || supportsEAC3 || supportsDTS else { return nil }
+        guard supportsAC3 || supportsEAC3 else { return nil }
 
         return PassthroughCapability(
             deviceID: deviceID,
             deviceName: name,
             supportsAC3: supportsAC3,
-            supportsEAC3: supportsEAC3,
-            supportsDTS: supportsDTS
+            supportsEAC3: supportsEAC3
         )
     }
 

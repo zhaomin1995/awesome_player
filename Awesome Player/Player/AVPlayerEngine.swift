@@ -20,7 +20,6 @@ class AVPlayerEngine: NSObject {
     private var playerItem: AVPlayerItem?
     private var timeObserver: Any?
     // Block-based KVO observations — automatically invalidated when set to nil
-    private var statusObservation: NSKeyValueObservation?
     private var rateObservation: NSKeyValueObservation?
     private var itemStatusObservation: NSKeyValueObservation?
     private var externalPlaybackObservation: NSKeyValueObservation?
@@ -65,11 +64,9 @@ class AVPlayerEngine: NSObject {
         }
     }
 
+    /// Kept for API compatibility — no longer used since seek tolerance is now
+    /// chosen per-call (keyframe for interactive seeks, precise for jumps).
     var useKeyframeSeeking = false
-
-    private var seekTolerance: CMTime {
-        useKeyframeSeeking ? .positiveInfinity : CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
-    }
 
     var videoSize: NSSize? {
         guard let track = playerItem?.asset.tracks(withMediaType: .video).first else { return nil }
@@ -95,6 +92,18 @@ class AVPlayerEngine: NSObject {
         avPlayer.allowsExternalPlayback = allowsExternalPlayback
         avPlayer.volume = 1.0
         avPlayer.isMuted = false
+        // Default `true` makes AVPlayer pause briefly after seeks to refill its
+        // stall-protection buffer before showing the next frame. For local file
+        // playback that buffer protection is wasted work and adds 100-300ms of
+        // perceived seek lag on every interaction. VLC/Movist don't have an
+        // equivalent layer, which is why their seeks feel snappier than ours
+        // even though the underlying VideoToolbox decoder is identical.
+        avPlayer.automaticallyWaitsToMinimizeStalling = false
+        // Small forward buffer (5s) so a far-jump seek discards minimal data
+        // and the refill at the new position is quick. Default is "system
+        // decides" which can be 30-60s on macOS for HD content — that's a lot
+        // of decode pipeline to tear down and rebuild on every random seek.
+        item.preferredForwardBufferDuration = 5
         player = avPlayer
 
         print("[AVPlayerEngine] Created player for: \(url.lastPathComponent), volume=\(avPlayer.volume), muted=\(avPlayer.isMuted)")
@@ -138,7 +147,6 @@ class AVPlayerEngine: NSObject {
             player?.removeTimeObserver(observer)
             timeObserver = nil
         }
-        statusObservation = nil
         rateObservation = nil
         itemStatusObservation = nil
         externalPlaybackObservation = nil
@@ -148,48 +156,50 @@ class AVPlayerEngine: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    private var isSeeking = false
-    private var pendingSeekTarget: CMTime?
-
+    /// Interactive arrow-key skip — keyframe seek for instant response.
     func seek(by seconds: Double) {
         guard let player = player else { return }
         let current = player.currentTime()
         let target = CMTimeAdd(current, CMTimeMakeWithSeconds(seconds, preferredTimescale: 600))
-        smoothSeek(to: target)
+        fastSeek(to: target, precise: false)
     }
 
+    /// Progress-bar scrub — keyframe seek so the slider doesn't lag behind
+    /// the click while AVPlayer decodes forward from the keyframe to an
+    /// exact-frame target. Worst case the playhead lands 1–2s off the
+    /// click position (one GOP); precise tolerance for 4K HEVC costs
+    /// 100–500ms per seek which is much worse perceptually.
     func seekToFraction(_ fraction: Double) {
         guard let item = playerItem else { return }
         let dur = item.duration.seconds
         guard dur.isFinite, dur > 0 else { return }
         let target = CMTimeMakeWithSeconds(dur * fraction, preferredTimescale: 600)
-        smoothSeek(to: target)
+        fastSeek(to: target, precise: false)
     }
 
+    /// Programmatic jump to an exact timestamp (chapter nav, jump-to-time,
+    /// resume from saved position). Uses precise tolerance because the
+    /// caller picked the timestamp deliberately.
     func seekTo(time: Double) {
         let target = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
-        smoothSeek(to: target)
+        fastSeek(to: target, precise: true)
     }
 
-    /// Coalesces rapid seeks so only the latest target is honored,
-    /// preventing a queue of slow exact-frame decodes from piling up.
-    private func smoothSeek(to target: CMTime) {
+    /// Fires the seek immediately and returns. We don't wait for completion
+    /// or coalesce — AVPlayer already cancels any in-flight seek when a new
+    /// `seek(to:)` arrives, so the most recent target always wins. The old
+    /// "wait for completion, then dequeue pending" pattern actually doubled
+    /// perceived seek latency on drags because mouseUp's seek wouldn't start
+    /// until mouseDown's seek finished its visual settle (~100-300ms).
+    /// `cancelPendingSeeks` explicitly aborts any in-flight handler so we
+    /// don't accumulate stale completions.
+    private func fastSeek(to target: CMTime, precise: Bool) {
         guard let player = player else { return }
-        if isSeeking {
-            pendingSeekTarget = target
-            return
-        }
-        isSeeking = true
-        player.seek(to: target, toleranceBefore: seekTolerance, toleranceAfter: seekTolerance) { [weak self] _ in
-            guard let self = self else { return }
-            if let pending = self.pendingSeekTarget {
-                self.pendingSeekTarget = nil
-                self.isSeeking = false
-                self.smoothSeek(to: pending)
-            } else {
-                self.isSeeking = false
-            }
-        }
+        playerItem?.cancelPendingSeeks()
+        let tolerance: CMTime = precise
+            ? CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
+            : .positiveInfinity
+        player.seek(to: target, toleranceBefore: tolerance, toleranceAfter: tolerance)
     }
 
     // MARK: - Track Switching
