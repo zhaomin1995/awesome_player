@@ -37,7 +37,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "À propos de Awesome Player"
+            "value": "À propos d'Awesome Player"
           }
         },
         "de": {
@@ -77,7 +77,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "環境設定…"
+            "value": "設定…"
           }
         },
         "ko": {
@@ -223,7 +223,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar Awesome Player"
+            "value": "Ocultar o Awesome Player"
           }
         },
         "ru": {
@@ -257,7 +257,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기타 가리기"
+            "value": "다른 항목 가리기"
           }
         },
         "es": {
@@ -281,7 +281,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar outros"
+            "value": "Ocultar Outros"
           }
         },
         "ru": {
@@ -339,7 +339,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar tudo"
+            "value": "Mostrar Tudo"
           }
         },
         "ru": {
@@ -397,7 +397,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encerrar Awesome Player"
+            "value": "Encerrar o Awesome Player"
           }
         },
         "ru": {
@@ -861,13 +861,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selecionar tudo"
+            "value": "Selecionar Tudo"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выделить все"
+            "value": "Выделить всё"
           }
         }
       }
@@ -919,7 +919,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir arquivo…"
+            "value": "Abrir Arquivo…"
           }
         },
         "ru": {
@@ -1023,7 +1023,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ouvrir l'élément récent"
+            "value": "Ouvrir récent"
           }
         },
         "de": {
@@ -1035,7 +1035,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir recente"
+            "value": "Abrir Recentes"
           }
         },
         "ru": {
@@ -1093,7 +1093,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Adicionar arquivo de legenda…"
+            "value": "Adicionar Arquivo de Legenda…"
           }
         },
         "ru": {
@@ -1151,7 +1151,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salvar captura de tela"
+            "value": "Salvar Captura de Tela"
           }
         },
         "ru": {
@@ -1399,13 +1399,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "向后跳 5 秒"
+            "value": "快进 5 秒"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "向後跳 5 秒"
+            "value": "向前跳 5 秒"
           }
         },
         "ja": {
@@ -1447,7 +1447,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейти вперёд 5 с"
+            "value": "Перемотать вперёд на 5 с"
           }
         }
       }
@@ -1457,13 +1457,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "向前跳 5 秒"
+            "value": "快退 5 秒"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "向前跳 5 秒"
+            "value": "向後跳 5 秒"
           }
         },
         "ja": {
@@ -1505,7 +1505,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейти назад 5 с"
+            "value": "Перемотать назад на 5 с"
           }
         }
       }
@@ -1545,7 +1545,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aller au moment…"
+            "value": "Atteindre…"
           }
         },
         "de": {
@@ -1557,13 +1557,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ir para o momento…"
+            "value": "Ir para o Tempo…"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейти к времени…"
+            "value": "Перейти ко времени…"
           }
         }
       }
@@ -1603,7 +1603,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aller au moment"
+            "value": "Atteindre"
           }
         },
         "de": {
@@ -1615,13 +1615,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ir para o momento"
+            "value": "Ir para o Tempo"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейти к времени"
+            "value": "Перейти ко времени"
           }
         }
       }
@@ -1661,7 +1661,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aller"
+            "value": "Atteindre"
           }
         },
         "de": {
@@ -1689,13 +1689,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "输入时间(例如 1:30 或 90):"
+            "value": "输入时间（例如 1:30 或 90）："
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "輸入時間(例如 1:30 或 90):"
+            "value": "輸入時間（例如 1:30 或 90）："
           }
         },
         "ja": {
@@ -1713,25 +1713,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Introduce el tiempo (p.ej. 1:30 o 90):"
+            "value": "Introduce el tiempo (p. ej. 1:30 o 90):"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saisir l'heure (ex. 1:30 ou 90) :"
+            "value": "Saisir un instant (par ex. 1:30 ou 90) :"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zeit eingeben (z.B. 1:30 oder 90):"
+            "value": "Zeit eingeben (z. B. 1:30 oder 90):"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Insira o tempo (ex. 1:30 ou 90):"
+            "value": "Digite o tempo (ex.: 1:30 ou 90):"
           }
         },
         "ru": {
@@ -1771,7 +1771,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajustes de velocidad"
+            "value": "Velocidades predefinidas"
           }
         },
         "fr": {
@@ -1783,13 +1783,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Geschwindigkeit-Vorgaben"
+            "value": "Geschwindigkeitsvorgaben"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Predefinições de velocidade"
+            "value": "Predefinições de Velocidade"
           }
         },
         "ru": {
@@ -1847,7 +1847,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Velocidade de reprodução"
+            "value": "Velocidade de Reprodução"
           }
         },
         "ru": {
@@ -1969,7 +1969,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Обычно"
+            "value": "Обычная"
           }
         }
       }
@@ -2073,7 +2073,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B Wiederholung"
+            "value": "A-B-Wiederholung"
           }
         },
         "pt-BR": {
@@ -2107,7 +2107,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "A 点を設定"
+            "value": "A 点を設定しました"
           }
         },
         "ko": {
@@ -2165,13 +2165,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B ループを開始"
+            "value": "A-B ループを開始しました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B 반복 활성화"
+            "value": "A-B 반복 활성화됨"
           }
         },
         "es": {
@@ -2189,7 +2189,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B Schleife aktiv"
+            "value": "A-B-Schleife aktiv"
           }
         },
         "pt-BR": {
@@ -2223,13 +2223,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B ループを解除"
+            "value": "A-B ループを解除しました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B 반복 해제"
+            "value": "A-B 반복 해제됨"
           }
         },
         "es": {
@@ -2247,7 +2247,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "A-B Schleife gelöscht"
+            "value": "A-B-Schleife gelöscht"
           }
         },
         "pt-BR": {
@@ -2327,13 +2327,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "章节:%@"
+            "value": "章节：%@"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "章節:%@"
+            "value": "章節：%@"
           }
         },
         "ja": {
@@ -2403,13 +2403,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "다음 챕터가 없음"
+            "value": "다음 챕터 없음"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin capítulo siguiente"
+            "value": "No hay capítulo siguiente"
           }
         },
         "fr": {
@@ -2461,13 +2461,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이전 챕터가 없음"
+            "value": "이전 챕터 없음"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin capítulo anterior"
+            "value": "No hay capítulo anterior"
           }
         },
         "fr": {
@@ -2501,13 +2501,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "速度:%.2f倍"
+            "value": "速度：%.2f 倍"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "速度:%.2f倍"
+            "value": "速度：%.2f 倍"
           }
         },
         "ja": {
@@ -2531,7 +2531,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vitesse : %.2fx"
+            "value": "Vitesse : %.2f×"
           }
         },
         "de": {
@@ -2647,13 +2647,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lecture"
+            "value": "En lecture"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wiedergabe"
+            "value": "Wird wiedergegeben"
           }
         },
         "pt-BR": {
@@ -2665,7 +2665,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Воспроизведение"
+            "value": "Воспроизводится"
           }
         }
       }
@@ -2693,7 +2693,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ / %@ 로 이동 (%d%%)"
+            "value": "%@ / %@로 이동 (%d%%)"
           }
         },
         "es": {
@@ -2723,7 +2723,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейти к %@ / %@ (%d%%)"
+            "value": "Перемотать к %@ / %@ (%d%%)"
           }
         }
       }
@@ -2751,7 +2751,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 로 이동"
+            "value": "%@로 이동"
           }
         },
         "es": {
@@ -2763,7 +2763,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aller à %@"
+            "value": "Atteindre %@"
           }
         },
         "de": {
@@ -2809,7 +2809,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 부터 재개"
+            "value": "%@부터 재개됨"
           }
         },
         "es": {
@@ -2833,7 +2833,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continuado de %@"
+            "value": "Retomado de %@"
           }
         },
         "ru": {
@@ -2907,7 +2907,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "音轨"
+            "value": "音频轨道"
           }
         },
         "zh-Hant": {
@@ -2949,7 +2949,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faixa de áudio"
+            "value": "Faixa de Áudio"
           }
         },
         "ru": {
@@ -3065,7 +3065,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dispositivo de saída"
+            "value": "Dispositivo de Saída"
           }
         },
         "ru": {
@@ -3111,7 +3111,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucun appareil trouvé"
+            "value": "Aucun appareil détecté"
           }
         },
         "de": {
@@ -3227,7 +3227,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avancer"
+            "value": "Tirer"
           }
         },
         "de": {
@@ -3239,7 +3239,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Adiantar"
+            "value": "Puxar"
           }
         },
         "ru": {
@@ -3285,7 +3285,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reculer"
+            "value": "Pousser"
           }
         },
         "de": {
@@ -3297,7 +3297,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Atrasar"
+            "value": "Empurrar"
           }
         },
         "ru": {
@@ -3343,19 +3343,19 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Réinitialiser synchro"
+            "value": "Réinitialiser la synchro."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sync zurücksetzen"
+            "value": "Sync. zurücksetzen"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Redefinir sinc."
+            "value": "Redefinir Sinc."
           }
         },
         "ru": {
@@ -3413,7 +3413,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aumentar volume"
+            "value": "Aumentar Volume"
           }
         },
         "ru": {
@@ -3471,7 +3471,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Diminuir volume"
+            "value": "Diminuir Volume"
           }
         },
         "ru": {
@@ -3621,13 +3621,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "음소거 해제"
+            "value": "음소거 해제됨"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sonido activado"
+            "value": "Con sonido"
           }
         },
         "fr": {
@@ -3639,13 +3639,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stumm aus"
+            "value": "Stummschaltung aus"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Som ativado"
+            "value": "Som reativado"
           }
         },
         "ru": {
@@ -3661,13 +3661,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "音量:%d%%"
+            "value": "音量：%d%%"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "音量:%d%%"
+            "value": "音量：%d%%"
           }
         },
         "ja": {
@@ -3719,13 +3719,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "音频延迟:%+.1f秒"
+            "value": "音频延迟：%+.1f 秒"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "音訊延遲:%+.1f秒"
+            "value": "音訊延遲：%+.1f 秒"
           }
         },
         "ja": {
@@ -3749,7 +3749,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Décalage audio : %+.1fs"
+            "value": "Décalage audio : %+.1f s"
           }
         },
         "de": {
@@ -3789,13 +3789,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "音声遅延をリセット"
+            "value": "音声遅延をリセットしました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "오디오 지연 초기화"
+            "value": "오디오 지연 초기화됨"
           }
         },
         "es": {
@@ -3835,13 +3835,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "直通输出:开 (%@)"
+            "value": "直通输出：开（%@）"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "直通輸出:開 (%@)"
+            "value": "直通輸出：開（%@）"
           }
         },
         "ja": {
@@ -3853,7 +3853,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "패스스루: 켬 (%@)"
+            "value": "패스스루: 켜짐 (%@)"
           }
         },
         "es": {
@@ -3893,13 +3893,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "直通输出:关"
+            "value": "直通输出：关"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "直通輸出:關"
+            "value": "直通輸出：關"
           }
         },
         "ja": {
@@ -3911,7 +3911,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "패스스루: 끔"
+            "value": "패스스루: 꺼짐"
           }
         },
         "es": {
@@ -4009,7 +4009,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "平坦"
+            "value": "平直"
           }
         },
         "zh-Hant": {
@@ -4027,7 +4027,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "평탄"
+            "value": "플랫"
           }
         },
         "es": {
@@ -4057,7 +4057,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Линейный"
+            "value": "Плоский"
           }
         }
       }
@@ -4143,7 +4143,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "저음 부스터"
+            "value": "저음 강화"
           }
         },
         "es": {
@@ -4155,7 +4155,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boost des basses"
+            "value": "Amplificateur de basses"
           }
         },
         "de": {
@@ -4167,13 +4167,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reforço de graves"
+            "value": "Reforço de Graves"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Усиление баса"
+            "value": "Усилитель басов"
           }
         }
       }
@@ -4225,13 +4225,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Redutor de graves"
+            "value": "Redutor de Graves"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Понижение баса"
+            "value": "Уменьшение басов"
           }
         }
       }
@@ -4393,7 +4393,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tief"
+            "value": "Tiefen"
           }
         },
         "pt-BR": {
@@ -4613,19 +4613,19 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Latina"
+            "value": "Latin"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Latino"
+            "value": "Latine"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lateinamerikanisch"
+            "value": "Latin"
           }
         },
         "pt-BR": {
@@ -4637,7 +4637,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Латинский"
+            "value": "Латиноамериканская"
           }
         }
       }
@@ -4671,7 +4671,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Volumen"
+            "value": "Sonoridad"
           }
         },
         "fr": {
@@ -4705,7 +4705,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "休闲"
+            "value": "酒廊"
           }
         },
         "zh-Hant": {
@@ -4781,7 +4781,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "퍼펙트 :)"
+            "value": "완벽 :)"
           }
         },
         "es": {
@@ -5059,7 +5059,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "小型音箱"
+            "value": "小型喇叭"
           }
         },
         "ja": {
@@ -5077,7 +5077,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Altavoces pequeños"
+            "value": "Bocinas pequeñas"
           }
         },
         "fr": {
@@ -5095,7 +5095,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Caixas pequenas"
+            "value": "Caixas Pequenas"
           }
         },
         "ru": {
@@ -5111,7 +5111,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "语音"
+            "value": "口语"
           }
         },
         "zh-Hant": {
@@ -5141,25 +5141,25 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Parole"
+            "value": "Voix parlée"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sprache"
+            "value": "Spoken Word"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Voz falada"
+            "value": "Voz Falada"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Речь"
+            "value": "Устная речь"
           }
         }
       }
@@ -5187,7 +5187,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "고음 부스터"
+            "value": "고음 강화"
           }
         },
         "es": {
@@ -5199,7 +5199,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boost des aigus"
+            "value": "Amplificateur d'aigus"
           }
         },
         "de": {
@@ -5211,13 +5211,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reforço de agudos"
+            "value": "Reforço de Agudos"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Усиление высоких"
+            "value": "Усилитель высоких частот"
           }
         }
       }
@@ -5269,13 +5269,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Redutor de agudos"
+            "value": "Redutor de Agudos"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Понижение высоких"
+            "value": "Уменьшение высоких частот"
           }
         }
       }
@@ -5303,7 +5303,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "보컬 부스터"
+            "value": "보컬 강화"
           }
         },
         "es": {
@@ -5315,7 +5315,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boost vocal"
+            "value": "Amplificateur de voix"
           }
         },
         "de": {
@@ -5327,7 +5327,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reforço vocal"
+            "value": "Reforço Vocal"
           }
         },
         "ru": {
@@ -5367,7 +5367,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vídeo"
+            "value": "Video"
           }
         },
         "fr": {
@@ -5401,7 +5401,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "视频轨"
+            "value": "视频轨道"
           }
         },
         "zh-Hant": {
@@ -5425,7 +5425,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pista de vídeo"
+            "value": "Pista de video"
           }
         },
         "fr": {
@@ -5443,7 +5443,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faixa de vídeo"
+            "value": "Faixa de Vídeo"
           }
         },
         "ru": {
@@ -5489,19 +5489,19 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Activer le plein écran"
+            "value": "Passer en plein écran"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vollbild aktivieren"
+            "value": "Vollbild ein"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entrar em tela cheia"
+            "value": "Entrar em Tela Cheia"
           }
         },
         "ru": {
@@ -5541,7 +5541,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Imagen sobre imagen"
+            "value": "Imagen dentro de imagen"
           }
         },
         "fr": {
@@ -5633,13 +5633,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "半屏"
+            "value": "半尺寸"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "半屏"
+            "value": "一半尺寸"
           }
         },
         "ja": {
@@ -5657,13 +5657,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mitad"
+            "value": "Mitad del tamaño"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Demi-taille"
+            "value": "Taille réduite de moitié"
           }
         },
         "de": {
@@ -5675,7 +5675,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Metade"
+            "value": "Tamanho pela Metade"
           }
         },
         "ru": {
@@ -5733,7 +5733,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tamanho real"
+            "value": "Tamanho Real"
           }
         },
         "ru": {
@@ -5849,7 +5849,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tamanho duplo"
+            "value": "Tamanho Dobrado"
           }
         },
         "ru": {
@@ -5907,7 +5907,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajustar à tela"
+            "value": "Ajustar à Tela"
           }
         },
         "ru": {
@@ -6023,7 +6023,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Preencher tela"
+            "value": "Preencher Tela"
           }
         },
         "ru": {
@@ -6155,13 +6155,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "宽高比:%@"
+            "value": "宽高比：%@"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "長寬比:%@"
+            "value": "長寬比：%@"
           }
         },
         "ja": {
@@ -6313,7 +6313,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Girar à esquerda"
+            "value": "Girar à Esquerda"
           }
         },
         "ru": {
@@ -6371,7 +6371,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Girar à direita"
+            "value": "Girar à Direita"
           }
         },
         "ru": {
@@ -6387,13 +6387,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "旋转:%d°"
+            "value": "旋转：%d°"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "旋轉:%d°"
+            "value": "旋轉：%d°"
           }
         },
         "ja": {
@@ -6487,7 +6487,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inverter horizontal"
+            "value": "Inverter Horizontalmente"
           }
         },
         "ru": {
@@ -6545,7 +6545,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inverter horizontal"
+            "value": "Inverter horizontalmente"
           }
         },
         "ru": {
@@ -6603,7 +6603,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inverter vertical"
+            "value": "Inverter Verticalmente"
           }
         },
         "ru": {
@@ -6661,7 +6661,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inverter vertical"
+            "value": "Inverter verticalmente"
           }
         },
         "ru": {
@@ -6719,13 +6719,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reverter transformação"
+            "value": "Reverter Transformação"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сбросить трансформацию"
+            "value": "Сбросить преобразование"
           }
         }
       }
@@ -6783,7 +6783,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Трансформация сброшена"
+            "value": "Преобразование сброшено"
           }
         }
       }
@@ -6805,7 +6805,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "切り取り"
+            "value": "クロップ"
           }
         },
         "ko": {
@@ -6933,7 +6933,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ecualizador de vídeo…"
+            "value": "Ecualizador de video…"
           }
         },
         "fr": {
@@ -6951,7 +6951,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Equalizador de vídeo…"
+            "value": "Equalizador de Vídeo…"
           }
         },
         "ru": {
@@ -6991,7 +6991,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ecualizador de vídeo"
+            "value": "Ecualizador de video"
           }
         },
         "fr": {
@@ -7009,7 +7009,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Equalizador de vídeo"
+            "value": "Equalizador de Vídeo"
           }
         },
         "ru": {
@@ -7073,7 +7073,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Деинтерлейс"
+            "value": "Деинтерлейсинг"
           }
         }
       }
@@ -7107,7 +7107,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuadro ▶"
+            "value": "Fotograma ▶"
           }
         },
         "fr": {
@@ -7165,7 +7165,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "◀ Cuadro"
+            "value": "◀ Fotograma"
           }
         },
         "fr": {
@@ -7223,7 +7223,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No hay vídeo cargado"
+            "value": "No hay video cargado"
           }
         },
         "fr": {
@@ -7281,7 +7281,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No hay vídeo en reproducción"
+            "value": "No hay video en reproducción"
           }
         },
         "fr": {
@@ -7363,7 +7363,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%.0f%% размер"
+            "value": "Размер: %.0f%%"
           }
         }
       }
@@ -7537,7 +7537,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Серебряный"
+            "value": "Серебристый"
           }
         }
       }
@@ -7727,7 +7727,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "品紅"
+            "value": "洋紅"
           }
         },
         "ja": {
@@ -8133,7 +8133,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "藏青"
+            "value": "海軍藍"
           }
         },
         "ja": {
@@ -8249,7 +8249,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "青色"
+            "value": "水藍色"
           }
         },
         "ja": {
@@ -8359,7 +8359,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕轨"
+            "value": "字幕轨道"
           }
         },
         "zh-Hant": {
@@ -8401,7 +8401,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faixa de legenda"
+            "value": "Faixa de Legenda"
           }
         },
         "ru": {
@@ -8459,7 +8459,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tipo de exibição"
+            "value": "Tipo de Exibição"
           }
         },
         "ru": {
@@ -8499,7 +8499,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inferior del vídeo"
+            "value": "Parte inferior del video"
           }
         },
         "fr": {
@@ -8517,7 +8517,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Base do vídeo"
+            "value": "Base do Vídeo"
           }
         },
         "ru": {
@@ -8557,7 +8557,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inferior de la pantalla"
+            "value": "Parte inferior de la pantalla"
           }
         },
         "fr": {
@@ -8575,7 +8575,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Base da tela"
+            "value": "Base da Tela"
           }
         },
         "ru": {
@@ -8591,7 +8591,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "黑边内"
+            "value": "信箱模式"
           }
         },
         "zh-Hant": {
@@ -8691,7 +8691,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cor do texto"
+            "value": "Cor do Texto"
           }
         },
         "ru": {
@@ -8749,7 +8749,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Espessura do contorno"
+            "value": "Espessura do Contorno"
           }
         },
         "ru": {
@@ -8813,7 +8813,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%d пикс"
+            "value": "%d пикс."
           }
         }
       }
@@ -8923,7 +8923,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cor de fundo"
+            "value": "Cor de Fundo"
           }
         },
         "ru": {
@@ -8981,7 +8981,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Opacidade do fundo"
+            "value": "Opacidade do Fundo"
           }
         },
         "ru": {
@@ -9039,7 +9039,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocultar legendas"
+            "value": "Ocultar Legendas"
           }
         },
         "ru": {
@@ -9067,13 +9067,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕を表示"
+            "value": "字幕を表示しました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자막 표시"
+            "value": "자막 표시됨"
           }
         },
         "es": {
@@ -9103,7 +9103,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Субтитры показаны"
+            "value": "Субтитры включены"
           }
         }
       }
@@ -9125,13 +9125,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕を非表示"
+            "value": "字幕を非表示にしました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자막 숨김"
+            "value": "자막 숨겨짐"
           }
         },
         "es": {
@@ -9171,13 +9171,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已加载字幕:%@"
+            "value": "已加载字幕：%@"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "已載入字幕:%@"
+            "value": "已載入字幕：%@"
           }
         },
         "ja": {
@@ -9287,13 +9287,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕延迟:%.1f秒"
+            "value": "字幕延迟：%.1f 秒"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕延遲:%.1f秒"
+            "value": "字幕延遲：%.1f 秒"
           }
         },
         "ja": {
@@ -9317,7 +9317,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Décalage des sous-titres : %.1fs"
+            "value": "Décalage des sous-titres : %.1f s"
           }
         },
         "de": {
@@ -9357,13 +9357,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "字幕遅延をリセット"
+            "value": "字幕遅延をリセットしました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자막 지연 초기화"
+            "value": "자막 지연 초기화됨"
           }
         },
         "es": {
@@ -9485,7 +9485,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar lista"
+            "value": "Mostrar lista de reproducción"
           }
         },
         "fr": {
@@ -9503,7 +9503,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostrar lista"
+            "value": "Mostrar Lista de Reprodução"
           }
         },
         "ru": {
@@ -9561,7 +9561,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sem repetição"
+            "value": "Repetição desativada"
           }
         },
         "ru": {
@@ -9613,13 +9613,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eines wiederholen"
+            "value": "Titel wiederholen"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repetir uma"
+            "value": "Repetir Uma"
           }
         },
         "ru": {
@@ -9677,7 +9677,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Repetir tudo"
+            "value": "Repetir Tudo"
           }
         },
         "ru": {
@@ -9693,13 +9693,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "重复:%@"
+            "value": "重复：%@"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "重複:%@"
+            "value": "重複：%@"
           }
         },
         "ja": {
@@ -9809,13 +9809,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "随机播放:开"
+            "value": "随机播放：开"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "隨機播放:開"
+            "value": "隨機播放：開"
           }
         },
         "ja": {
@@ -9827,7 +9827,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "무작위 재생 켬"
+            "value": "무작위 재생 켜짐"
           }
         },
         "es": {
@@ -9867,13 +9867,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "随机播放:关"
+            "value": "随机播放：关"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "隨機播放:關"
+            "value": "隨機播放：關"
           }
         },
         "ja": {
@@ -9885,7 +9885,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "무작위 재생 끔"
+            "value": "무작위 재생 꺼짐"
           }
         },
         "es": {
@@ -9925,7 +9925,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "上一首"
+            "value": "上一个"
           }
         },
         "zh-Hant": {
@@ -9983,7 +9983,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "下一首"
+            "value": "下一个"
           }
         },
         "zh-Hant": {
@@ -10041,7 +10041,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有下一首"
+            "value": "没有下一个"
           }
         },
         "zh-Hant": {
@@ -10065,7 +10065,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin pista siguiente"
+            "value": "No hay pista siguiente"
           }
         },
         "fr": {
@@ -10099,7 +10099,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有上一首"
+            "value": "没有上一个"
           }
         },
         "zh-Hant": {
@@ -10123,7 +10123,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin pista anterior"
+            "value": "No hay pista anterior"
           }
         },
         "fr": {
@@ -10215,7 +10215,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在外部显示器播放"
+            "value": "在外接显示器上播放"
           }
         },
         "zh-Hant": {
@@ -10257,7 +10257,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reproduzir em tela externa"
+            "value": "Reproduzir em Tela Externa"
           }
         },
         "ru": {
@@ -10273,7 +10273,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "未找到外部显示器 — 请在系统设置 > 显示器中添加"
+            "value": "未找到外接显示器 — 请在「系统设置 > 显示器」中添加"
           }
         },
         "zh-Hant": {
@@ -10291,7 +10291,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "외부 디스플레이를 찾을 수 없음 — 시스템 설정 > 디스플레이에서 추가하세요"
+            "value": "외부 디스플레이를 찾을 수 없음 — 시스템 설정 > 디스플레이에서 추가하십시오"
           }
         },
         "es": {
@@ -10303,7 +10303,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucun écran externe trouvé — ajoutez-en un dans Réglages Système > Moniteurs"
+            "value": "Aucun écran externe détecté — ajoutez-en un dans Réglages Système > Moniteurs"
           }
         },
         "de": {
@@ -10315,13 +10315,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nenhuma tela externa encontrada — adicione uma em Ajustes do Sistema > Telas"
+            "value": "Nenhuma tela externa encontrada — adicione uma em Ajustes do Sistema > Monitores"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Внешний дисплей не найден — добавьте его в Настройках > Дисплеи"
+            "value": "Внешний дисплей не найден — добавьте его в Системных настройках > Мониторы"
           }
         }
       }
@@ -10639,13 +10639,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "항상 위"
+            "value": "항상 위에"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mantener encima"
+            "value": "Mantener visible"
           }
         },
         "fr": {
@@ -10657,19 +10657,19 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Im Vordergrund halten"
+            "value": "Immer im Vordergrund"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Manter no topo"
+            "value": "Manter no Topo"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поверх остальных"
+            "value": "Поверх всех окон"
           }
         }
       }
@@ -10679,7 +10679,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "媒体信息"
+            "value": "媒体检查器"
           }
         },
         "zh-Hant": {
@@ -10721,7 +10721,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inspetor de mídia"
+            "value": "Inspetor de Mídia"
           }
         },
         "ru": {
@@ -11097,7 +11097,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Finder で表示"
+            "value": "Finder に表示"
           }
         },
         "ko": {
@@ -11121,7 +11121,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Im Finder zeigen"
+            "value": "Im Finder anzeigen"
           }
         },
         "pt-BR": {
@@ -11201,13 +11201,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "输入媒体 URL 或 YouTube / 网页链接:"
+            "value": "输入媒体 URL 或 YouTube / 网页链接："
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "輸入媒體 URL 或 YouTube / 網頁連結:"
+            "value": "輸入媒體 URL 或 YouTube／網頁連結："
           }
         },
         "ja": {
@@ -11225,7 +11225,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Introduce una URL de medios o un enlace de YouTube/web:"
+            "value": "Introduce una URL de contenido o un enlace de YouTube/web:"
           }
         },
         "fr": {
@@ -11237,13 +11237,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eine Medien-URL oder einen YouTube / Web-Link eingeben:"
+            "value": "Geben Sie eine Medien-URL oder einen YouTube-/Web-Link ein:"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Insira uma URL de mídia ou link do YouTube/web:"
+            "value": "Digite uma URL de mídia ou link do YouTube/web:"
           }
         },
         "ru": {
@@ -11445,7 +11445,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ビデオ情報の取得に失敗"
+            "value": "ビデオ情報の取得に失敗しました"
           }
         },
         "ko": {
@@ -11457,7 +11457,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se pudo obtener la información del vídeo"
+            "value": "No se pudo obtener la información del video"
           }
         },
         "fr": {
@@ -11503,7 +11503,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ストリーム URL の取得に失敗"
+            "value": "ストリーム URL の取得に失敗しました"
           }
         },
         "ko": {
@@ -11573,13 +11573,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se encontraron formatos de vídeo"
+            "value": "No se encontraron formatos de video"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucun format vidéo trouvé"
+            "value": "Aucun format vidéo détecté"
           }
         },
         "de": {
@@ -11649,7 +11649,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selecionar resolução"
+            "value": "Selecionar Resolução"
           }
         },
         "ru": {
@@ -11759,7 +11759,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dolby Vision-Wiedergabe wird vorbereitet…"
+            "value": "Dolby-Vision-Wiedergabe wird vorbereitet…"
           }
         },
         "pt-BR": {
@@ -11781,13 +11781,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "不支持投屏 Dolby Vision,请在本机播放。"
+            "value": "不支持投屏 Dolby Vision，请在本机播放。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "不支援投放 Dolby Vision,請於本機播放。"
+            "value": "不支援投放 Dolby Vision，請於本機播放。"
           }
         },
         "ja": {
@@ -11799,7 +11799,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dolby Vision 캐스트는 지원되지 않습니다. 로컬에서 재생하세요."
+            "value": "Dolby Vision 캐스트는 지원되지 않습니다. 로컬에서 재생하십시오."
           }
         },
         "es": {
@@ -11817,13 +11817,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dolby Vision Streaming wird nicht unterstützt. Lokal abspielen."
+            "value": "Streamen von Dolby Vision wird nicht unterstützt. Bitte stattdessen lokal abspielen."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "A transmissão de Dolby Vision não é suportada. Reproduza localmente."
+            "value": "A transmissão em Dolby Vision não é compatível. Reproduza localmente."
           }
         },
         "ru": {
@@ -12199,7 +12199,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "キャストを切断"
+            "value": "キャストを切断しました"
           }
         },
         "ko": {
@@ -12303,13 +12303,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay: 正在电视上播放"
+            "value": "AirPlay：正在电视上播放"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay: 正在電視上播放"
+            "value": "AirPlay：正在電視上播放"
           }
         },
         "ja": {
@@ -12333,13 +12333,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay : Lecture sur la TV"
+            "value": "AirPlay : lecture sur le téléviseur"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay: Wiedergabe am TV"
+            "value": "AirPlay: Wiedergabe auf TV"
           }
         },
         "pt-BR": {
@@ -12361,13 +12361,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay: 本地播放"
+            "value": "AirPlay：本地播放"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay: 本機播放"
+            "value": "AirPlay：本機播放"
           }
         },
         "ja": {
@@ -12391,7 +12391,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirPlay : Lecture locale"
+            "value": "AirPlay : lecture locale"
           }
         },
         "de": {
@@ -12495,19 +12495,19 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "미디어를 여기에 놓으세요"
+            "value": "여기에 미디어를 놓으십시오"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Suelta el medio aquí"
+            "value": "Arrastra el contenido aquí"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Glissez le média ici"
+            "value": "Glissez un média ici"
           }
         },
         "de": {
@@ -12559,7 +12559,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir medio…"
+            "value": "Abrir contenido…"
           }
         },
         "fr": {
@@ -12577,7 +12577,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abrir mídia…"
+            "value": "Abrir Mídia…"
           }
         },
         "ru": {
@@ -12617,7 +12617,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se ha seleccionado ningún medio"
+            "value": "No se ha seleccionado ningún contenido"
           }
         },
         "fr": {
@@ -12641,7 +12641,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Медиа не выбрано"
+            "value": "Медиафайл не выбран"
           }
         }
       }
@@ -12651,7 +12651,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择配置"
+            "value": "选择配置文件"
           }
         },
         "zh-Hant": {
@@ -12693,7 +12693,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Escolher perfil"
+            "value": "Escolher Perfil"
           }
         },
         "ru": {
@@ -12709,7 +12709,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择目的地"
+            "value": "选择目标"
           }
         },
         "zh-Hant": {
@@ -12751,7 +12751,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Escolher destino"
+            "value": "Escolher Destino"
           }
         },
         "ru": {
@@ -12809,13 +12809,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salvar como arquivo"
+            "value": "Salvar como Arquivo"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сохранить в файл"
+            "value": "Сохранить как файл"
           }
         }
       }
@@ -12883,19 +12883,19 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "开始!"
+            "value": "开始！"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開始!"
+            "value": "開始！"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "開始!"
+            "value": "開始！"
           }
         },
         "ko": {
@@ -13197,7 +13197,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Guardar medio convertido"
+            "value": "Guardar contenido convertido"
           }
         },
         "fr": {
@@ -13215,7 +13215,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salvar mídia convertida"
+            "value": "Salvar Mídia Convertida"
           }
         },
         "ru": {
@@ -13359,7 +13359,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "トランスコーダの作成に失敗"
+            "value": "トランスコーダの作成に失敗しました"
           }
         },
         "ko": {
@@ -13389,7 +13389,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falha ao criar transcoder"
+            "value": "Falha ao criar o transcodificador"
           }
         },
         "ru": {
@@ -13405,13 +13405,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "libvlc 在转码过程中报告了错误。该配置可能与源编解码器不兼容。"
+            "value": "libvlc 在转码过程中报告了错误。该配置文件可能与源编解码器不兼容。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "libvlc 在轉碼過程中回報了錯誤。該設定檔可能與源編解碼器不相容。"
+            "value": "libvlc 在轉碼過程中回報了錯誤。該設定檔可能與來源編解碼器不相容。"
           }
         },
         "ja": {
@@ -13429,7 +13429,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "libvlc informó un error durante la transcodificación. El perfil puede ser incompatible con el códec de origen."
+            "value": "libvlc informó de un error durante la transcodificación. El perfil puede ser incompatible con el códec de origen."
           }
         },
         "fr": {
@@ -13447,7 +13447,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O libvlc reportou um erro durante a transcodificação. O perfil pode ser incompatível com o codec de origem."
+            "value": "O libvlc relatou um erro durante a transcodificação. O perfil pode ser incompatível com o codec de origem."
           }
         },
         "ru": {
@@ -13463,7 +13463,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "流输出"
+            "value": "流式输出"
           }
         },
         "zh-Hant": {
@@ -13505,7 +13505,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saída de transmissão"
+            "value": "Saída de Transmissão"
           }
         },
         "ru": {
@@ -13521,13 +13521,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "流式输出尚未实现,请使用「保存为文件」将其转码到磁盘。"
+            "value": "流式输出尚未实现，请使用「保存为文件」将其转码到磁盘。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "串流輸出尚未實作,請使用「儲存為檔案」轉碼到磁碟。"
+            "value": "串流輸出尚未實作，請使用「儲存為檔案」轉碼到磁碟。"
           }
         },
         "ja": {
@@ -13539,7 +13539,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "스트리밍은 아직 구현되지 않았습니다. '파일로 저장'으로 디스크에 트랜스코딩하세요."
+            "value": "스트리밍은 아직 구현되지 않았습니다. '파일로 저장'으로 디스크에 트랜스코딩하십시오."
           }
         },
         "es": {
@@ -13551,7 +13551,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La diffusion n'est pas encore implémentée. Utilisez Enregistrer dans un fichier."
+            "value": "La diffusion n'est pas encore implémentée. Utilisez « Enregistrer dans un fichier » pour transcoder sur le disque."
           }
         },
         "de": {
@@ -13563,13 +13563,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "A transmissão ainda não foi implementada. Use Salvar como arquivo para transcodificar para o disco."
+            "value": "A transmissão ainda não foi implementada. Use Salvar como Arquivo para transcodificar para o disco."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Потоковая трансляция ещё не реализована. Используйте «Сохранить в файл» для перекодирования на диск."
+            "value": "Потоковая трансляция ещё не реализована. Используйте «Сохранить как файл» для перекодирования на диск."
           }
         }
       }
@@ -13621,7 +13621,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limpar menu"
+            "value": "Limpar Menu"
           }
         },
         "ru": {
@@ -13637,19 +13637,19 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "(没有最近的文件)"
+            "value": "（没有最近的文件）"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "(沒有最近的檔案)"
+            "value": "（沒有最近的項目）"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "(最近のファイルなし)"
+            "value": "(最近使った項目なし)"
           }
         },
         "ko": {
@@ -13695,13 +13695,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "(无章节)"
+            "value": "（无章节）"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "(無章節)"
+            "value": "（無章節）"
           }
         },
         "ja": {
@@ -13753,13 +13753,13 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "(无)"
+            "value": "（无）"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "(無)"
+            "value": "（無）"
           }
         },
         "ja": {
@@ -14027,7 +14027,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Captura salva"
+            "value": "Captura de tela salva"
           }
         },
         "ru": {
@@ -14055,7 +14055,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "スクリーンショットに失敗"
+            "value": "スクリーンショットの保存に失敗しました"
           }
         },
         "ko": {
@@ -14085,7 +14085,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falha na captura"
+            "value": "Falha na captura de tela"
           }
         },
         "ru": {
@@ -14101,7 +14101,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "截图已保存到 %@"
+            "value": "截图已保存至 %@"
           }
         },
         "zh-Hant": {
@@ -14113,13 +14113,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ にスクリーンショットを保存"
+            "value": "%@ にスクリーンショットを保存しました"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 에 스크린샷 저장"
+            "value": "%@에 스크린샷이 저장됨"
           }
         },
         "es": {
@@ -14143,7 +14143,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Captura salva em %@"
+            "value": "Captura de tela salva em %@"
           }
         },
         "ru": {
@@ -14531,7 +14531,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "--- Vídeo ---"
+            "value": "--- Video ---"
           }
         },
         "fr": {
