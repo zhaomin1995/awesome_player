@@ -108,6 +108,11 @@ class CastingHTTPServer {
         headers += "Content-Length: \(contentLength)\r\n"
         headers += "Accept-Ranges: bytes\r\n"
         headers += "Access-Control-Allow-Origin: *\r\n"
+        // DLNA hints — Samsung MediaRenderers ignore the file without these.
+        // PN profile is informational; clients that don't recognize it fall
+        // back to header sniffing. OP=01 = both seek-by-time and seek-by-byte.
+        headers += "transferMode.dlna.org: Streaming\r\n"
+        headers += "contentFeatures.dlna.org: DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000\r\n"
 
         if statusCode == 206 {
             headers += "Content-Range: bytes \(rangeStart)-\(rangeEnd)/\(fileSize)\r\n"

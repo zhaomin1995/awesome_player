@@ -34,7 +34,23 @@ class DLNAManager {
     }
 
     func loadMedia(url: URL, on device: CastDevice) {
-        guard let controlURL = controlURL else { return }
+        // controlURL is set by connect() asynchronously (fetches the device
+        // description XML to find the AVTransport service path). If callers
+        // call connect() then immediately loadMedia, the URLSession fetch
+        // hasn't completed yet — chain here so loadMedia self-bootstraps.
+        guard let controlURL = controlURL else {
+            fetchDeviceDescription(device: device) { [weak self] ctrl in
+                guard let self = self, let ctrl = ctrl else {
+                    print("[DLNA] couldn't resolve controlURL for \(device.host)")
+                    return
+                }
+                self.controlURL = ctrl
+                self.connectedDevice = device
+                self.delegate?.dlnaDidConnect(device)
+                self.loadMedia(url: url, on: device)
+            }
+            return
+        }
         let soapAction = "SetAVTransportURI"
         let soapBody = """
         <?xml version="1.0" encoding="utf-8"?>
@@ -129,49 +145,91 @@ class DLNAManager {
 
     // MARK: - SSDP Discovery
 
+    private var ssdpSocket: Int32 = -1
+
+    /// SSDP M-SEARCH via BSD sockets. NWConnection's UDP "connection" model
+    /// doesn't deliver unicast responses to a multicast send — replies come
+    /// from the device's own IP, not from the multicast group. Raw sockets
+    /// don't have this constraint.
     private func sendSSDPSearch() {
-        let searchMessage = """
-        M-SEARCH * HTTP/1.1\r
-        HOST: 239.255.255.250:1900\r
-        MAN: "ssdp:discover"\r
-        MX: 3\r
-        ST: urn:schemas-upnp-org:device:MediaRenderer:1\r
-        \r
+        // Close any prior socket
+        if ssdpSocket >= 0 { close(ssdpSocket); ssdpSocket = -1 }
 
-        """
-
-        let group = NWEndpoint.Host("239.255.255.250")
-        let port = NWEndpoint.Port(integerLiteral: 1900)
-
-        let params = NWParameters.udp
-        let connection = NWConnection(host: group, port: port, using: params)
-
-        connection.stateUpdateHandler = { [weak self] state in
-            if case .ready = state {
-                let data = searchMessage.data(using: .utf8)!
-                connection.send(content: data, completion: .contentProcessed { _ in })
-
-                self?.receiveSSDP(connection: connection)
-            }
+        let sock = socket(AF_INET, SOCK_DGRAM, 0)
+        guard sock >= 0 else {
+            print("[DLNA] socket() failed")
+            return
         }
 
-        connection.start(queue: .global(qos: .userInitiated))
-        ssdpConnection = connection
+        // Reuse + broadcast capability
+        var reuse: Int32 = 1
+        setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, socklen_t(MemoryLayout<Int32>.size))
 
-        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
-            connection.cancel()
+        // Receive timeout so the read loop can exit
+        var tv = timeval(tv_sec: 4, tv_usec: 0)
+        setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
+
+        // Bind to ephemeral port (lets kernel pick)
+        var local = sockaddr_in()
+        local.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        local.sin_family = sa_family_t(AF_INET)
+        local.sin_port = 0
+        local.sin_addr.s_addr = INADDR_ANY.bigEndian
+        let bindRet = withUnsafePointer(to: &local) { ptr in
+            ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+                Darwin.bind(sock, sa, socklen_t(MemoryLayout<sockaddr_in>.size))
+            }
+        }
+        if bindRet < 0 { print("[DLNA] bind failed"); close(sock); return }
+
+        // Multicast destination 239.255.255.250:1900
+        var dest = sockaddr_in()
+        dest.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        dest.sin_family = sa_family_t(AF_INET)
+        dest.sin_port = UInt16(1900).bigEndian
+        inet_pton(AF_INET, "239.255.255.250", &dest.sin_addr)
+
+        let msg = "M-SEARCH * HTTP/1.1\r\n" +
+                  "HOST: 239.255.255.250:1900\r\n" +
+                  "MAN: \"ssdp:discover\"\r\n" +
+                  "MX: 3\r\n" +
+                  "ST: urn:schemas-upnp-org:device:MediaRenderer:1\r\n\r\n"
+        let data = msg.data(using: .utf8)!
+        let sent = data.withUnsafeBytes { buf -> Int in
+            withUnsafePointer(to: &dest) { destPtr in
+                destPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+                    sendto(sock, buf.baseAddress, buf.count, 0, sa, socklen_t(MemoryLayout<sockaddr_in>.size))
+                }
+            }
+        }
+        if sent < 0 { print("[DLNA] sendto failed"); close(sock); return }
+
+        ssdpSocket = sock
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.receiveSSDPResponses(socket: sock)
         }
     }
 
-    private func receiveSSDP(connection: NWConnection) {
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] content, _, _, error in
-            if let data = content, let response = String(data: data, encoding: .utf8) {
-                self?.parseSSDPResponse(response)
+    private func receiveSSDPResponses(socket sock: Int32) {
+        let bufSize = 4096
+        var buf = [UInt8](repeating: 0, count: bufSize)
+        let deadline = Date().addingTimeInterval(4)
+        while Date() < deadline {
+            var src = sockaddr_in()
+            var srcLen = socklen_t(MemoryLayout<sockaddr_in>.size)
+            let n = withUnsafeMutablePointer(to: &src) { srcPtr in
+                srcPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+                    recvfrom(sock, &buf, bufSize, 0, sa, &srcLen)
+                }
             }
-            if error == nil {
-                self?.receiveSSDP(connection: connection)
+            if n <= 0 { continue }
+            let data = Data(bytes: buf, count: n)
+            if let response = String(data: data, encoding: .utf8) {
+                parseSSDPResponse(response)
             }
         }
+        close(sock)
+        if ssdpSocket == sock { ssdpSocket = -1 }
     }
 
     private func parseSSDPResponse(_ response: String) {
@@ -194,7 +252,8 @@ class DLNAManager {
             name: "DLNA Renderer (\(host))",
             type: .dlna,
             host: host,
-            port: port
+            port: port,
+            descriptionURL: loc
         )
 
         DispatchQueue.main.async {
@@ -205,7 +264,12 @@ class DLNAManager {
     // MARK: - UPnP
 
     private func fetchDeviceDescription(device: CastDevice, completion: @escaping (String?) -> Void) {
-        let url = URL(string: "http://\(device.host):\(device.port)/xml/device_description.xml")!
+        // Use the LOCATION URL from the SSDP advertisement. Different vendors
+        // use different paths (Samsung uses /dmr, others use /xml/...).
+        // Fall back to a guessed path only if we somehow didn't capture LOCATION.
+        let urlString = device.descriptionURL
+            ?? "http://\(device.host):\(device.port)/xml/device_description.xml"
+        guard let url = URL(string: urlString) else { completion(nil); return }
         URLSession.shared.dataTask(with: url) { data, _, _ in
             guard let data = data, let xml = String(data: data, encoding: .utf8) else {
                 completion(nil)
@@ -218,15 +282,25 @@ class DLNAManager {
         }.resume()
     }
 
+    /// Walk the `<service>` blocks looking for the AVTransport service —
+    /// that's the one with SetAVTransportURI/Play. Devices typically also
+    /// expose RenderingControl and ConnectionManager which appear first in
+    /// the XML, so naively grabbing the first <controlURL> picks the wrong one.
     private func parseControlURL(from xml: String, baseHost: String, basePort: Int) -> String? {
-        if let range = xml.range(of: "<controlURL>") {
-            let after = xml[range.upperBound...]
-            if let endRange = after.range(of: "</controlURL>") {
-                let path = String(after[..<endRange.lowerBound])
+        var remaining = xml[xml.startIndex...]
+        while let svcOpen = remaining.range(of: "<service>"),
+              let svcClose = remaining.range(of: "</service>", range: svcOpen.upperBound..<remaining.endIndex) {
+            let serviceBlock = remaining[svcOpen.upperBound..<svcClose.lowerBound]
+            if serviceBlock.contains("AVTransport"),
+               let ctrlOpen = serviceBlock.range(of: "<controlURL>"),
+               let ctrlClose = serviceBlock.range(of: "</controlURL>", range: ctrlOpen.upperBound..<serviceBlock.endIndex) {
+                let path = String(serviceBlock[ctrlOpen.upperBound..<ctrlClose.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+                if path.hasPrefix("http") { return path }
                 return "http://\(baseHost):\(basePort)\(path)"
             }
+            remaining = remaining[svcClose.upperBound...]
         }
-        return "http://\(baseHost):\(basePort)/MediaRenderer/AVTransport/Control"
+        return nil
     }
 
     private func sendSOAPAction(controlURL: String, action: String, body: String, completion: ((Data?) -> Void)?) {

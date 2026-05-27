@@ -20,7 +20,6 @@ class VLCPlayerEngine {
         let args: [String] = [
             "--no-video-title-show", "--no-stats", "--no-snapshot-preview",
             "--vout=caopengllayer",
-            "--sout-chromecast-conversion-quality=2",
         ]
         setenv("VLC_PLUGIN_PATH", pluginPath, 1)
         if FileManager.default.fileExists(atPath: "/Applications/VLC.app/Contents/MacOS/lib") {
@@ -518,12 +517,16 @@ class VLCPlayerEngine {
         discoveredRenderers.removeAll()
     }
 
-    func setRenderer(_ renderer: RendererInfo?) {
-        guard let p = player else { return }
+    /// Returns 0 on success, negative on failure. Negative usually means the
+    /// renderer was set after play() — libvlc requires renderer attachment
+    /// before media playback begins.
+    @discardableResult
+    func setRenderer(_ renderer: RendererInfo?) -> Int32 {
+        guard let p = player else { return -1 }
         if let r = renderer {
-            libvlc_media_player_set_renderer(p, r.item)
+            return libvlc_media_player_set_renderer(p, r.item)
         } else {
-            libvlc_media_player_set_renderer(p, nil)
+            return libvlc_media_player_set_renderer(p, nil)
         }
     }
 

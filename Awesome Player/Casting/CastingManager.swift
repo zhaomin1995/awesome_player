@@ -12,6 +12,10 @@ struct CastDevice {
     let type: CastDeviceType
     let host: String
     let port: Int
+    /// Full URL to the device's UPnP description XML, as advertised in the
+    /// SSDP LOCATION header. Required for DLNA — Samsung uses /dmr,
+    /// other vendors use /xml/device_description.xml, /description.xml, etc.
+    var descriptionURL: String? = nil
 }
 
 enum CastState {
