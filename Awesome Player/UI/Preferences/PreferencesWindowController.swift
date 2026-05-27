@@ -232,33 +232,25 @@ final class LanguagePicker: NSObject {
 
     @objc func languageChanged(_ sender: NSPopUpButton) {
         let idx = sender.indexOfSelectedItem
-        if idx == 0 {
-            // Restore system default — remove our override
-            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
-        } else {
-            let entry = Self.languages[idx - 1]
-            UserDefaults.standard.set([entry.code], forKey: "AppleLanguages")
-        }
-        UserDefaults.standard.synchronize()
+        let code: String? = idx == 0 ? nil : Self.languages[idx - 1].code
 
-        let alert = NSAlert()
-        alert.messageText = L("Language Changed")
-        alert.informativeText = L("Awesome Player needs to relaunch for the language change to take effect.")
-        alert.addButton(withTitle: L("Relaunch Now"))
-        alert.addButton(withTitle: L("Later"))
-        if alert.runModal() == .alertFirstButtonReturn {
-            relaunchApp()
-        }
-    }
+        // Swap the active bundle in LanguageManager → L() returns new-locale
+        // strings starting with the next call. Also writes AppleLanguages so
+        // the choice persists across launches.
+        LanguageManager.shared.setLanguage(code)
 
-    /// Spawn a `/usr/bin/open -n` on our own bundle and exit so the new
-    /// process boots from scratch with the updated AppleLanguages value.
-    private func relaunchApp() {
-        let task = Process()
-        task.launchPath = "/usr/bin/open"
-        task.arguments = ["-n", Bundle.main.bundlePath]
-        try? task.run()
-        NSApp.terminate(nil)
+        // The main menu is set once at app launch; rebuild it so the menu
+        // bar reflects the new language immediately.
+        NSApplication.shared.mainMenu = nil
+        MenuManager.setupMainMenu()
+
+        // The preferences window itself was built with the old strings; close
+        // it so reopening picks up the new locale. Other UI in the app is
+        // either dynamic (OSD messages, dialogs, filename titles) or made of
+        // icons, so it'll display correctly without further action.
+        if let win = sender.window {
+            DispatchQueue.main.async { win.performClose(nil) }
+        }
     }
 }
 

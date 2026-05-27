@@ -37,6 +37,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         castingManager.startAirPlayDiscovery()
 
         UserDefaults.standard.addObserver(self, forKeyPath: Defaults.theme, options: .new, context: nil)
+
+        // Drop cached window controllers on language change so the next time
+        // they're opened, their views are built with the new locale's strings.
+        // PreferencesWindowController, MediaInspectorController and
+        // VideoEQPanelController all bake L() values into NSTextField labels
+        // at init time — recycling the cached instance would show stale text.
+        NotificationCenter.default.addObserver(self, selector: #selector(languageDidChange),
+                                                name: .languageDidChange, object: nil)
+    }
+
+    @objc private func languageDidChange() {
+        preferencesController = nil
+        inspectorController = nil
+        videoEQController = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
