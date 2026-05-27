@@ -160,18 +160,106 @@ class GeneralPrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
-        addSectionHeader(stack, "Appearance")
-        addPopupRow(stack, "Theme:", key: Defaults.theme, items: ["System", "Dark", "Light"])
-        addToggleRow(stack, "Transparent title bar", key: Defaults.transparentTitleBar)
+        addSectionHeader(stack, L("Appearance"))
+        addPopupRow(stack, L("Theme:"), key: Defaults.theme, items: [L("System"), L("Dark"), L("Light")])
+        addToggleRow(stack, L("Transparent title bar"), key: Defaults.transparentTitleBar)
 
-        addSectionHeader(stack, "Behavior")
-        addToggleRow(stack, "Resume playback position on reopen", key: Defaults.resumePlayback)
-        addToggleRow(stack, "Quit when last window closed", key: Defaults.quitOnLastWindowClosed)
-        addToggleRow(stack, "Restore window position on launch", key: Defaults.restoreWindowPosition)
+        addSectionHeader(stack, L("Language"))
+        addLanguageRow(stack)
+
+        addSectionHeader(stack, L("Behavior"))
+        addToggleRow(stack, L("Resume playback position on reopen"), key: Defaults.resumePlayback)
+        addToggleRow(stack, L("Quit when last window closed"), key: Defaults.quitOnLastWindowClosed)
+        addToggleRow(stack, L("Restore window position on launch"), key: Defaults.restoreWindowPosition)
 
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
+
+    /// Per-app language override. Writes to the standard macOS AppleLanguages
+    /// key so the change is identical to what System Settings → Language &
+    /// Region → Applications would do; macOS then loads strings from the
+    /// matching .lproj at next launch.
+    private func addLanguageRow(_ stack: NSStackView) {
+        let popup = NSPopUpButton()
+        // First entry = follow system locale (clears the override)
+        popup.addItem(withTitle: L("System Default"))
+        for entry in LanguagePicker.languages {
+            popup.addItem(withTitle: entry.displayName)
+        }
+        // Reflect current override
+        let current = (UserDefaults.standard.array(forKey: "AppleLanguages") as? [String])?.first ?? ""
+        if let idx = LanguagePicker.languages.firstIndex(where: { current.hasPrefix($0.code) }) {
+            popup.selectItem(at: idx + 1)
+        } else {
+            popup.selectItem(at: 0)
+        }
+        popup.target = LanguagePicker.shared
+        popup.action = #selector(LanguagePicker.languageChanged(_:))
+        popup.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
+
+        addRow(stack, L("Display language:"), popup)
+    }
+}
+
+/// Handles the language popup's action: write AppleLanguages, prompt the user
+/// to relaunch, and offer to do it for them.
+final class LanguagePicker: NSObject {
+    static let shared = LanguagePicker()
+
+    struct Entry {
+        /// AppleLanguages code (matches our .lproj names)
+        let code: String
+        /// Endonym shown in the picker so users find their language regardless
+        /// of the current UI language (e.g. a Russian speaker sees "Русский"
+        /// even if the app is currently in English).
+        let displayName: String
+    }
+
+    static let languages: [Entry] = [
+        Entry(code: "en",      displayName: "English"),
+        Entry(code: "zh-Hans", displayName: "简体中文"),
+        Entry(code: "zh-Hant", displayName: "繁體中文"),
+        Entry(code: "yue",     displayName: "廣東話"),
+        Entry(code: "ja",      displayName: "日本語"),
+        Entry(code: "ko",      displayName: "한국어"),
+        Entry(code: "es",      displayName: "Español"),
+        Entry(code: "fr",      displayName: "Français"),
+        Entry(code: "de",      displayName: "Deutsch"),
+        Entry(code: "pt-BR",   displayName: "Português (Brasil)"),
+        Entry(code: "ru",      displayName: "Русский"),
+    ]
+
+    @objc func languageChanged(_ sender: NSPopUpButton) {
+        let idx = sender.indexOfSelectedItem
+        if idx == 0 {
+            // Restore system default — remove our override
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+        } else {
+            let entry = Self.languages[idx - 1]
+            UserDefaults.standard.set([entry.code], forKey: "AppleLanguages")
+        }
+        UserDefaults.standard.synchronize()
+
+        let alert = NSAlert()
+        alert.messageText = L("Language Changed")
+        alert.informativeText = L("Awesome Player needs to relaunch for the language change to take effect.")
+        alert.addButton(withTitle: L("Relaunch Now"))
+        alert.addButton(withTitle: L("Later"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            relaunchApp()
+        }
+    }
+
+    /// Spawn a `/usr/bin/open -n` on our own bundle and exit so the new
+    /// process boots from scratch with the updated AppleLanguages value.
+    private func relaunchApp() {
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = ["-n", Bundle.main.bundlePath]
+        try? task.run()
+        NSApp.terminate(nil)
+    }
 }
 
 class MediaOpenPrefsView: NSView {
