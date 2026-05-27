@@ -218,8 +218,11 @@ class ControlBarView: NSView {
         castButton.setPlayer(player)
     }
 
+    /// `available` controls which click handler the AirPlay button uses:
+    /// - true  → AVKit's standard route picker (for native MP4 / non-DV files)
+    /// - false → our custom handler (for DV files and libvlc-engine files)
     func setAirPlayAvailable(_ available: Bool) {
-        castButton.setEnabled(available)
+        castButton.setMode(available ? .avkitPicker : .customHandler)
     }
 
     func setSeekBarAsset(_ asset: AVAsset?) {

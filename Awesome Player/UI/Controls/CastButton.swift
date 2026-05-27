@@ -1,22 +1,80 @@
+/// AirPlay/cast button with two interchangeable modes.
+///
+/// - .avkitPicker: shows `AVRoutePickerView`, which surfaces Apple's standard
+///   AirPlay picker UI when clicked. Used for native MP4 / non-DV files where
+///   AVKit's AirPlay path works. AVPlayer is attached for route routing.
+///
+/// - .customHandler: shows a plain `NSButton` that calls `onAirPlayFallback`
+///   on click. Used for Dolby Vision files (we transcode + push via libvlc)
+///   and for files already running on the libvlc engine. We need this because
+///   `AVRoutePickerView`'s underlying button intercepts mouseDown via private
+///   tracking — a sibling overlay view doesn't reliably catch clicks. Fully
+///   replacing the picker is the only reliable way to route the click to our
+///   own handler.
 import Cocoa
 import AVKit
 
 class CastButton: NSView {
+    enum Mode {
+        case avkitPicker
+        case customHandler
+    }
+
     private var routePickerView: AVRoutePickerView?
-    private var overlay: ClickInterceptView?
+    private var customButton: NSButton?
+    private var currentMode: Mode = .avkitPicker
+    private var pendingPlayer: AVPlayer?
+
+    /// Called when the user clicks the button while in `.customHandler` mode.
     var onAirPlayFallback: (() -> Void)?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        setupViews()
+        installAVKitPicker()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupViews()
+        installAVKitPicker()
     }
 
-    private func setupViews() {
+    func setMode(_ mode: Mode) {
+        guard mode != currentMode else { return }
+        currentMode = mode
+        // Tear down whichever view is currently installed
+        routePickerView?.removeFromSuperview()
+        routePickerView = nil
+        customButton?.removeFromSuperview()
+        customButton = nil
+        switch mode {
+        case .avkitPicker:
+            installAVKitPicker()
+            // Re-attach the cached AVPlayer (route picker needs it to route)
+            routePickerView?.player = pendingPlayer
+        case .customHandler:
+            installCustomButton()
+        }
+    }
+
+    func setPlayer(_ player: AVPlayer?) {
+        pendingPlayer = player
+        routePickerView?.player = player
+    }
+
+    /// Programmatically open the AVKit picker (only meaningful in .avkitPicker mode).
+    func showPicker() {
+        guard let picker = routePickerView else { return }
+        for subview in picker.subviews {
+            if let button = subview as? NSButton {
+                button.performClick(nil)
+                return
+            }
+        }
+    }
+
+    // MARK: - View construction
+
+    private func installAVKitPicker() {
         let picker = AVRoutePickerView()
         picker.isRoutePickerButtonBordered = false
         picker.translatesAutoresizingMaskIntoConstraints = false
@@ -24,7 +82,6 @@ class CastButton: NSView {
         picker.setRoutePickerButtonColor(.systemBlue, for: .active)
         addSubview(picker)
         routePickerView = picker
-
         NSLayoutConstraint.activate([
             picker.topAnchor.constraint(equalTo: topAnchor),
             picker.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -33,44 +90,38 @@ class CastButton: NSView {
             picker.widthAnchor.constraint(equalToConstant: 28),
             picker.heightAnchor.constraint(equalToConstant: 28),
         ])
+        toolTip = "AirPlay / Cast"
     }
 
-    func showPicker() {
-        for subview in routePickerView?.subviews ?? [] {
-            if let button = subview as? NSButton {
-                button.performClick(nil)
-                return
-            }
-        }
-    }
-
-    func setPlayer(_ player: AVPlayer?) {
-        routePickerView?.player = player
-    }
-
-    func setEnabled(_ enabled: Bool) {
-        if enabled {
-            overlay?.removeFromSuperview()
-            overlay = nil
+    private func installCustomButton() {
+        let btn = NSButton()
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.isBordered = false
+        btn.bezelStyle = .regularSquare
+        btn.imagePosition = .imageOnly
+        btn.target = self
+        btn.action = #selector(customButtonClicked(_:))
+        // SF Symbol matches AVKit picker's look closely
+        if let img = NSImage(systemSymbolName: "airplayvideo", accessibilityDescription: "AirPlay") {
+            btn.image = img
+            btn.contentTintColor = .white
         } else {
-            if overlay == nil {
-                let o = ClickInterceptView(frame: bounds)
-                o.autoresizingMask = [.width, .height]
-                o.onClicked = { [weak self] in
-                    self?.onAirPlayFallback?()
-                }
-                addSubview(o)
-                overlay = o
-            }
+            btn.title = "AirPlay"
         }
-        toolTip = enabled ? "AirPlay / Cast" : "AirPlay"
+        addSubview(btn)
+        customButton = btn
+        NSLayoutConstraint.activate([
+            btn.topAnchor.constraint(equalTo: topAnchor),
+            btn.bottomAnchor.constraint(equalTo: bottomAnchor),
+            btn.leadingAnchor.constraint(equalTo: leadingAnchor),
+            btn.trailingAnchor.constraint(equalTo: trailingAnchor),
+            btn.widthAnchor.constraint(equalToConstant: 28),
+            btn.heightAnchor.constraint(equalToConstant: 28),
+        ])
+        toolTip = "AirPlay"
     }
-}
 
-private class ClickInterceptView: NSView {
-    var onClicked: (() -> Void)?
-
-    override func mouseDown(with event: NSEvent) {
-        onClicked?()
+    @objc private func customButtonClicked(_ sender: NSButton) {
+        onAirPlayFallback?()
     }
 }

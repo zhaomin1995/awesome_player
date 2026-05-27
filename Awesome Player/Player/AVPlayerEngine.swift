@@ -78,6 +78,11 @@ class AVPlayerEngine: NSObject {
         return NSSize(width: abs(size.width), height: abs(size.height))
     }
 
+    /// Set false for Dolby Vision files where we don't want AVKit's AirPlay
+    /// path engaging (Samsung AirPlay 2 receivers won't decode P5 over AVKit;
+    /// we route DV via libvlc renderer instead). Must be set before open().
+    var allowsExternalPlayback: Bool = true
+
     func open(url: URL) {
         stop()
         cachedDuration = 0
@@ -87,7 +92,7 @@ class AVPlayerEngine: NSObject {
         playerItem = item
 
         let avPlayer = AVPlayer(playerItem: item)
-        avPlayer.allowsExternalPlayback = true
+        avPlayer.allowsExternalPlayback = allowsExternalPlayback
         avPlayer.volume = 1.0
         avPlayer.isMuted = false
         player = avPlayer
