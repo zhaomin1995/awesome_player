@@ -65,6 +65,9 @@ enum Defaults {
     static let subtitleColor = "subtitle.color"
     static let subtitlePosition = "subtitle.position"
     static let subtitleOutline = "subtitle.outline"
+    static let subtitleOutlineThickness = "subtitle.outlineThickness"
+    static let subtitleBackgroundColor = "subtitle.backgroundColor"
+    static let subtitleBackgroundOpacity = "subtitle.backgroundOpacity"
     static let subtitleDelayStep = "subtitle.delayStep"
 
     // MARK: - Full Screen
@@ -149,8 +152,11 @@ enum Defaults {
             defaultEncoding: 0,          // 0=UTF-8, 1=Auto-detect, ...
             subtitleFont: 0,             // 0=System Default, ...
             subtitleFontSize: 24.0,
-            subtitleColor: 0,            // 0=White, 1=Yellow, ...
+            subtitleColor: 3,            // HTML named-color index: 3 = White (see SubtitleOverlayView.namedColors)
             subtitleOutline: 0,          // 0=Black outline, ...
+            subtitleOutlineThickness: 2, // pixels (0=none, max ~6)
+            subtitleBackgroundColor: 0,  // HTML named-color index: 0 = Black
+            subtitleBackgroundOpacity: 0.0, // 0.0 = transparent, 1.0 = solid
             subtitlePosition: 0,         // 0=Bottom of Video, ...
             subtitleDelayStep: 0.1,
             autoEnterFullscreen: false,

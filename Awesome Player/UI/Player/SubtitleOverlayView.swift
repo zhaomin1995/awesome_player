@@ -1,6 +1,48 @@
 import Cocoa
 
 class SubtitleOverlayView: NSView {
+    /// HTML/CSS 16 named colors, matching VLC's subtitle color palette.
+    /// Index in this array == value stored in UserDefaults — never reorder.
+    static let namedColors: [(name: String, color: NSColor)] = [
+        ("Black",   NSColor(srgbRed: 0.00, green: 0.00, blue: 0.00, alpha: 1)),
+        ("Gray",    NSColor(srgbRed: 0.50, green: 0.50, blue: 0.50, alpha: 1)),
+        ("Silver",  NSColor(srgbRed: 0.75, green: 0.75, blue: 0.75, alpha: 1)),
+        ("White",   NSColor(srgbRed: 1.00, green: 1.00, blue: 1.00, alpha: 1)),
+        ("Maroon",  NSColor(srgbRed: 0.50, green: 0.00, blue: 0.00, alpha: 1)),
+        ("Red",     NSColor(srgbRed: 1.00, green: 0.00, blue: 0.00, alpha: 1)),
+        ("Fuchsia", NSColor(srgbRed: 1.00, green: 0.00, blue: 1.00, alpha: 1)),
+        ("Yellow",  NSColor(srgbRed: 1.00, green: 1.00, blue: 0.00, alpha: 1)),
+        ("Olive",   NSColor(srgbRed: 0.50, green: 0.50, blue: 0.00, alpha: 1)),
+        ("Green",   NSColor(srgbRed: 0.00, green: 0.50, blue: 0.00, alpha: 1)),
+        ("Teal",    NSColor(srgbRed: 0.00, green: 0.50, blue: 0.50, alpha: 1)),
+        ("Lime",    NSColor(srgbRed: 0.00, green: 1.00, blue: 0.00, alpha: 1)),
+        ("Purple",  NSColor(srgbRed: 0.50, green: 0.00, blue: 0.50, alpha: 1)),
+        ("Navy",    NSColor(srgbRed: 0.00, green: 0.00, blue: 0.50, alpha: 1)),
+        ("Blue",    NSColor(srgbRed: 0.00, green: 0.00, blue: 1.00, alpha: 1)),
+        ("Aqua",    NSColor(srgbRed: 0.00, green: 1.00, blue: 1.00, alpha: 1)),
+    ]
+
+    static func namedColor(at index: Int, fallback: NSColor = .white) -> NSColor {
+        guard index >= 0 && index < namedColors.count else { return fallback }
+        return namedColors[index].color
+    }
+
+    /// Builds a small rounded color square for use as `NSMenuItem.image`.
+    static func swatchImage(for color: NSColor, size: CGFloat = 14) -> NSImage {
+        let s = NSSize(width: size, height: size)
+        let img = NSImage(size: s)
+        img.lockFocus()
+        color.setFill()
+        NSBezierPath(roundedRect: NSRect(origin: .zero, size: s), xRadius: 2, yRadius: 2).fill()
+        NSColor.black.withAlphaComponent(0.35).setStroke()
+        let border = NSBezierPath(roundedRect: NSRect(origin: .zero, size: s).insetBy(dx: 0.5, dy: 0.5),
+                                  xRadius: 2, yRadius: 2)
+        border.lineWidth = 0.5
+        border.stroke()
+        img.unlockFocus()
+        return img
+    }
+
     private let label = NSTextField(wrappingLabelWithString: "")
 
     override init(frame frameRect: NSRect) {
@@ -27,8 +69,7 @@ class SubtitleOverlayView: NSView {
         }
 
         let colorIndex = UserDefaults.standard.integer(forKey: Defaults.subtitleColor)
-        let colors: [NSColor] = [.white, .yellow, .green, .cyan]
-        label.textColor = colorIndex < colors.count ? colors[colorIndex] : .white
+        label.textColor = SubtitleOverlayView.namedColor(at: colorIndex)
         label.alignment = .center
         label.backgroundColor = .clear
         label.isBezeled = false
@@ -52,13 +93,22 @@ class SubtitleOverlayView: NSView {
         ])
 
         // Observe subtitle preference changes for live updates
-        for key in [Defaults.subtitleFont, Defaults.subtitleFontSize, Defaults.subtitleColor] {
+        for key in observedKeys {
             UserDefaults.standard.addObserver(self, forKeyPath: key, options: .new, context: nil)
         }
     }
 
+    private let observedKeys = [
+        Defaults.subtitleFont,
+        Defaults.subtitleFontSize,
+        Defaults.subtitleColor,
+        Defaults.subtitleOutlineThickness,
+        Defaults.subtitleBackgroundColor,
+        Defaults.subtitleBackgroundOpacity,
+    ]
+
     deinit {
-        for key in [Defaults.subtitleFont, Defaults.subtitleFontSize, Defaults.subtitleColor] {
+        for key in observedKeys {
             UserDefaults.standard.removeObserver(self, forKeyPath: key)
         }
     }
@@ -79,28 +129,59 @@ class SubtitleOverlayView: NSView {
         }
 
         let colorIndex = UserDefaults.standard.integer(forKey: Defaults.subtitleColor)
-        let colors: [NSColor] = [.white, .yellow, .green, .cyan]
-        label.textColor = colorIndex < colors.count ? colors[colorIndex] : .white
+        label.textColor = SubtitleOverlayView.namedColor(at: colorIndex)
     }
 
     func setText(_ text: String?) {
-        if let text = text, !text.isEmpty {
-            label.stringValue = text
-            isHidden = false
-        } else {
+        guard let text = text, !text.isEmpty else {
             label.stringValue = ""
             isHidden = true
+            return
         }
+        label.attributedStringValue = applyStyling(to: NSAttributedString(string: text))
+        isHidden = false
     }
 
     func setAttributedText(_ text: NSAttributedString?) {
-        if let text = text, text.length > 0 {
-            label.attributedStringValue = text
-            isHidden = false
-        } else {
+        guard let text = text, text.length > 0 else {
             label.stringValue = ""
             isHidden = true
+            return
         }
+        // Re-apply outline/background on top of the parser's font/color attributes
+        label.attributedStringValue = applyStyling(to: text)
+        isHidden = false
+    }
+
+    /// Adds outline-stroke, paragraph alignment, and background-color attributes
+    /// to whatever attributed string the parser produced. Negative strokeWidth
+    /// makes NSAttributedString fill AND stroke (positive would draw outline only).
+    private func applyStyling(to base: NSAttributedString) -> NSAttributedString {
+        let result = NSMutableAttributedString(attributedString: base)
+        let range = NSRange(location: 0, length: result.length)
+
+        let thickness = UserDefaults.standard.integer(forKey: Defaults.subtitleOutlineThickness)
+        if thickness > 0 {
+            // -value = stroke + fill (outline visible around the filled text)
+            result.addAttribute(.strokeWidth, value: -Double(thickness), range: range)
+            result.addAttribute(.strokeColor, value: NSColor.black, range: range)
+        }
+
+        let bgOpacity = UserDefaults.standard.double(forKey: Defaults.subtitleBackgroundOpacity)
+        if bgOpacity > 0 {
+            let bgIdx = UserDefaults.standard.integer(forKey: Defaults.subtitleBackgroundColor)
+            let bgBase = SubtitleOverlayView.namedColor(at: bgIdx, fallback: .black)
+            result.addAttribute(.backgroundColor,
+                                value: bgBase.withAlphaComponent(CGFloat(bgOpacity)),
+                                range: range)
+        }
+
+        // Preserve centering even when parser supplied its own paragraph style
+        let style = NSMutableParagraphStyle()
+        style.alignment = .center
+        result.addAttribute(.paragraphStyle, value: style, range: range)
+
+        return result
     }
 
     override func draw(_ dirtyRect: NSRect) {
