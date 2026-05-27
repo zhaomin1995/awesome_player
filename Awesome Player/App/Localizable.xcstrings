@@ -57,6 +57,12 @@
             "state": "translated",
             "value": "О программе Awesome Player"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關於 Awesome Player"
+          }
         }
       }
     },
@@ -114,6 +120,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Настройки…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏好設定…"
           }
         }
       }
@@ -173,6 +185,12 @@
             "state": "translated",
             "value": "Службы"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服務"
+          }
         }
       }
     },
@@ -230,6 +248,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скрыть Awesome Player"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隱藏 Awesome Player"
           }
         }
       }
@@ -289,6 +313,12 @@
             "state": "translated",
             "value": "Скрыть остальные"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隱藏其他"
+          }
         }
       }
     },
@@ -346,6 +376,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показать все"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部顯示"
           }
         }
       }
@@ -405,6 +441,12 @@
             "state": "translated",
             "value": "Завершить Awesome Player"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "離開 Awesome Player"
+          }
         }
       }
     },
@@ -462,6 +504,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Файл"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檔案"
           }
         }
       }
@@ -521,6 +569,12 @@
             "state": "translated",
             "value": "Правка"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "編輯"
+          }
         }
       }
     },
@@ -578,6 +632,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отменить"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "還原"
           }
         }
       }
@@ -637,6 +697,12 @@
             "state": "translated",
             "value": "Повторить"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重做"
+          }
         }
       }
     },
@@ -694,6 +760,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вырезать"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剪下"
           }
         }
       }
@@ -753,6 +825,12 @@
             "state": "translated",
             "value": "Скопировать"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
+          }
         }
       }
     },
@@ -810,6 +888,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вставить"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "貼上"
           }
         }
       }
@@ -869,6 +953,12 @@
             "state": "translated",
             "value": "Выделить всё"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全選"
+          }
         }
       }
     },
@@ -926,6 +1016,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Открыть файл…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟檔案…"
           }
         }
       }
@@ -985,6 +1081,12 @@
             "state": "translated",
             "value": "Открыть URL…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟 URL…"
+          }
         }
       }
     },
@@ -1042,6 +1144,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Недавние объекты"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近開啟"
           }
         }
       }
@@ -1101,6 +1209,12 @@
             "state": "translated",
             "value": "Добавить файл субтитров…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加入字幕檔…"
+          }
         }
       }
     },
@@ -1158,6 +1272,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сохранить снимок экрана"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存截圖"
           }
         }
       }
@@ -1217,6 +1337,12 @@
             "state": "translated",
             "value": "Конвертировать / Транслировать…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換 / 串流…"
+          }
         }
       }
     },
@@ -1274,6 +1400,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Закрыть"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉"
           }
         }
       }
@@ -1333,6 +1465,12 @@
             "state": "translated",
             "value": "Воспроизведение"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放"
+          }
         }
       }
     },
@@ -1390,6 +1528,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Воспроизвести / Пауза"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放 / 暫停"
           }
         }
       }
@@ -1449,6 +1593,12 @@
             "state": "translated",
             "value": "Перемотать вперёд на 5 с"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向前跳 5 秒"
+          }
         }
       }
     },
@@ -1506,6 +1656,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перемотать назад на 5 с"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向後跳 5 秒"
           }
         }
       }
@@ -1565,6 +1721,12 @@
             "state": "translated",
             "value": "Перейти ко времени…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳去指定時間…"
+          }
         }
       }
     },
@@ -1622,6 +1784,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перейти ко времени"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳去指定時間"
           }
         }
       }
@@ -1681,6 +1849,12 @@
             "state": "translated",
             "value": "Перейти"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳去"
+          }
         }
       }
     },
@@ -1738,6 +1912,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Введите время (например, 1:30 или 90):"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入時間（例如 1:30 或 90）："
           }
         }
       }
@@ -1797,6 +1977,12 @@
             "state": "translated",
             "value": "Предустановки скорости"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "速度預設值"
+          }
         }
       }
     },
@@ -1854,6 +2040,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скорость воспроизведения"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放速度"
           }
         }
       }
@@ -1913,6 +2105,12 @@
             "state": "translated",
             "value": "Медленнее"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "較慢"
+          }
         }
       }
     },
@@ -1970,6 +2168,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Обычная"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常"
           }
         }
       }
@@ -2029,6 +2233,12 @@
             "state": "translated",
             "value": "Быстрее"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "較快"
+          }
         }
       }
     },
@@ -2086,6 +2296,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Повтор A-B"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A-B 段重複"
           }
         }
       }
@@ -2145,6 +2361,12 @@
             "state": "translated",
             "value": "Точка A установлена"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 點已設定"
+          }
         }
       }
     },
@@ -2202,6 +2424,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цикл A-B активен"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A-B 循環已開啟"
           }
         }
       }
@@ -2261,6 +2489,12 @@
             "state": "translated",
             "value": "Цикл A-B сброшен"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A-B 循環已清除"
+          }
         }
       }
     },
@@ -2318,6 +2552,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Глава"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "章節"
           }
         }
       }
@@ -2377,6 +2617,12 @@
             "state": "translated",
             "value": "Глава: %@"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "章節：%@"
+          }
         }
       }
     },
@@ -2434,6 +2680,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нет следующей главы"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇下一章"
           }
         }
       }
@@ -2493,6 +2745,12 @@
             "state": "translated",
             "value": "Нет предыдущей главы"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇上一章"
+          }
         }
       }
     },
@@ -2550,6 +2808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скорость: %.2fx"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "速度：%.2f 倍"
           }
         }
       }
@@ -2609,6 +2873,12 @@
             "state": "translated",
             "value": "Приостановлено"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已暫停"
+          }
         }
       }
     },
@@ -2666,6 +2936,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Воспроизводится"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放中"
           }
         }
       }
@@ -2725,6 +3001,12 @@
             "state": "translated",
             "value": "Перемотать к %@ / %@ (%d%%)"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳去 %@ / %@ (%d%%)"
+          }
         }
       }
     },
@@ -2782,6 +3064,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перейти к %@"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳去 %@"
           }
         }
       }
@@ -2841,6 +3129,12 @@
             "state": "translated",
             "value": "Возобновлено с %@"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "由 %@ 繼續播放"
+          }
         }
       }
     },
@@ -2898,6 +3192,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Звук"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聲音"
           }
         }
       }
@@ -2957,6 +3257,12 @@
             "state": "translated",
             "value": "Звуковая дорожка"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音軌"
+          }
         }
       }
     },
@@ -3014,6 +3320,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Эквалайзер"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等化器"
           }
         }
       }
@@ -3073,6 +3385,12 @@
             "state": "translated",
             "value": "Устройство вывода"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸出裝置"
+          }
         }
       }
     },
@@ -3130,6 +3448,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Устройства не найдены"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到裝置"
           }
         }
       }
@@ -3189,6 +3513,12 @@
             "state": "translated",
             "value": "Синхр."
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同步"
+          }
         }
       }
     },
@@ -3246,6 +3576,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сдвинуть назад"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前移"
           }
         }
       }
@@ -3305,6 +3641,12 @@
             "state": "translated",
             "value": "Сдвинуть вперёд"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "後移"
+          }
         }
       }
     },
@@ -3362,6 +3704,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сбросить синхр."
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設同步"
           }
         }
       }
@@ -3421,6 +3769,12 @@
             "state": "translated",
             "value": "Увеличить громкость"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提高音量"
+          }
         }
       }
     },
@@ -3478,6 +3832,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Уменьшить громкость"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低音量"
           }
         }
       }
@@ -3537,6 +3897,12 @@
             "state": "translated",
             "value": "Без звука"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音"
+          }
         }
       }
     },
@@ -3594,6 +3960,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Звук выключен"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已靜音"
           }
         }
       }
@@ -3653,6 +4025,12 @@
             "state": "translated",
             "value": "Звук включён"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已取消靜音"
+          }
         }
       }
     },
@@ -3710,6 +4088,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Громкость: %d%%"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音量：%d%%"
           }
         }
       }
@@ -3769,6 +4153,12 @@
             "state": "translated",
             "value": "Задержка звука: %+.1f с"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聲音延遲：%+.1f 秒"
+          }
         }
       }
     },
@@ -3826,6 +4216,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Задержка звука сброшена"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聲音延遲已重設"
           }
         }
       }
@@ -3885,6 +4281,12 @@
             "state": "translated",
             "value": "Прямой вывод: ВКЛ (%@)"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直通輸出：開（%@）"
+          }
         }
       }
     },
@@ -3942,6 +4344,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Прямой вывод: ВЫКЛ"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直通輸出：關"
           }
         }
       }
@@ -4001,6 +4409,12 @@
             "state": "translated",
             "value": "Выкл"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關"
+          }
         }
       }
     },
@@ -4058,6 +4472,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Плоский"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平坦"
           }
         }
       }
@@ -4117,6 +4537,12 @@
             "state": "translated",
             "value": "Акустика"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原聲"
+          }
         }
       }
     },
@@ -4174,6 +4600,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Усилитель басов"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "低音增強"
           }
         }
       }
@@ -4233,6 +4665,12 @@
             "state": "translated",
             "value": "Уменьшение басов"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "低音減弱"
+          }
         }
       }
     },
@@ -4290,6 +4728,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Классика"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "古典"
           }
         }
       }
@@ -4349,6 +4793,12 @@
             "state": "translated",
             "value": "Танцевальный"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "舞曲"
+          }
         }
       }
     },
@@ -4406,6 +4856,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Глубокий"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "低沉"
           }
         }
       }
@@ -4465,6 +4921,12 @@
             "state": "translated",
             "value": "Электронный"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電子"
+          }
         }
       }
     },
@@ -4522,6 +4984,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Хип-хоп"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hip-Hop"
           }
         }
       }
@@ -4581,6 +5049,12 @@
             "state": "translated",
             "value": "Джаз"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爵士"
+          }
         }
       }
     },
@@ -4638,6 +5112,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Латиноамериканская"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拉丁"
           }
         }
       }
@@ -4697,6 +5177,12 @@
             "state": "translated",
             "value": "Громкость"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "響度"
+          }
         }
       }
     },
@@ -4754,6 +5240,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Лаунж"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "休閒"
           }
         }
       }
@@ -4813,6 +5305,12 @@
             "state": "translated",
             "value": "Идеально :)"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完美 :)"
+          }
         }
       }
     },
@@ -4870,6 +5368,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Фортепиано"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "鋼琴"
           }
         }
       }
@@ -4929,6 +5433,12 @@
             "state": "translated",
             "value": "Поп"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "流行"
+          }
         }
       }
     },
@@ -4983,6 +5493,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "R&B"
+          }
+        },
+        "yue": {
           "stringUnit": {
             "state": "translated",
             "value": "R&B"
@@ -5045,6 +5561,12 @@
             "state": "translated",
             "value": "Рок"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搖滾"
+          }
         }
       }
     },
@@ -5102,6 +5624,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Маленькие колонки"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "細喇叭"
           }
         }
       }
@@ -5161,6 +5689,12 @@
             "state": "translated",
             "value": "Устная речь"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "語音"
+          }
         }
       }
     },
@@ -5218,6 +5752,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Усилитель высоких частот"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高音增強"
           }
         }
       }
@@ -5277,6 +5817,12 @@
             "state": "translated",
             "value": "Уменьшение высоких частот"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高音減弱"
+          }
         }
       }
     },
@@ -5334,6 +5880,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Усиление вокала"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "人聲增強"
           }
         }
       }
@@ -5393,6 +5945,12 @@
             "state": "translated",
             "value": "Видео"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影片"
+          }
         }
       }
     },
@@ -5450,6 +6008,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Видеодорожка"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影片軌"
           }
         }
       }
@@ -5509,6 +6073,12 @@
             "state": "translated",
             "value": "Перейти в полноэкранный режим"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進入全屏幕"
+          }
         }
       }
     },
@@ -5566,6 +6136,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Картинка в картинке"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "子母畫面"
           }
         }
       }
@@ -5625,6 +6201,12 @@
             "state": "translated",
             "value": "PiP недоступен"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "子母畫面無法使用"
+          }
         }
       }
     },
@@ -5682,6 +6264,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Половинный размер"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一半大細"
           }
         }
       }
@@ -5741,6 +6329,12 @@
             "state": "translated",
             "value": "Реальный размер"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原本大細"
+          }
         }
       }
     },
@@ -5798,6 +6392,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Исходный размер"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原本大細"
           }
         }
       }
@@ -5857,6 +6457,12 @@
             "state": "translated",
             "value": "Двойной размер"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "兩倍大細"
+          }
         }
       }
     },
@@ -5914,6 +6520,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "По размеру экрана"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "符合屏幕"
           }
         }
       }
@@ -5973,6 +6585,12 @@
             "state": "translated",
             "value": "По размеру экрана"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "符合屏幕"
+          }
         }
       }
     },
@@ -6030,6 +6648,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Заполнить экран"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "填滿屏幕"
           }
         }
       }
@@ -6089,6 +6713,12 @@
             "state": "translated",
             "value": "Заполнить экран"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "填滿屏幕"
+          }
         }
       }
     },
@@ -6146,6 +6776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Соотношение сторон"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長闊比"
           }
         }
       }
@@ -6205,6 +6841,12 @@
             "state": "translated",
             "value": "Соотношение сторон: %@"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長闊比：%@"
+          }
         }
       }
     },
@@ -6262,6 +6904,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "По умолчанию"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設"
           }
         }
       }
@@ -6321,6 +6969,12 @@
             "state": "translated",
             "value": "Повернуть влево"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向左旋轉"
+          }
         }
       }
     },
@@ -6378,6 +7032,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Повернуть вправо"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向右旋轉"
           }
         }
       }
@@ -6437,6 +7097,12 @@
             "state": "translated",
             "value": "Поворот: %d°"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旋轉：%d°"
+          }
         }
       }
     },
@@ -6494,6 +7160,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отразить по горизонтали"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "水平翻轉"
           }
         }
       }
@@ -6553,6 +7225,12 @@
             "state": "translated",
             "value": "Отразить по горизонтали"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "水平翻轉"
+          }
         }
       }
     },
@@ -6610,6 +7288,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отразить по вертикали"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "垂直翻轉"
           }
         }
       }
@@ -6669,6 +7353,12 @@
             "state": "translated",
             "value": "Отразить по вертикали"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "垂直翻轉"
+          }
         }
       }
     },
@@ -6726,6 +7416,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сбросить преобразование"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設變形"
           }
         }
       }
@@ -6785,6 +7481,12 @@
             "state": "translated",
             "value": "Преобразование сброшено"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "變形已重設"
+          }
         }
       }
     },
@@ -6842,6 +7544,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Обрезка"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裁剪"
           }
         }
       }
@@ -6901,6 +7609,12 @@
             "state": "translated",
             "value": "Фильтры"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "濾鏡"
+          }
         }
       }
     },
@@ -6958,6 +7672,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Видеоэквалайзер…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影片等化器…"
           }
         }
       }
@@ -7017,6 +7737,12 @@
             "state": "translated",
             "value": "Видеоэквалайзер"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影片等化器"
+          }
         }
       }
     },
@@ -7074,6 +7800,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Деинтерлейсинг"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "去交錯"
           }
         }
       }
@@ -7133,6 +7865,12 @@
             "state": "translated",
             "value": "Кадр ▶"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "畫格 ▶"
+          }
         }
       }
     },
@@ -7190,6 +7928,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "◀ Кадр"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "◀ 畫格"
           }
         }
       }
@@ -7249,6 +7993,12 @@
             "state": "translated",
             "value": "Видео не загружено"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未載入影片"
+          }
         }
       }
     },
@@ -7306,6 +8056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Видео не воспроизводится"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇影片喺度播放"
           }
         }
       }
@@ -7365,6 +8121,12 @@
             "state": "translated",
             "value": "Размер: %.0f%%"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%.0f%% 大細"
+          }
         }
       }
     },
@@ -7422,6 +8184,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Чёрный"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑色"
           }
         }
       }
@@ -7481,6 +8249,12 @@
             "state": "translated",
             "value": "Серый"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "灰色"
+          }
         }
       }
     },
@@ -7538,6 +8312,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Серебристый"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀色"
           }
         }
       }
@@ -7597,6 +8377,12 @@
             "state": "translated",
             "value": "Белый"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "白色"
+          }
         }
       }
     },
@@ -7654,6 +8440,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Тёмно-бордовый"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "栗色"
           }
         }
       }
@@ -7713,6 +8505,12 @@
             "state": "translated",
             "value": "Красный"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紅色"
+          }
         }
       }
     },
@@ -7770,6 +8568,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Фуксия"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "桃紅色"
           }
         }
       }
@@ -7829,6 +8633,12 @@
             "state": "translated",
             "value": "Жёлтый"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黃色"
+          }
         }
       }
     },
@@ -7886,6 +8696,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Оливковый"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "橄欖色"
           }
         }
       }
@@ -7945,6 +8761,12 @@
             "state": "translated",
             "value": "Зелёный"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "綠色"
+          }
         }
       }
     },
@@ -8002,6 +8824,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Бирюзовый"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "藍綠色"
           }
         }
       }
@@ -8061,6 +8889,12 @@
             "state": "translated",
             "value": "Лаймовый"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "青檸綠"
+          }
         }
       }
     },
@@ -8118,6 +8952,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Фиолетовый"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紫色"
           }
         }
       }
@@ -8177,6 +9017,12 @@
             "state": "translated",
             "value": "Тёмно-синий"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "海軍藍"
+          }
         }
       }
     },
@@ -8234,6 +9080,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Синий"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "藍色"
           }
         }
       }
@@ -8293,6 +9145,12 @@
             "state": "translated",
             "value": "Голубой"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "水藍色"
+          }
         }
       }
     },
@@ -8350,6 +9208,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Субтитры"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕"
           }
         }
       }
@@ -8409,6 +9273,12 @@
             "state": "translated",
             "value": "Дорожка субтитров"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕軌"
+          }
         }
       }
     },
@@ -8466,6 +9336,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Тип отображения"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示位置"
           }
         }
       }
@@ -8525,6 +9401,12 @@
             "state": "translated",
             "value": "Внизу видео"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影片底部"
+          }
         }
       }
     },
@@ -8582,6 +9464,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Внизу экрана"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "屏幕底部"
           }
         }
       }
@@ -8641,6 +9529,12 @@
             "state": "translated",
             "value": "Леттербокс"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑邊位"
+          }
         }
       }
     },
@@ -8698,6 +9592,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цвет текста"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字顏色"
           }
         }
       }
@@ -8757,6 +9657,12 @@
             "state": "translated",
             "value": "Толщина обводки"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外框粗細"
+          }
         }
       }
     },
@@ -8814,6 +9720,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d пикс."
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 像素"
           }
         }
       }
@@ -8873,6 +9785,12 @@
             "state": "translated",
             "value": "Нет"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
         }
       }
     },
@@ -8930,6 +9848,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цвет фона"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景顏色"
           }
         }
       }
@@ -8989,6 +9913,12 @@
             "state": "translated",
             "value": "Непрозрачность фона"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "背景不透明度"
+          }
         }
       }
     },
@@ -9046,6 +9976,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скрыть субтитры"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隱藏字幕"
           }
         }
       }
@@ -9105,6 +10041,12 @@
             "state": "translated",
             "value": "Субтитры включены"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕已顯示"
+          }
         }
       }
     },
@@ -9162,6 +10104,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Субтитры скрыты"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕已隱藏"
           }
         }
       }
@@ -9221,6 +10169,12 @@
             "state": "translated",
             "value": "Субтитры загружены: %@"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已載入字幕：%@"
+          }
         }
       }
     },
@@ -9278,6 +10232,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Встроенные субтитры загружены"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已載入內嵌字幕"
           }
         }
       }
@@ -9337,6 +10297,12 @@
             "state": "translated",
             "value": "Задержка субтитров: %.1f с"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕延遲：%.1f 秒"
+          }
         }
       }
     },
@@ -9394,6 +10360,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Задержка субтитров сброшена"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "字幕延遲已重設"
           }
         }
       }
@@ -9453,6 +10425,12 @@
             "state": "translated",
             "value": "Список воспроизведения"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放清單"
+          }
         }
       }
     },
@@ -9510,6 +10488,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показать список"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示播放清單"
           }
         }
       }
@@ -9569,6 +10553,12 @@
             "state": "translated",
             "value": "Без повтора"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不重複"
+          }
         }
       }
     },
@@ -9626,6 +10616,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Повтор одного"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "單一循環"
           }
         }
       }
@@ -9685,6 +10681,12 @@
             "state": "translated",
             "value": "Повтор всех"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部循環"
+          }
         }
       }
     },
@@ -9742,6 +10744,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Повтор: %@"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重複：%@"
           }
         }
       }
@@ -9801,6 +10809,12 @@
             "state": "translated",
             "value": "Перемешать"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隨機播放"
+          }
         }
       }
     },
@@ -9858,6 +10872,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перемешать: вкл"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隨機播放：開"
           }
         }
       }
@@ -9917,6 +10937,12 @@
             "state": "translated",
             "value": "Перемешать: выкл"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隨機播放：關"
+          }
         }
       }
     },
@@ -9974,6 +11000,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Назад"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一個"
           }
         }
       }
@@ -10033,6 +11065,12 @@
             "state": "translated",
             "value": "Вперёд"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一個"
+          }
         }
       }
     },
@@ -10090,6 +11128,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Нет следующей дорожки"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇下一個"
           }
         }
       }
@@ -10149,6 +11193,12 @@
             "state": "translated",
             "value": "Нет предыдущей дорожки"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇上一個"
+          }
         }
       }
     },
@@ -10206,6 +11256,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Транслировать"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投放"
           }
         }
       }
@@ -10265,6 +11321,12 @@
             "state": "translated",
             "value": "Воспроизвести на внешнем дисплее"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺外接屏幕播放"
+          }
         }
       }
     },
@@ -10322,6 +11384,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Внешний дисплей не найден — добавьте его в Системных настройках > Мониторы"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到外接屏幕 — 請去系統設定 > 顯示器加入一個"
           }
         }
       }
@@ -10381,6 +11449,12 @@
             "state": "translated",
             "value": "Отключить"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中斷連接"
+          }
         }
       }
     },
@@ -10438,6 +11512,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отключено"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已中斷連接"
           }
         }
       }
@@ -10497,6 +11577,12 @@
             "state": "translated",
             "value": "Окно"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "視窗"
+          }
         }
       }
     },
@@ -10554,6 +11640,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Свернуть"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "縮到最細"
           }
         }
       }
@@ -10613,6 +11705,12 @@
             "state": "translated",
             "value": "Масштаб"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "縮放"
+          }
         }
       }
     },
@@ -10670,6 +11768,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Поверх всех окон"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保持喺最頂"
           }
         }
       }
@@ -10729,6 +11833,12 @@
             "state": "translated",
             "value": "Сведения о медиа"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "媒體資料"
+          }
         }
       }
     },
@@ -10786,6 +11896,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Справка"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "說明"
           }
         }
       }
@@ -10845,6 +11961,12 @@
             "state": "translated",
             "value": "Справка Awesome Player"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Awesome Player 說明"
+          }
         }
       }
     },
@@ -10902,6 +12024,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Открыть"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟"
           }
         }
       }
@@ -10961,6 +12089,12 @@
             "state": "translated",
             "value": "Открыть URL"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟 URL"
+          }
         }
       }
     },
@@ -11018,6 +12152,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отменить"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
           }
         }
       }
@@ -11077,6 +12217,12 @@
             "state": "translated",
             "value": "ОК"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "好"
+          }
         }
       }
     },
@@ -11134,6 +12280,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показать в Finder"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺 Finder 顯示"
           }
         }
       }
@@ -11193,6 +12345,12 @@
             "state": "translated",
             "value": "Сбросить"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重設"
+          }
         }
       }
     },
@@ -11250,6 +12408,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Введите URL медиафайла или ссылку YouTube/веб:"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入媒體 URL 或 YouTube／網頁連結："
           }
         }
       }
@@ -11309,6 +12473,12 @@
             "state": "translated",
             "value": "https://example.com/video.mp4 или URL YouTube"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://example.com/video.mp4 或 YouTube URL"
+          }
         }
       }
     },
@@ -11366,6 +12536,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "yt-dlp не найден"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到 yt-dlp"
           }
         }
       }
@@ -11425,6 +12601,12 @@
             "state": "translated",
             "value": "Получение форматов…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在取得格式…"
+          }
         }
       }
     },
@@ -11482,6 +12664,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не удалось получить сведения о видео"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取得影片資料失敗"
           }
         }
       }
@@ -11541,6 +12729,12 @@
             "state": "translated",
             "value": "Не удалось получить URL потока"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取得串流網址失敗"
+          }
         }
       }
     },
@@ -11598,6 +12792,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Видеоформаты не найдены"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到影片格式"
           }
         }
       }
@@ -11657,6 +12857,12 @@
             "state": "translated",
             "value": "Выбор разрешения"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選擇解像度"
+          }
         }
       }
     },
@@ -11714,6 +12920,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Загрузка…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "載入中…"
           }
         }
       }
@@ -11773,6 +12985,12 @@
             "state": "translated",
             "value": "Подготовка к воспроизведению Dolby Vision…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在準備 Dolby Vision 播放…"
+          }
         }
       }
     },
@@ -11830,6 +13048,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Трансляция Dolby Vision не поддерживается. Воспроизведите локально."
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "唔支援投放 Dolby Vision，請喺本機播放。"
           }
         }
       }
@@ -11889,6 +13113,12 @@
             "state": "translated",
             "value": "Не удалось открыть файл"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟檔案失敗"
+          }
         }
       }
     },
@@ -11946,6 +13176,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не удалось открыть поток"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟串流失敗"
           }
         }
       }
@@ -12005,6 +13241,12 @@
             "state": "translated",
             "value": "Поиск устройств…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在搜尋裝置…"
+          }
         }
       }
     },
@@ -12062,6 +13304,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Поиск устройств DLNA…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在搜尋 DLNA 裝置…"
           }
         }
       }
@@ -12121,6 +13369,12 @@
             "state": "translated",
             "value": "Подключение…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在連接…"
+          }
         }
       }
     },
@@ -12178,6 +13432,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сканирование…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "掃描緊…"
           }
         }
       }
@@ -12237,6 +13497,12 @@
             "state": "translated",
             "value": "Трансляция отключена"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投放已中斷"
+          }
         }
       }
     },
@@ -12294,6 +13560,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "AirPlay / Трансляция"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay / 投放"
           }
         }
       }
@@ -12353,6 +13625,12 @@
             "state": "translated",
             "value": "AirPlay: Воспроизводится на ТВ"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay：喺電視度播放緊"
+          }
         }
       }
     },
@@ -12410,6 +13688,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "AirPlay: Локальное воспроизведение"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay：本機播放"
           }
         }
       }
@@ -12469,6 +13753,12 @@
             "state": "translated",
             "value": "Конвертация и трансляция"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換與串流"
+          }
         }
       }
     },
@@ -12526,6 +13816,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Перетащите медиа сюда"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將媒體拖到呢度"
           }
         }
       }
@@ -12585,6 +13881,12 @@
             "state": "translated",
             "value": "Открыть медиа…"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟媒體…"
+          }
         }
       }
     },
@@ -12642,6 +13944,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Медиафайл не выбран"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未揀媒體"
           }
         }
       }
@@ -12701,6 +14009,12 @@
             "state": "translated",
             "value": "Выбор профиля"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "揀設定檔"
+          }
         }
       }
     },
@@ -12758,6 +14072,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Выбор назначения"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "揀目的地"
           }
         }
       }
@@ -12817,6 +14137,12 @@
             "state": "translated",
             "value": "Сохранить как файл"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存為檔案"
+          }
         }
       }
     },
@@ -12874,6 +14200,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Транслировать"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "串流"
           }
         }
       }
@@ -12933,6 +14265,12 @@
             "state": "translated",
             "value": "Старт!"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始！"
+          }
         }
       }
     },
@@ -12990,6 +14328,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Конвертация…"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換緊…"
           }
         }
       }
@@ -13049,6 +14393,12 @@
             "state": "translated",
             "value": "Конвертация завершена"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換完成"
+          }
         }
       }
     },
@@ -13106,6 +14456,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сбой конвертации"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換失敗"
           }
         }
       }
@@ -13165,6 +14521,12 @@
             "state": "translated",
             "value": "Сбой конвертации"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換失敗"
+          }
         }
       }
     },
@@ -13222,6 +14584,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Сохранить конвертированное медиа"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "儲存轉換完嘅媒體"
           }
         }
       }
@@ -13281,6 +14649,12 @@
             "state": "translated",
             "value": "Экземпляр libvlc недоступен"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "libvlc 實例無法使用"
+          }
         }
       }
     },
@@ -13338,6 +14712,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не удалось открыть входной файл"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟輸入檔案失敗"
           }
         }
       }
@@ -13397,6 +14777,12 @@
             "state": "translated",
             "value": "Не удалось создать транскодер"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "建立轉碼器失敗"
+          }
         }
       }
     },
@@ -13454,6 +14840,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "libvlc сообщил об ошибке при перекодировании. Профиль может быть несовместим с исходным кодеком."
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "libvlc 喺轉碼過程中報告咗錯誤。呢個設定檔可能同來源編解碼器唔兼容。"
           }
         }
       }
@@ -13513,6 +14905,12 @@
             "state": "translated",
             "value": "Вывод потока"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "串流輸出"
+          }
         }
       }
     },
@@ -13570,6 +14968,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Потоковая трансляция ещё не реализована. Используйте «Сохранить как файл» для перекодирования на диск."
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "串流輸出未實作，請用「儲存為檔案」轉碼到磁碟。"
           }
         }
       }
@@ -13629,6 +15033,12 @@
             "state": "translated",
             "value": "Очистить меню"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除選單"
+          }
         }
       }
     },
@@ -13686,6 +15096,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "(Нет недавних файлов)"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（冇最近項目）"
           }
         }
       }
@@ -13745,6 +15161,12 @@
             "state": "translated",
             "value": "(Нет глав)"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（冇章節）"
+          }
         }
       }
     },
@@ -13803,6 +15225,12 @@
             "state": "translated",
             "value": "(Нет)"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（無）"
+          }
         }
       }
     },
@@ -13857,6 +15285,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay"
+          }
+        },
+        "yue": {
           "stringUnit": {
             "state": "translated",
             "value": "AirPlay"
@@ -13919,6 +15353,12 @@
             "state": "translated",
             "value": "Воспроизвести"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放"
+          }
         }
       }
     },
@@ -13976,6 +15416,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Неизвестно"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知"
           }
         }
       }
@@ -14035,6 +15481,12 @@
             "state": "translated",
             "value": "Снимок сохранён"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "截圖已儲存"
+          }
         }
       }
     },
@@ -14092,6 +15544,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не удалось сделать снимок"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "截圖失敗"
           }
         }
       }
@@ -14151,6 +15609,12 @@
             "state": "translated",
             "value": "Снимок сохранён в %@"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "截圖已儲存到 %@"
+          }
         }
       }
     },
@@ -14209,6 +15673,12 @@
             "state": "translated",
             "value": "Файл не воспроизводится"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冇檔案喺度播放"
+          }
         }
       }
     },
@@ -14263,6 +15733,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0:00"
+          }
+        },
+        "yue": {
           "stringUnit": {
             "state": "translated",
             "value": "0:00"
@@ -14325,6 +15801,12 @@
             "state": "translated",
             "value": "Blend"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "混合"
+          }
         }
       }
     },
@@ -14379,6 +15861,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bob"
+          }
+        },
+        "yue": {
           "stringUnit": {
             "state": "translated",
             "value": "Bob"
@@ -14441,6 +15929,12 @@
             "state": "translated",
             "value": "Линейный"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "線性"
+          }
         }
       }
     },
@@ -14495,6 +15989,12 @@
           }
         },
         "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yadif"
+          }
+        },
+        "yue": {
           "stringUnit": {
             "state": "translated",
             "value": "Yadif"
@@ -14557,6 +16057,12 @@
             "state": "translated",
             "value": "--- Видео ---"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "--- 影片 ---"
+          }
         }
       }
     },
@@ -14615,6 +16121,12 @@
             "state": "translated",
             "value": "--- Звук ---"
           }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "--- 音訊 ---"
+          }
         }
       }
     },
@@ -14672,6 +16184,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "--- Субтитры ---"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "--- 字幕 ---"
           }
         }
       }

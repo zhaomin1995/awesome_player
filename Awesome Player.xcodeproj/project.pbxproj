@@ -342,6 +342,7 @@
 				Base,
 				"zh-Hans",
 				"zh-Hant",
+				yue,
 				ja,
 				ko,
 				es,
