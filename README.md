@@ -1,6 +1,11 @@
 # Awesome Player
 
+[![Latest Release](https://img.shields.io/github/v/release/zhaomin1995/video_player?label=Download&style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
+[![Platform](https://img.shields.io/badge/Platform-macOS%2014%2B-blue?style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
+
 A full-featured macOS video player that combines **Dolby Vision** playback with **VLC-quality codec support** — instant MKV playback, AirPlay streaming, Chromecast casting, DLNA, and a polished Movist Pro-style UI. Built entirely with AppKit (no storyboards), AVFoundation, libvlc, and FFmpeg.
+
+> **Latest: [v1.0](https://github.com/zhaomin1995/video_player/releases/tag/v1.0)** — first public Release build. Download `Awesome-Player-1.0.zip` (~100 MB), unzip, drag into `/Applications`, and you're playing video in 30 seconds.
 
 ## Features
 
@@ -113,14 +118,19 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 
 ## Download (prebuilt)
 
-A signed-for-local-run `.app` is published with every tagged release:
-**https://github.com/zhaomin1995/video_player/releases/latest**
+| Version | macOS  | Size    | Download                                                                                                                  |
+|---------|--------|---------|---------------------------------------------------------------------------------------------------------------------------|
+| **1.0** | 14.0+  | 101 MB  | [**Awesome-Player-1.0.zip**](https://github.com/zhaomin1995/video_player/releases/download/v1.0/Awesome-Player-1.0.zip)   |
 
-1. Download `Awesome-Player-<version>.zip`
+All releases: [github.com/zhaomin1995/video_player/releases](https://github.com/zhaomin1995/video_player/releases)
+
+### Install
+
+1. Download the `.zip` above
 2. Unzip → drag `Awesome Player.app` into `/Applications`
-3. First launch: macOS will show *"can't be opened because Apple cannot check it for malicious software"* (ad-hoc signing). Right-click the app → **Open** → **Open**. Only needed once.
+3. **First launch only:** macOS shows *"can't be opened because Apple cannot check it for malicious software"* (the build uses ad-hoc code signing — no $99/yr Apple Developer ID). Right-click the app → **Open** → **Open** to bypass. Future launches work normally.
 
-No install steps for FFmpeg, libvlc, or yt-dlp — all bundled inside the `.app`.
+No installer, no Homebrew, no extra downloads — FFmpeg, libvlc, yt-dlp, and a Python 3.14 runtime for yt-dlp are all bundled inside the `.app`. Total disk footprint after unzip: ~250 MB.
 
 ## Build from source
 
