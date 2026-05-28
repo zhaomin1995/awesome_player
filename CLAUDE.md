@@ -50,6 +50,87 @@ Vendor/
 - User script sandboxing is disabled (`ENABLE_USER_SCRIPT_SANDBOXING = NO`) so build scripts can copy vendor binaries
 - Just clone, open in Xcode, and Cmd+R
 
+#### Local development (Debug build via Xcode)
+
+The fast iteration loop. Build artifacts land in Xcode's DerivedData:
+
+```bash
+git clone https://github.com/zhaomin1995/video_player.git
+cd video_player
+open "Awesome Player.xcodeproj"
+# Cmd+R in Xcode to build and run
+```
+
+After build, the `.app` is at:
+
+```
+~/Library/Developer/Xcode/DerivedData/Awesome_Player-<hash>/Build/Products/Debug/Awesome Player.app
+```
+
+This is *only* useful while developing. The path is deep, the binary is unoptimized + larger, and a fresh `pod`/clean wipes it.
+
+#### Release build (for installing / distribution)
+
+A Release configuration build is what you want when you're "done iterating" and want a stable copy in `/Applications`:
+
+```bash
+cd video_player
+xcodebuild -project "Awesome Player.xcodeproj" \
+           -scheme "Awesome Player" \
+           -configuration Release \
+           clean build
+```
+
+Result:
+
+```
+~/Library/Developer/Xcode/DerivedData/Awesome_Player-<hash>/Build/Products/Release/Awesome Player.app
+```
+
+Differences from Debug:
+- Swift compiler optimizations (`-O`) — meaningfully smaller `.dylib`, slightly faster runtime
+- No debug symbols in the main binary
+- ~245 MB bundle vs ~250 MB Debug (most of the bulk is bundled libvlc plugins + yt-dlp runtime, which don't change)
+
+#### Install to /Applications
+
+```bash
+# Locate the Release build
+RELEASE_APP=$(find ~/Library/Developer/Xcode/DerivedData/Awesome_Player-*/Build/Products/Release/ -name "Awesome Player.app" -maxdepth 1 -type d | head -1)
+
+# Copy to /Applications (uses ditto so Mac metadata + symlinks survive)
+sudo ditto "$RELEASE_APP" "/Applications/Awesome Player.app"
+```
+
+After install, double-clicking the app from `/Applications`, Launchpad, or Spotlight all work normally. First launch will show a "developer cannot be verified" warning (ad-hoc code signing) — right-click → **Open** → **Open** to bypass once.
+
+#### Packaging for distribution (GitHub Release)
+
+GitHub's regular tree has a 100 MB per-file limit; our zipped `.app` is ~100 MB and uncompressed is ~245 MB. So **do not `git add` the binary** — use GitHub Releases instead (2 GB per asset, bound to a tag).
+
+```bash
+# 1. Build Release
+xcodebuild -project "Awesome Player.xcodeproj" -scheme "Awesome Player" -configuration Release clean build
+
+# 2. Zip the .app preserving Mac metadata (ditto, NOT regular `zip`,
+#    so resource forks and the bundle structure survive)
+RELEASE_APP=$(find ~/Library/Developer/Xcode/DerivedData/Awesome_Player-*/Build/Products/Release/ -name "Awesome Player.app" -maxdepth 1 -type d | head -1)
+cd "$(dirname "$RELEASE_APP")"
+ditto -c -k --keepParent "Awesome Player.app" /tmp/Awesome-Player-<version>.zip
+
+# 3. Create the GitHub release with the zip attached
+cd /path/to/video_player
+gh release create v<version> /tmp/Awesome-Player-<version>.zip \
+    --title "Awesome Player <version>" \
+    --notes "..."
+```
+
+The first release was `v1.0` at https://github.com/zhaomin1995/video_player/releases/tag/v1.0 — use that release notes body as a template for future versions. Users download the zip, unzip, drag to `/Applications`, right-click → Open the first time to bypass ad-hoc signing warning.
+
+**Why `ditto` and not `zip`:** macOS app bundles contain symlinks (Frameworks → Versions/A, etc.) and resource forks that regular `zip` mangles, producing a `.app` that crashes on launch with `dyld` errors. `ditto -c -k --keepParent` is Apple's officially-blessed tool for archiving `.app` bundles.
+
+**Why ad-hoc signing**: the project uses `Sign to Run Locally` (no paid Apple Developer account). The binary works fine for personal/distribution use but triggers Gatekeeper warnings on first open. For a "no warning at all" experience the project would need an Apple Developer ID certificate ($99/year), `codesign --sign "Developer ID Application: ..."`, and notarization via `xcrun notarytool submit`.
+
 ### Key Technical Decisions
 - AVPlayer for native formats preserves Dolby Vision and AirPlay
 - libvlc for non-native formats gives VLC-identical playback quality

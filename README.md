@@ -111,16 +111,40 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - macOS 14.0 or later
 - Apple Silicon or Intel Mac
 
-## Build & Run
+## Download (prebuilt)
+
+A signed-for-local-run `.app` is published with every tagged release:
+**https://github.com/zhaomin1995/video_player/releases/latest**
+
+1. Download `Awesome-Player-<version>.zip`
+2. Unzip → drag `Awesome Player.app` into `/Applications`
+3. First launch: macOS will show *"can't be opened because Apple cannot check it for malicious software"* (ad-hoc signing). Right-click the app → **Open** → **Open**. Only needed once.
+
+No install steps for FFmpeg, libvlc, or yt-dlp — all bundled inside the `.app`.
+
+## Build from source
 
 ```bash
 git clone https://github.com/zhaomin1995/video_player.git
 cd video_player
 open "Awesome Player.xcodeproj"
-# Press Cmd+R to build and run
+# Press Cmd+R in Xcode to build and run
 ```
 
-**No external dependencies needed** — FFmpeg, libvlc, and yt-dlp are all bundled in the repo. A build phase script automatically copies all dylibs, plugins, and the yt-dlp distribution into the app bundle.
+For a Release build you can install to `/Applications`:
+
+```bash
+xcodebuild -project "Awesome Player.xcodeproj" \
+           -scheme "Awesome Player" \
+           -configuration Release \
+           clean build
+
+# Find and install the result
+RELEASE_APP=$(find ~/Library/Developer/Xcode/DerivedData/Awesome_Player-*/Build/Products/Release/ -name "Awesome Player.app" -maxdepth 1 -type d | head -1)
+sudo ditto "$RELEASE_APP" "/Applications/Awesome Player.app"
+```
+
+**No external dependencies needed** — FFmpeg, libvlc, and yt-dlp are all bundled in the repo (under `Vendor/`). A build phase script automatically copies all dylibs, plugins, and the yt-dlp distribution into the app bundle. See CLAUDE.md for full build + distribution instructions.
 
 ## Architecture
 
