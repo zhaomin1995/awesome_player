@@ -304,18 +304,9 @@ class DLNAManager {
     }
 
     private func sendSOAPAction(controlURL: String, action: String, body: String, completion: ((Data?) -> Void)?) {
-        guard let url = URL(string: controlURL) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("text/xml; charset=\"utf-8\"", forHTTPHeaderField: "Content-Type")
-        request.setValue("\"urn:schemas-upnp-org:service:AVTransport:1#\(action)\"", forHTTPHeaderField: "SOAPACTION")
-        request.httpBody = body.data(using: .utf8)
-
-        URLSession.shared.dataTask(with: request) { data, _, _ in
-            DispatchQueue.main.async {
-                completion?(data)
-            }
-        }.resume()
+        CastingHTTPClient.sendAVTransportAction(controlURL: controlURL, action: action, body: body) { data, _ in
+            completion?(data)
+        }
     }
 
     private func startPositionPolling() {

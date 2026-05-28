@@ -198,23 +198,11 @@ class AirPlayCastManager: NSObject {
     }
 
     private func sendDLNAAction(controlURL: String, action: String, body: String, completion: ((Bool) -> Void)? = nil) {
-        guard let url = URL(string: controlURL) else {
-            completion?(false)
-            return
-        }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("text/xml; charset=\"utf-8\"", forHTTPHeaderField: "Content-Type")
-        request.setValue("\"urn:schemas-upnp-org:service:AVTransport:1#\(action)\"", forHTTPHeaderField: "SOAPACTION")
-        request.httpBody = body.data(using: .utf8)
-        request.timeoutInterval = 5
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            let code = (response as? HTTPURLResponse)?.statusCode ?? 0
-            let ok = error == nil && code >= 200 && code < 300
+        CastingHTTPClient.sendAVTransportAction(controlURL: controlURL, action: action, body: body, timeout: 5) { _, code in
+            let ok = code >= 200 && code < 300
             castLog("[AirPlay] DLNA \(action): HTTP \(code) \(ok ? "OK" : "FAIL")")
             completion?(ok)
-        }.resume()
+        }
     }
 
     // MARK: - DLNA Body Templates
