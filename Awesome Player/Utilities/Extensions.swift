@@ -16,12 +16,21 @@ extension URL {
 /// when the catalog has no translation for the current locale, the source
 /// English string is returned as the fallback.
 ///
-/// Routes through `LanguageManager.shared.bundle` so the in-app language
-/// picker can swap locales at runtime without a relaunch.
+/// Routes through `LanguageManager.shared` so the in-app language picker can
+/// swap locales at runtime without a relaunch.
 ///
 /// Usage: `L("Play / Pause")`, `L("Volume: %d%%")`.
 func L(_ key: String, comment: String = "") -> String {
-    LanguageManager.shared.bundle.localizedString(forKey: key, value: key, table: nil)
+    // English is the catalog's source language — Xcode does NOT emit an
+    // en.lproj at build time, so we can't load one as a Bundle. Just return
+    // the key (which IS the English string). Going through Bundle.main here
+    // would return whatever language macOS picked AT APP LAUNCH (cached and
+    // never re-evaluated), which is wrong for users who switch to English
+    // from a non-English starting state.
+    if LanguageManager.shared.isEnglish {
+        return key
+    }
+    return LanguageManager.shared.bundle.localizedString(forKey: key, value: key, table: nil)
 }
 
 extension Notification.Name {
@@ -45,39 +54,76 @@ final class LanguageManager {
 
     private var customBundle: Bundle?
 
-    /// The active bundle L() reads from. Falls back to Bundle.main when no
-    /// explicit override is set (System Default).
+    /// The .lproj language code the user explicitly picked ("en", "zh-Hans",
+    /// "yue", …) or "" for "System Default" (follow Bundle.main).
+    private(set) var effectiveLanguage: String = ""
+
+    /// What Bundle.main resolved to at app launch. Used to determine whether
+    /// System Default currently means English (so L() can take the fast
+    /// key-pass-through path) without trusting Bundle.main's
+    /// preferredLocalizations after AppleLanguages mutations.
+    private let systemDefaultLang: String
+
+    /// The active bundle L() reads from. nil → Bundle.main (System Default
+    /// or a language without an emitted .lproj, like English).
     var bundle: Bundle { customBundle ?? .main }
+
+    /// True when the active locale is English. L() uses this to short-circuit
+    /// to "return the key directly" — required because Xcode doesn't emit an
+    /// en.lproj for the source language, and Bundle.main is cached to the
+    /// launch-time locale (often wrong after a runtime switch).
+    var isEnglish: Bool {
+        let active = effectiveLanguage.isEmpty ? systemDefaultLang : effectiveLanguage
+        return active.hasPrefix("en")
+    }
 
     /// The currently-active language code, or nil for System Default.
     var currentLanguage: String? {
-        (UserDefaults.standard.array(forKey: "AppleLanguages") as? [String])?.first
+        effectiveLanguage.isEmpty ? nil : effectiveLanguage
     }
 
     init() {
+        // Snapshot what Bundle.main resolved to at app launch. preferredLocalizations
+        // intersects the user's AppleLanguages preference with the bundle's
+        // available .lproj directories — Apple guarantees the first entry is
+        // the bundle's best match for the user's current settings.
+        self.systemDefaultLang = Bundle.main.preferredLocalizations.first ?? "en"
         loadBundleFromDefaults()
     }
 
     private func loadBundleFromDefaults() {
-        guard let lang = currentLanguage,
-              let path = Bundle.main.path(forResource: lang, ofType: "lproj"),
-              let b = Bundle(path: path)
-        else {
+        guard let lang = (UserDefaults.standard.array(forKey: "AppleLanguages") as? [String])?.first else {
+            effectiveLanguage = ""
             customBundle = nil
             return
         }
-        customBundle = b
-    }
-
-    /// `code` is the .lproj name (e.g. "zh-Hans", "yue"), or nil to clear
-    /// the override and follow the system locale.
-    func setLanguage(_ code: String?) {
-        if let code = code, !code.isEmpty,
-           let path = Bundle.main.path(forResource: code, ofType: "lproj"),
+        effectiveLanguage = lang
+        // English has no .lproj — leave customBundle nil, L() handles via isEnglish
+        if let path = Bundle.main.path(forResource: lang, ofType: "lproj"),
            let b = Bundle(path: path) {
             customBundle = b
+        } else {
+            customBundle = nil
+        }
+    }
+
+    /// `code` is the .lproj name (e.g. "zh-Hans", "yue", "en"), or nil to
+    /// clear the override and follow the system locale.
+    func setLanguage(_ code: String?) {
+        if let code = code, !code.isEmpty {
+            effectiveLanguage = code
+            // Try to load a .lproj for the code. English ("en") has no .lproj
+            // — that's OK, L() detects English via isEnglish and returns the
+            // key directly instead of consulting customBundle.
+            if let path = Bundle.main.path(forResource: code, ofType: "lproj"),
+               let b = Bundle(path: path) {
+                customBundle = b
+            } else {
+                customBundle = nil
+            }
             UserDefaults.standard.set([code], forKey: "AppleLanguages")
         } else {
+            effectiveLanguage = ""
             customBundle = nil
             UserDefaults.standard.removeObject(forKey: "AppleLanguages")
         }
