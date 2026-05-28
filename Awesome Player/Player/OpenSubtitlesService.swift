@@ -50,11 +50,8 @@ enum OpenSubtitlesService {
 
     // MARK: - Public surface
 
-    static func search(query: String, languages: [String] = ["en"], completion: @escaping (Result<[SubtitleResult], Error>) -> Void) {
-        guard let apiKey = storedAPIKey() else {
-            completion(.failure(ServiceError.missingAPIKey))
-            return
-        }
+    static func search(query: String, languages: [String] = ["en"]) async throws -> [SubtitleResult] {
+        guard let apiKey = storedAPIKey() else { throw ServiceError.missingAPIKey }
         var components = URLComponents(string: "\(baseURL)/subtitles")!
         components.queryItems = [
             URLQueryItem(name: "query", value: query),
@@ -65,44 +62,31 @@ enum OpenSubtitlesService {
         req.setValue(userAgent(), forHTTPHeaderField: "User-Agent")
         req.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        URLSession.shared.dataTask(with: req) { data, _, error in
-            if let error = error {
-                completion(.failure(ServiceError.searchFailed(error.localizedDescription))); return
-            }
-            guard let data = data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let items = json["data"] as? [[String: Any]] else {
-                completion(.failure(ServiceError.searchFailed("Unexpected response"))); return
-            }
-            let results: [SubtitleResult] = items.compactMap { item in
-                guard let attrs = item["attributes"] as? [String: Any],
-                      let files = attrs["files"] as? [[String: Any]],
-                      let fileID = files.first?["file_id"] as? Int else { return nil }
-                let lang = (attrs["language"] as? String) ?? "?"
-                let release = (attrs["release"] as? String) ?? "?"
-                let dc = (attrs["download_count"] as? Int) ?? 0
-                return SubtitleResult(fileID: fileID, language: lang, release: release, downloadCount: dc)
-            }
-            completion(.success(results))
-        }.resume()
+        let data: Data
+        do { (data, _) = try await URLSession.shared.data(for: req) }
+        catch { throw ServiceError.searchFailed(error.localizedDescription) }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let items = json["data"] as? [[String: Any]] else {
+            throw ServiceError.searchFailed("Unexpected response")
+        }
+        return items.compactMap { item in
+            guard let attrs = item["attributes"] as? [String: Any],
+                  let files = attrs["files"] as? [[String: Any]],
+                  let fileID = files.first?["file_id"] as? Int else { return nil }
+            let lang = (attrs["language"] as? String) ?? "?"
+            let release = (attrs["release"] as? String) ?? "?"
+            let dc = (attrs["download_count"] as? Int) ?? 0
+            return SubtitleResult(fileID: fileID, language: lang, release: release, downloadCount: dc)
+        }
     }
 
     /// Downloads the subtitle to a temporary file and returns its URL. Caller
     /// is responsible for moving / loading the file.
-    static func download(fileID: Int, completion: @escaping (Result<URL, Error>) -> Void) {
-        ensureLoggedIn { loginResult in
-            switch loginResult {
-            case .failure(let err): completion(.failure(err))
-            case .success(let token):
-                requestDownloadLink(fileID: fileID, token: token) { linkResult in
-                    switch linkResult {
-                    case .failure(let err): completion(.failure(err))
-                    case .success(let link):
-                        downloadFile(from: link, completion: completion)
-                    }
-                }
-            }
-        }
+    static func download(fileID: Int) async throws -> URL {
+        let token = try await ensureLoggedIn()
+        let link = try await requestDownloadLink(fileID: fileID, token: token)
+        return try await downloadFile(from: link)
     }
 
     // MARK: - Credentials storage (Keychain-backed)
@@ -182,15 +166,11 @@ enum OpenSubtitlesService {
         return "AwesomePlayer v\(version)"
     }
 
-    private static func ensureLoggedIn(completion: @escaping (Result<String, Error>) -> Void) {
-        if let cached = cachedToken {
-            completion(.success(cached)); return
-        }
-        guard let apiKey = storedAPIKey() else {
-            completion(.failure(ServiceError.missingAPIKey)); return
-        }
+    private static func ensureLoggedIn() async throws -> String {
+        if let cached = cachedToken { return cached }
+        guard let apiKey = storedAPIKey() else { throw ServiceError.missingAPIKey }
         guard let user = storedUsername(), let pass = storedPassword() else {
-            completion(.failure(ServiceError.missingCredentials)); return
+            throw ServiceError.missingCredentials
         }
 
         var req = URLRequest(url: URL(string: "\(baseURL)/login")!, timeoutInterval: 15)
@@ -202,22 +182,20 @@ enum OpenSubtitlesService {
         let body: [String: Any] = ["username": user, "password": pass]
         req.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        URLSession.shared.dataTask(with: req) { data, _, error in
-            if let error = error {
-                completion(.failure(ServiceError.loginFailed(error.localizedDescription))); return
-            }
-            guard let data = data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let token = json["token"] as? String else {
-                let msg = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown error"
-                completion(.failure(ServiceError.loginFailed(msg))); return
-            }
-            cachedToken = token
-            completion(.success(token))
-        }.resume()
+        let data: Data
+        do { (data, _) = try await URLSession.shared.data(for: req) }
+        catch { throw ServiceError.loginFailed(error.localizedDescription) }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let token = json["token"] as? String else {
+            let msg = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw ServiceError.loginFailed(msg)
+        }
+        cachedToken = token
+        return token
     }
 
-    private static func requestDownloadLink(fileID: Int, token: String, completion: @escaping (Result<URL, Error>) -> Void) {
+    private static func requestDownloadLink(fileID: Int, token: String) async throws -> URL {
         var req = URLRequest(url: URL(string: "\(baseURL)/download")!, timeoutInterval: 15)
         req.httpMethod = "POST"
         req.setValue(storedAPIKey() ?? "", forHTTPHeaderField: "Api-Key")
@@ -228,42 +206,38 @@ enum OpenSubtitlesService {
         let body: [String: Any] = ["file_id": fileID]
         req.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
-        URLSession.shared.dataTask(with: req) { data, _, error in
-            if let error = error {
-                completion(.failure(ServiceError.downloadFailed(error.localizedDescription))); return
-            }
-            guard let data = data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let link = json["link"] as? String,
-                  let url = URL(string: link) else {
-                completion(.failure(ServiceError.downloadFailed("Could not parse download link"))); return
-            }
-            completion(.success(url))
-        }.resume()
+        let data: Data
+        do { (data, _) = try await URLSession.shared.data(for: req) }
+        catch { throw ServiceError.downloadFailed(error.localizedDescription) }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let link = json["link"] as? String,
+              let url = URL(string: link) else {
+            throw ServiceError.downloadFailed("Could not parse download link")
+        }
+        return url
     }
 
-    private static func downloadFile(from url: URL, completion: @escaping (Result<URL, Error>) -> Void) {
-        URLSession.shared.downloadTask(with: url) { tempURL, response, error in
-            if let error = error {
-                completion(.failure(ServiceError.downloadFailed(error.localizedDescription))); return
-            }
-            guard let tempURL = tempURL else {
-                completion(.failure(ServiceError.downloadFailed("No file received"))); return
-            }
-            // Move to a stable temp location with a sensible extension. The
-            // header sometimes provides filename via Content-Disposition; if
-            // not, default to .srt (the most common format).
-            var ext = "srt"
-            if let suggested = (response as? HTTPURLResponse)?.suggestedFilename, let dot = suggested.lastIndex(of: ".") {
-                ext = String(suggested[suggested.index(after: dot)...])
-            }
-            let dest = FileManager.default.temporaryDirectory.appendingPathComponent("opensubs-\(UUID().uuidString).\(ext)")
-            do {
-                try FileManager.default.moveItem(at: tempURL, to: dest)
-                completion(.success(dest))
-            } catch {
-                completion(.failure(ServiceError.downloadFailed(error.localizedDescription)))
-            }
-        }.resume()
+    private static func downloadFile(from url: URL) async throws -> URL {
+        let tempURL: URL
+        let response: URLResponse
+        do { (tempURL, response) = try await URLSession.shared.download(from: url) }
+        catch { throw ServiceError.downloadFailed(error.localizedDescription) }
+
+        // Move to a stable temp location with a sensible extension. The
+        // header sometimes provides filename via Content-Disposition; if
+        // not, default to .srt (the most common format).
+        var ext = "srt"
+        if let suggested = (response as? HTTPURLResponse)?.suggestedFilename,
+           let dot = suggested.lastIndex(of: ".") {
+            ext = String(suggested[suggested.index(after: dot)...])
+        }
+        let dest = FileManager.default.temporaryDirectory.appendingPathComponent("opensubs-\(UUID().uuidString).\(ext)")
+        do {
+            try FileManager.default.moveItem(at: tempURL, to: dest)
+            return dest
+        } catch {
+            throw ServiceError.downloadFailed(error.localizedDescription)
+        }
     }
 }

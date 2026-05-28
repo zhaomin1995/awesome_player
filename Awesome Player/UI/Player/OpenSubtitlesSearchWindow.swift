@@ -126,18 +126,24 @@ final class OpenSubtitlesSearchWindow: NSWindowController, NSTableViewDataSource
         statusLabel.stringValue = L("Searching…")
         searchButton.isEnabled = false
         downloadButton.isEnabled = false
-        OpenSubtitlesService.search(query: q, languages: langs.isEmpty ? ["en"] : langs) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.searchButton.isEnabled = true
-                switch result {
-                case .success(let items):
+        Task { [weak self] in
+            do {
+                let items = try await OpenSubtitlesService.search(
+                    query: q,
+                    languages: langs.isEmpty ? ["en"] : langs
+                )
+                await MainActor.run {
+                    self?.searchButton.isEnabled = true
                     self?.results = items
                     self?.table.reloadData()
                     self?.statusLabel.stringValue = String(format: L("%d results"), items.count)
-                case .failure(let err):
-                    self?.statusLabel.stringValue = err.localizedDescription
+                }
+            } catch {
+                await MainActor.run {
+                    self?.searchButton.isEnabled = true
                     self?.results = []
                     self?.table.reloadData()
+                    self?.statusLabel.stringValue = error.localizedDescription
                 }
             }
         }
@@ -149,16 +155,19 @@ final class OpenSubtitlesSearchWindow: NSWindowController, NSTableViewDataSource
         let chosen = results[row]
         statusLabel.stringValue = L("Downloading…")
         downloadButton.isEnabled = false
-        OpenSubtitlesService.download(fileID: chosen.fileID) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.downloadButton.isEnabled = true
-                switch result {
-                case .success(let url):
+        Task { [weak self] in
+            do {
+                let url = try await OpenSubtitlesService.download(fileID: chosen.fileID)
+                await MainActor.run {
+                    self?.downloadButton.isEnabled = true
                     self?.statusLabel.stringValue = L("Loaded.")
                     self?.onDownloaded?(url)
                     self?.window?.close()
-                case .failure(let err):
-                    self?.statusLabel.stringValue = err.localizedDescription
+                }
+            } catch {
+                await MainActor.run {
+                    self?.downloadButton.isEnabled = true
+                    self?.statusLabel.stringValue = error.localizedDescription
                 }
             }
         }
