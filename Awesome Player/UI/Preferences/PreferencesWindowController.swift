@@ -447,43 +447,100 @@ class FullScreenPrefsView: NSView {
 
 class InputPrefsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
     private let tableView = NSTableView()
-    private let shortcuts: [(action: String, key: String)] = [
-        ("Play / Pause", "Space"),
-        ("Seek ±5 seconds", "← / →"),
-        ("Seek ±30 seconds", "⇧← / ⇧→"),
-        ("Seek ±60 seconds", "⌘← / ⌘→"),
-        ("Volume up / down", "↑ / ↓"),
-        ("Mute / Unmute", "M"),
-        ("Toggle fullscreen", "F"),
-        ("Speed -/+ 0.25x", "[ / ]"),
-        ("Reset speed 1.0x", "\\"),
-        ("Frame step fwd / bwd", ". / ,"),
-        ("Next / prev chapter", "⌘N / ⌘P"),
-        ("A-B loop", "R"),
-        ("Open file", "⌘O"),
-        ("Keep on top", "⌘T"),
-        ("Save screenshot", "⌥⌘S"),
+
+    /// Action → human label mapping. Order in this array determines table row
+    /// order. Re-derived live from KeyBindingManager.shared.currentBindings
+    /// each time `numberOfRows` / row formatting runs, so swapping presets +
+    /// reloading the table reflects the new keys instantly.
+    private static let actionDisplay: [(action: PlayerAction, label: String)] = [
+        (.playPause,              "Play / Pause"),
+        (.seekForwardShort,       "Seek forward (short)"),
+        (.seekBackwardShort,      "Seek backward (short)"),
+        (.seekForwardLong,        "Seek forward (long)"),
+        (.seekBackwardLong,       "Seek backward (long)"),
+        (.seekForwardExtraLong,   "Seek forward (extra-long)"),
+        (.seekBackwardExtraLong,  "Seek backward (extra-long)"),
+        (.volumeUp,               "Volume up"),
+        (.volumeDown,             "Volume down"),
+        (.mute,                   "Mute / Unmute"),
+        (.fullscreen,             "Toggle fullscreen"),
+        (.speedUp,                "Speed up"),
+        (.speedDown,              "Speed down"),
+        (.speedReset,             "Reset speed"),
+        (.frameForward,           "Frame step forward"),
+        (.frameBackward,          "Frame step backward"),
+        (.nextChapter,            "Next chapter"),
+        (.previousChapter,        "Previous chapter"),
     ]
+
+    /// Formats a KeyBinding's modifier mask + key into a glyph string like
+    /// "⇧⌘→" or "Space" or "⌥⌘\". Uses the standard macOS modifier glyphs
+    /// that users expect to see in menus.
+    private static func formatBinding(_ b: KeyBinding) -> String {
+        var s = ""
+        let mods = NSEvent.ModifierFlags(rawValue: b.modifiers)
+        if mods.contains(.control) { s += "⌃" }
+        if mods.contains(.option)  { s += "⌥" }
+        if mods.contains(.shift)   { s += "⇧" }
+        if mods.contains(.command) { s += "⌘" }
+        // Map common function-key characters back to readable glyphs
+        switch b.key {
+        case " ":  s += "Space"
+        case "\r": s += "↩"
+        case "\t": s += "⇥"
+        case String(Character(UnicodeScalar(NSLeftArrowFunctionKey)!)):  s += "←"
+        case String(Character(UnicodeScalar(NSRightArrowFunctionKey)!)): s += "→"
+        case String(Character(UnicodeScalar(NSUpArrowFunctionKey)!)):    s += "↑"
+        case String(Character(UnicodeScalar(NSDownArrowFunctionKey)!)):  s += "↓"
+        default: s += b.key.uppercased()
+        }
+        return s
+    }
+
+    private var currentShortcuts: [(action: String, key: String)] {
+        let bindings = KeyBindingManager.shared.currentBindings
+        return Self.actionDisplay.map { (action, label) in
+            let key = bindings.first { $0.action == action.rawValue }
+                .map { Self.formatBinding($0) } ?? "—"
+            return (L(label), key)
+        }
+    }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
 
         let stack = makePrefsStack()
 
-        addSectionHeader(stack, "Media Keys")
-        addToggleRow(stack, "Enable media keys (Play/Pause, Next, Prev)", key: Defaults.mediaKeyEnabled)
+        // VLC-style preset picker — swaps the entire binding map at once
+        addSectionHeader(stack, L("Shortcuts Preset"))
+        let presetPopup = NSPopUpButton()
+        for preset in KeyBindingManager.allPresets {
+            presetPopup.addItem(withTitle: L(preset.displayKey))
+            presetPopup.lastItem?.representedObject = preset.id
+        }
+        let currentId = KeyBindingManager.shared.currentPresetId
+        if let idx = KeyBindingManager.allPresets.firstIndex(where: { $0.id == currentId }) {
+            presetPopup.selectItem(at: idx)
+        }
+        presetPopup.target = self
+        presetPopup.action = #selector(presetChanged(_:))
+        presetPopup.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
+        addRow(stack, L("Shortcuts preset:"), presetPopup)
 
-        addSectionHeader(stack, "Escape Key")
-        addPopupRow(stack, "Escape key action:", key: Defaults.escapeKeyBehavior, items: ["Exit Fullscreen", "Close Panel", "Stop Playback"])
+        addSectionHeader(stack, L("Media Keys"))
+        addToggleRow(stack, L("Enable media keys (Play/Pause, Next, Prev)"), key: Defaults.mediaKeyEnabled)
 
-        addSectionHeader(stack, "Keyboard Shortcuts")
+        addSectionHeader(stack, L("Escape Key"))
+        addPopupRow(stack, L("Escape key action:"), key: Defaults.escapeKeyBehavior, items: [L("Exit Fullscreen"), L("Close Panel"), L("Stop Playback")])
+
+        addSectionHeader(stack, L("Keyboard Shortcuts"))
 
         let actionCol = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("action"))
-        actionCol.title = "Action"
-        actionCol.width = 200
+        actionCol.title = L("Action")
+        actionCol.width = 220
         let keyCol = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("key"))
-        keyCol.title = "Shortcut"
-        keyCol.width = 120
+        keyCol.title = L("Shortcut")
+        keyCol.width = 140
         tableView.addTableColumn(actionCol)
         tableView.addTableColumn(keyCol)
         tableView.dataSource = self
@@ -495,35 +552,37 @@ class InputPrefsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
         scrollView.documentView = tableView
         scrollView.hasVerticalScroller = true
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.heightAnchor.constraint(equalToConstant: 220).isActive = true
+        scrollView.heightAnchor.constraint(equalToConstant: 260).isActive = true
         stack.addArrangedSubview(scrollView)
 
-        addSectionHeader(stack, "Mouse")
-        addPopupRow(stack, "Single click:", key: Defaults.singleClickAction, items: ["Play / Pause", "Nothing"])
-        addPopupRow(stack, "Double click:", key: Defaults.doubleClickAction, items: ["Toggle Fullscreen", "Nothing"])
-        addPopupRow(stack, "Middle click:", key: Defaults.middleClickAction, items: ["Mute / Unmute", "Play / Pause", "Nothing"])
-        addPopupRow(stack, "Right click:", key: Defaults.rightClickAction, items: ["Context Menu", "Nothing"])
+        addSectionHeader(stack, L("Mouse"))
+        addPopupRow(stack, L("Single click:"), key: Defaults.singleClickAction, items: [L("Play / Pause"), L("Nothing")])
+        addPopupRow(stack, L("Double click:"), key: Defaults.doubleClickAction, items: [L("Toggle fullscreen"), L("Nothing")])
+        addPopupRow(stack, L("Middle click:"), key: Defaults.middleClickAction, items: [L("Mute / Unmute"), L("Play / Pause"), L("Nothing")])
+        addPopupRow(stack, L("Right click:"), key: Defaults.rightClickAction, items: [L("Context Menu"), L("Nothing")])
 
-        addSectionHeader(stack, "Scroll Wheel")
-        addPopupRow(stack, "Scroll action:", key: Defaults.scrollWheelAction, items: ["Volume", "Seek", "Nothing"])
-        addSliderRow(stack, "Scroll sensitivity:", min: 1, max: 10, value: 5, key: Defaults.scrollWheelSensitivity)
+        addSectionHeader(stack, L("Scroll Wheel"))
+        addPopupRow(stack, L("Scroll action:"), key: Defaults.scrollWheelAction, items: [L("Volume"), L("Seek"), L("Nothing")])
+        addSliderRow(stack, L("Scroll sensitivity:"), min: 1, max: 10, value: 5, key: Defaults.scrollWheelSensitivity)
 
-        addSectionHeader(stack, "Trackpad")
-        addPopupRow(stack, "Pinch gesture:", key: Defaults.pinchGestureAction, items: ["Zoom Video", "Resize Window", "Nothing"])
+        addSectionHeader(stack, L("Trackpad"))
+        addPopupRow(stack, L("Pinch gesture:"), key: Defaults.pinchGestureAction, items: [L("Zoom Video"), L("Resize Window"), L("Nothing")])
 
         embed(stack)
     }
     required init?(coder: NSCoder) { fatalError() }
 
-    func numberOfRows(in tableView: NSTableView) -> Int { shortcuts.count }
+    @objc private func presetChanged(_ sender: NSPopUpButton) {
+        guard let id = sender.selectedItem?.representedObject as? String else { return }
+        KeyBindingManager.shared.applyPreset(id: id)
+        tableView.reloadData()
+    }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { currentShortcuts.count }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let text: String
-        if tableColumn?.identifier.rawValue == "action" {
-            text = shortcuts[row].action
-        } else {
-            text = shortcuts[row].key
-        }
+        let shortcut = currentShortcuts[row]
+        let text = tableColumn?.identifier.rawValue == "action" ? shortcut.action : shortcut.key
         let label = NSTextField(labelWithString: text)
         label.font = tableColumn?.identifier.rawValue == "key"
             ? .monospacedSystemFont(ofSize: 12, weight: .medium)
