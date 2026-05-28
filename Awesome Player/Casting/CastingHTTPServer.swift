@@ -5,9 +5,17 @@ class CastingHTTPServer {
     private var listener: NWListener?
     private var servingFileURL: URL?
     private var port: UInt16 = 0
+    /// Random per-session token embedded in the served URL path. NWListener
+    /// binds to .any (0.0.0.0) because cast receivers live on the LAN, not
+    /// loopback — without this token, ANY device on the same WiFi could hit
+    /// `http://<host>:<port>/media` and download whatever is being cast.
+    /// The receiver gets the full URL including the token; random scanners
+    /// hitting `/media` or any other path get 404.
+    private var pathToken: String = ""
 
     func start(servingFile fileURL: URL, completion: @escaping (URL?) -> Void) {
         servingFileURL = fileURL
+        pathToken = UUID().uuidString.lowercased()
 
         do {
             let params = NWParameters.tcp
@@ -16,10 +24,10 @@ class CastingHTTPServer {
             listener?.stateUpdateHandler = { [weak self] state in
                 switch state {
                 case .ready:
-                    if let port = self?.listener?.port?.rawValue {
-                        self?.port = port
-                        let localIP = self?.getLocalIPAddress() ?? "127.0.0.1"
-                        let url = URL(string: "http://\(localIP):\(port)/media")
+                    if let self = self, let port = self.listener?.port?.rawValue {
+                        self.port = port
+                        let localIP = self.getLocalIPAddress() ?? "127.0.0.1"
+                        let url = URL(string: "http://\(localIP):\(port)/media/\(self.pathToken)")
                         DispatchQueue.main.async {
                             completion(url)
                         }
@@ -63,6 +71,22 @@ class CastingHTTPServer {
 
     private func handleHTTPRequest(_ request: String, connection: NWConnection) {
         guard let fileURL = servingFileURL else {
+            sendErrorResponse(connection: connection, status: 404)
+            return
+        }
+
+        // Reject any request whose path doesn't match the per-session token.
+        // The request line looks like: "GET /media/<uuid> HTTP/1.1". We split
+        // off everything before " HTTP/" to allow query strings if a future
+        // receiver appends them.
+        let requestLine = request.components(separatedBy: "\r\n").first ?? ""
+        let parts = requestLine.components(separatedBy: " ")
+        let requestedPath = parts.count >= 2 ? parts[1] : ""
+        let expectedPrefix = "/media/\(pathToken)"
+        guard requestedPath == expectedPrefix
+                || requestedPath.hasPrefix(expectedPrefix + "?")
+                || requestedPath.hasPrefix(expectedPrefix + "/") else {
+            wlog(.http, "Rejected cast HTTP request: path mismatch")
             sendErrorResponse(connection: connection, status: 404)
             return
         }
