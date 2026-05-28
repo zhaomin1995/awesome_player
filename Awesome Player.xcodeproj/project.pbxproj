@@ -41,6 +41,17 @@
 		A10034 /* CastingHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10035 /* CastingHTTPServer.swift */; };
 		A10035 /* CastingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10036 /* CastingManager.swift */; };
 		A10036 /* ChromecastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10037 /* ChromecastManager.swift */; };
+		A10500 /* CastV2Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10500 /* CastV2Connection.swift */; };
+		A10501 /* CastingHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10501 /* CastingHTTPClient.swift */; };
+		A10600 /* ABLoopControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10600 /* ABLoopControllerTests.swift */; };
+		A10601 /* ChapterNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10601 /* ChapterNavigationTests.swift */; };
+		A10602 /* ConvertProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10602 /* ConvertProfileTests.swift */; };
+		A10603 /* DefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10603 /* DefaultsTests.swift */; };
+		A10604 /* KeyBindingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10604 /* KeyBindingManagerTests.swift */; };
+		A10605 /* LanguageManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10605 /* LanguageManagerTests.swift */; };
+		A10606 /* ResumeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10606 /* ResumeManagerTests.swift */; };
+		A10607 /* SubtitleParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10607 /* SubtitleParserTests.swift */; };
+		A10608 /* UpdateCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10608 /* UpdateCheckerTests.swift */; };
 		A10037 /* DLNAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10038 /* DLNAManager.swift */; };
 		A10038 /* AirPlayCastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10039 /* AirPlayCastManager.swift */; };
 		A10047 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10047 /* PreferencesWindowController.swift */; };
@@ -100,6 +111,19 @@
 		F10035 /* CastingHTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastingHTTPServer.swift; sourceTree = "<group>"; };
 		F10036 /* CastingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastingManager.swift; sourceTree = "<group>"; };
 		F10037 /* ChromecastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromecastManager.swift; sourceTree = "<group>"; };
+		F10500 /* CastV2Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastV2Connection.swift; sourceTree = "<group>"; };
+		F10501 /* CastingHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastingHTTPClient.swift; sourceTree = "<group>"; };
+		F10600 /* ABLoopControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABLoopControllerTests.swift; sourceTree = "<group>"; };
+		F10601 /* ChapterNavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterNavigationTests.swift; sourceTree = "<group>"; };
+		F10602 /* ConvertProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertProfileTests.swift; sourceTree = "<group>"; };
+		F10603 /* DefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsTests.swift; sourceTree = "<group>"; };
+		F10604 /* KeyBindingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBindingManagerTests.swift; sourceTree = "<group>"; };
+		F10605 /* LanguageManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManagerTests.swift; sourceTree = "<group>"; };
+		F10606 /* ResumeManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeManagerTests.swift; sourceTree = "<group>"; };
+		F10607 /* SubtitleParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleParserTests.swift; sourceTree = "<group>"; };
+		F10608 /* UpdateCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCheckerTests.swift; sourceTree = "<group>"; };
+		F10610 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F10620 /* Awesome PlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Awesome PlayerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F10038 /* DLNAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLNAManager.swift; sourceTree = "<group>"; };
 		F10039 /* AirPlayCastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirPlayCastManager.swift; sourceTree = "<group>"; };
 		F10047 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
@@ -130,6 +154,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FB0002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -137,8 +168,26 @@
 			isa = PBXGroup;
 			children = (
 				G00001 /* Awesome Player */,
+				G00600 /* Awesome PlayerTests */,
 				G00099 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		G00600 /* Awesome PlayerTests */ = {
+			isa = PBXGroup;
+			children = (
+				F10600 /* ABLoopControllerTests.swift */,
+				F10601 /* ChapterNavigationTests.swift */,
+				F10602 /* ConvertProfileTests.swift */,
+				F10603 /* DefaultsTests.swift */,
+				F10604 /* KeyBindingManagerTests.swift */,
+				F10605 /* LanguageManagerTests.swift */,
+				F10606 /* ResumeManagerTests.swift */,
+				F10607 /* SubtitleParserTests.swift */,
+				F10608 /* UpdateCheckerTests.swift */,
+				F10610 /* Info.plist */,
+			);
+			path = "Awesome PlayerTests";
 			sourceTree = "<group>";
 		};
 		G00001 /* Awesome Player */ = {
@@ -197,6 +246,8 @@
 				F10035 /* CastingHTTPServer.swift */,
 				F10036 /* CastingManager.swift */,
 				F10037 /* ChromecastManager.swift */,
+				F10500 /* CastV2Connection.swift */,
+				F10501 /* CastingHTTPClient.swift */,
 				F10038 /* DLNAManager.swift */,
 				F10039 /* AirPlayCastManager.swift */,
 			);
@@ -336,11 +387,30 @@
 			isa = PBXGroup;
 			children = (
 				F10099 /* Awesome Player.app */,
+				F10620 /* Awesome PlayerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXContainerItemProxy section */
+		CIP0001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = P00001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = T00001;
+			remoteInfo = "Awesome Player";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		TD0001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = T00001 /* Awesome Player */;
+			targetProxy = CIP0001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXNativeTarget section */
 		T00001 /* Awesome Player */ = {
@@ -361,6 +431,23 @@
 			productReference = F10099 /* Awesome Player.app */;
 			productType = "com.apple.product-type.application";
 		};
+		T00002 /* Awesome PlayerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CL0003 /* Build configuration list for PBXNativeTarget "Awesome PlayerTests" */;
+			buildPhases = (
+				S00002 /* Sources */,
+				FB0002 /* Frameworks */,
+				R00002 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = (
+				TD0001 /* PBXTargetDependency */,
+			);
+			name = "Awesome PlayerTests";
+			productName = "Awesome PlayerTests";
+			productReference = F10620 /* Awesome PlayerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -370,6 +457,12 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					T00002 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = T00001;
+					};
+				};
 			};
 			buildConfigurationList = CL0001 /* Build configuration list for PBXProject "Awesome Player" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -395,6 +488,7 @@
 			projectRoot = "";
 			targets = (
 				T00001 /* Awesome Player */,
+				T00002 /* Awesome PlayerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -405,6 +499,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10110 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		R00002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +589,8 @@
 				A10034 /* CastingHTTPServer.swift in Sources */,
 				A10035 /* CastingManager.swift in Sources */,
 				A10036 /* ChromecastManager.swift in Sources */,
+				A10500 /* CastV2Connection.swift in Sources */,
+				A10501 /* CastingHTTPClient.swift in Sources */,
 				A10037 /* DLNAManager.swift in Sources */,
 				A10038 /* AirPlayCastManager.swift in Sources */,
 				A10047 /* PreferencesWindowController.swift in Sources */,
@@ -502,6 +605,22 @@
 				A10092 /* Logging.swift in Sources */,
 				A10310 /* OpenSubtitlesService.swift in Sources */,
 				A10311 /* OpenSubtitlesSearchWindow.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		S00002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10600 /* ABLoopControllerTests.swift in Sources */,
+				A10601 /* ChapterNavigationTests.swift in Sources */,
+				A10602 /* ConvertProfileTests.swift in Sources */,
+				A10603 /* DefaultsTests.swift in Sources */,
+				A10604 /* KeyBindingManagerTests.swift in Sources */,
+				A10605 /* LanguageManagerTests.swift in Sources */,
+				A10606 /* ResumeManagerTests.swift in Sources */,
+				A10607 /* SubtitleParserTests.swift in Sources */,
+				A10608 /* UpdateCheckerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,6 +659,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				// Vendor/ffmpeg and Vendor/libvlc dylibs are arm64-only; pin
+				// the build to arm64 so Release doesn't try to ld a fat slice.
+				// Xcode 26's default "Standard" began including x86_64 again,
+				// which silently broke Release.
+				ARCHS = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
@@ -641,6 +765,54 @@
 			};
 			name = Release;
 		};
+		BC0030 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/include",
+					"$(SRCROOT)/Vendor/libvlc/include",
+				);
+				INFOPLIST_FILE = "Awesome PlayerTests/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Awesome Player.app/Contents/MacOS/Awesome Player";
+			};
+			name = Debug;
+		};
+		BC0031 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Vendor/ffmpeg/include",
+					"$(SRCROOT)/Vendor/libvlc/include",
+				);
+				INFOPLIST_FILE = "Awesome PlayerTests/Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awesomeplayer.AwesomePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Awesome Player/FFmpeg/AwesomePlayer-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Awesome Player.app/Contents/MacOS/Awesome Player";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -658,6 +830,15 @@
 			buildConfigurations = (
 				BC0020 /* Debug */,
 				BC0021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CL0003 /* Build configuration list for PBXNativeTarget "Awesome PlayerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC0030 /* Debug */,
+				BC0031 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
