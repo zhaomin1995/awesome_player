@@ -36,7 +36,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         castingManager.startAirPlayDiscovery()
 
-        UserDefaults.standard.addObserver(self, forKeyPath: Defaults.theme, options: .new, context: nil)
+        // Apply the saved theme immediately, then refresh on any prefs change.
+        // UserDefaults doesn't expose individual keys as KVO properties, so the
+        // standard modern pattern is to listen to didChangeNotification and
+        // diff the value we care about. applyTheme() is idempotent + cheap
+        // (a single switch), so we don't bother with caching the last value.
+        applyTheme()
+        themeObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.applyTheme()
+        }
 
         // Drop cached window controllers on language change so the next time
         // they're opened, their views are built with the new locale's strings.
@@ -91,11 +101,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         videoEQController = nil
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == Defaults.theme {
-            applyTheme()
-        }
-    }
+    /// Token for the UserDefaults.didChangeNotification observer wired in
+    /// applicationDidFinishLaunching. Removed in applicationWillTerminate.
+    private var themeObserver: NSObjectProtocol?
 
     private func applyTheme() {
         let themeIndex = UserDefaults.standard.integer(forKey: Defaults.theme)
@@ -108,10 +116,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         windowController?.playerViewController.saveCurrentPosition()
-        UserDefaults.standard.removeObserver(self, forKeyPath: Defaults.theme)
-        // Mirror the addObserver in applicationDidFinishLaunching so observer
+        // Mirror the observers wired in applicationDidFinishLaunching so
         // bookkeeping stays consistent if terminate is ever cancelled by a
         // save panel and the app continues running.
+        if let token = themeObserver {
+            NotificationCenter.default.removeObserver(token)
+            themeObserver = nil
+        }
         NotificationCenter.default.removeObserver(self, name: .languageDidChange, object: nil)
     }
 
