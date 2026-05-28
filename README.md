@@ -1,7 +1,9 @@
 # Awesome Player
 
-[![Latest Release](https://img.shields.io/github/v/release/zhaomin1995/video_player?label=Download&style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
-[![Platform](https://img.shields.io/badge/Platform-macOS%2014%2B-blue?style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
+[![Download](https://img.shields.io/github/v/release/zhaomin1995/video_player?label=Download&logo=apple&logoColor=white&color=000000&style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
+[![macOS](https://img.shields.io/badge/macOS-14%2B-007AFF?logo=apple&logoColor=white&style=for-the-badge)](https://github.com/zhaomin1995/video_player/releases/latest)
+[![Swift](https://img.shields.io/badge/Swift-5-F05138?logo=swift&logoColor=white&style=for-the-badge)](https://swift.org)
+[![Languages](https://img.shields.io/badge/i18n-11%20languages-8A2BE2?style=for-the-badge)](https://github.com/zhaomin1995/video_player#download-prebuilt)
 
 A full-featured macOS video player that combines **Dolby Vision** playback with **VLC-quality codec support** — instant MKV playback, AirPlay streaming, Chromecast casting, DLNA, and a polished Movist Pro-style UI. Built entirely with AppKit (no storyboards), AVFoundation, libvlc, and FFmpeg.
 
