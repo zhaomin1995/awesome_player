@@ -101,6 +101,13 @@ class ConvertStreamWindowController: NSWindowController {
     /// for choosing protocol/host/port.
     private var streamMode = false
 
+    /// Holds references to the section boxes + open button so refresh on
+    /// language change can re-set their titles without rebuilding the layout.
+    private var dropBox: NSBox?
+    private var profileBox: NSBox?
+    private var destBox: NSBox?
+    private var openButton: NSButton?
+
     init() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 520),
@@ -113,11 +120,34 @@ class ConvertStreamWindowController: NSWindowController {
         window.center()
         super.init(window: window)
         setupContent()
+        // Re-localize labels in place when the user flips language mid-session.
+        // The progress / status labels are already re-formatted every progress
+        // tick, but the static buttons + section-box titles bake L() at init
+        // time and would otherwise show the launch-locale strings forever.
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLocalizedText),
+                                                name: .languageDidChange, object: nil)
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
-    deinit { stopConversion(success: nil) }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        stopConversion(success: nil)
+    }
+
+    @objc private func refreshLocalizedText() {
+        window?.title = L("Convert & Stream")
+        if selectedInputURL == nil { mediaLabel.stringValue = L("No media selected") }
+        hwEncodeCheckbox.title = L("Use hardware encoder (VideoToolbox)")
+        hwEncodeCheckbox.toolTip = L("Use Apple VideoToolbox for H.264/HEVC profiles. Falls back to software for other codecs.")
+        saveButton.title = L("Save as File")
+        streamButton.title = L("Stream")
+        goButton.title = L("Go!")
+        openButton?.title = L("Open Media…")
+        dropBox?.title = L("Drop media here")
+        profileBox?.title = L("Choose Profile")
+        destBox?.title = L("Choose Destination")
+    }
 
     // MARK: - UI
 
@@ -126,6 +156,7 @@ class ConvertStreamWindowController: NSWindowController {
 
         // Section 1: Drop zone for media
         let dropBox = sectionBox(title: L("Drop media here"))
+        self.dropBox = dropBox
         dropZone.translatesAutoresizingMaskIntoConstraints = false
         dropZone.onFileDropped = { [weak self] url in self?.setInputURL(url) }
         dropBox.contentView?.addSubview(dropZone)
@@ -143,12 +174,14 @@ class ConvertStreamWindowController: NSWindowController {
         dropBox.contentView?.addSubview(mediaLabel)
 
         let openButton = NSButton(title: L("Open Media…"), target: self, action: #selector(openMediaClicked))
+        self.openButton = openButton
         openButton.bezelStyle = .rounded
         openButton.translatesAutoresizingMaskIntoConstraints = false
         dropBox.contentView?.addSubview(openButton)
 
         // Section 2: Profile picker
         let profileBox = sectionBox(title: L("Choose Profile"))
+        self.profileBox = profileBox
         for p in Self.profiles { profilePopUp.addItem(withTitle: p.name) }
         profilePopUp.selectItem(at: 0)
         profilePopUp.translatesAutoresizingMaskIntoConstraints = false
@@ -163,6 +196,7 @@ class ConvertStreamWindowController: NSWindowController {
 
         // Section 3: Destination
         let destBox = sectionBox(title: L("Choose Destination"))
+        self.destBox = destBox
         saveButton.bezelStyle = .rounded
         saveButton.target = self
         saveButton.action = #selector(saveAsFileClicked)

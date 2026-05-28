@@ -2,6 +2,9 @@ import Cocoa
 
 class MediaInspectorController: NSWindowController {
     private let textView = NSTextView()
+    /// Last URL we ran `updateInfo` for. Stored so we can re-render after a
+    /// language change while the window is still visible.
+    private var lastURL: URL?
 
     init() {
         let window = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 400, height: 350),
@@ -13,8 +16,20 @@ class MediaInspectorController: NSWindowController {
         window.minSize = NSSize(width: 300, height: 200)
         super.init(window: window)
         setupContent()
+        // Refresh in place when the user flips language while the panel is
+        // visible — AppDelegate's nil-the-controller trick only refreshes on
+        // next open, leaving stale labels on a currently-open window.
+        NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageChange),
+                                                name: .languageDidChange, object: nil)
     }
     required init?(coder: NSCoder) { fatalError() }
+
+    deinit { NotificationCenter.default.removeObserver(self) }
+
+    @objc private func handleLanguageChange() {
+        window?.title = L("Media Inspector")
+        if let url = lastURL { updateInfo(for: url) }
+    }
 
     private func setupContent() {
         let scrollView = NSScrollView()
@@ -29,6 +44,7 @@ class MediaInspectorController: NSWindowController {
     }
 
     func updateInfo(for url: URL) {
+        lastURL = url
         var lines: [String] = []
         lines.append("File: \(url.lastPathComponent)")
         lines.append("Path: \(url.path)")

@@ -2,6 +2,10 @@ import Cocoa
 
 class VideoEQPanelController: NSWindowController {
     weak var playerViewController: PlayerViewController?
+    /// Keep slider rows so a language flip can re-set the leading labels in
+    /// place. Earlier code hardcoded English here and never refreshed.
+    private var labelsByID: [String: NSTextField] = [:]
+    private var resetButton: NSButton?
 
     init() {
         let window = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 300, height: 280),
@@ -12,8 +16,31 @@ class VideoEQPanelController: NSWindowController {
         window.becomesKeyOnlyIfNeeded = true
         super.init(window: window)
         setupContent()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleLanguageChange),
+                                                name: .languageDidChange, object: nil)
     }
     required init?(coder: NSCoder) { fatalError() }
+
+    deinit { NotificationCenter.default.removeObserver(self) }
+
+    @objc private func handleLanguageChange() {
+        window?.title = L("Video Equalizer")
+        for (id, label) in labelsByID {
+            label.stringValue = Self.localizedSliderLabel(for: id)
+        }
+        resetButton?.title = L("Reset")
+    }
+
+    private static func localizedSliderLabel(for id: String) -> String {
+        switch id {
+        case "brightness": return L("Brightness")
+        case "contrast":   return L("Contrast")
+        case "saturation": return L("Saturation")
+        case "hue":        return L("Hue")
+        case "gamma":      return L("Gamma")
+        default:           return id.capitalized
+        }
+    }
 
     private func setupContent() {
         let stack = NSStackView()
@@ -22,20 +49,21 @@ class VideoEQPanelController: NSWindowController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.edgeInsets = NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
 
-        let params: [(String, String, Float, Float, Float)] = [
-            ("Brightness", "brightness", 0, 2, 1),
-            ("Contrast", "contrast", 0, 2, 1),
-            ("Saturation", "saturation", 0, 3, 1),
-            ("Hue", "hue", -180, 180, 0),
-            ("Gamma", "gamma", 0.01, 10, 1),
+        let params: [(String, Float, Float, Float)] = [
+            ("brightness", 0, 2, 1),
+            ("contrast",   0, 2, 1),
+            ("saturation", 0, 3, 1),
+            ("hue",        -180, 180, 0),
+            ("gamma",      0.01, 10, 1),
         ]
 
-        for (label, id, min, max, def) in params {
+        for (id, min, max, def) in params {
             let row = NSStackView()
             row.orientation = .horizontal
             row.spacing = 8
-            let lbl = NSTextField(labelWithString: label)
+            let lbl = NSTextField(labelWithString: Self.localizedSliderLabel(for: id))
             lbl.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            labelsByID[id] = lbl
             let slider = NSSlider(value: Double(def), minValue: Double(min), maxValue: Double(max), target: self, action: #selector(sliderChanged(_:)))
             slider.identifier = NSUserInterfaceItemIdentifier(id)
             slider.widthAnchor.constraint(equalToConstant: 160).isActive = true
@@ -50,6 +78,7 @@ class VideoEQPanelController: NSWindowController {
 
         let resetBtn = NSButton(title: L("Reset"), target: self, action: #selector(resetAll))
         resetBtn.bezelStyle = .rounded
+        self.resetButton = resetBtn
         stack.addArrangedSubview(resetBtn)
 
         window?.contentView = stack
@@ -102,6 +131,6 @@ class VideoEQPanelController: NSWindowController {
                 }
             }
         }
-        playerViewController?.showOSD("Video adjustments reset")
+        playerViewController?.showOSD(L("Video adjustments reset"))
     }
 }

@@ -200,10 +200,34 @@ extension PreferencesWindowController: NSToolbarDelegate {
 
 // MARK: - Individual Preference Views
 
-class GeneralPrefsView: NSView {
+/// Common parent for the simple stack-of-rows preference panes. Subclasses
+/// override `buildContent(_:)` to populate the stack and avoid having to
+/// re-declare `required init?(coder:)` themselves (the parent's satisfies
+/// Swift's automatic-inheritance rule because subclasses don't override any
+/// designated initializers — they override `buildContent` instead).
+///
+/// `InputPrefsView` doesn't use this base because it also conforms to
+/// NSTableView delegate/data-source protocols and benefits from keeping
+/// its setup in `init(frame:)` next to the property declarations.
+class BasePrefsView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         let stack = makePrefsStack()
+        buildContent(stack)
+        embed(stack)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("BasePrefsView is programmatic-only; coder init is unsupported")
+    }
+    /// Subclasses populate the stack with rows. Default crashes so a subclass
+    /// that forgets to override surfaces in a build/test, not silently.
+    func buildContent(_ stack: NSStackView) {
+        fatalError("Subclass of BasePrefsView must override buildContent(_:)")
+    }
+}
+
+class GeneralPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, L("Appearance"))
         addPopupRow(stack, L("Theme:"), key: Defaults.theme, items: [L("System"), L("Dark"), L("Light")])
         addToggleRow(stack, L("Transparent title bar"), key: Defaults.transparentTitleBar)
@@ -215,10 +239,7 @@ class GeneralPrefsView: NSView {
         addToggleRow(stack, L("Resume playback position on reopen"), key: Defaults.resumePlayback)
         addToggleRow(stack, L("Quit when last window closed"), key: Defaults.quitOnLastWindowClosed)
         addToggleRow(stack, L("Restore window position on launch"), key: Defaults.restoreWindowPosition)
-
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 
     /// Per-app language override. Writes to the standard macOS AppleLanguages
     /// key so the change is identical to what System Settings → Language &
@@ -296,29 +317,23 @@ final class LanguagePicker: NSObject {
     }
 }
 
-class MediaOpenPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class MediaOpenPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Playback Engine")
         addPopupRow(stack, "Default engine:", key: Defaults.defaultEngine, items: ["Auto", "AVPlayer", "FFmpeg"])
 
         addSectionHeader(stack, "Subtitles")
         addToggleRow(stack, "Auto-load matching subtitle files", key: Defaults.autoLoadSubtitles)
-        embed(stack)
         // Removed orphaned UI rows (autoFindSeriesFiles, autoLoadNextFile,
         // openInNewWindow, subtitleSearchScope) — their values are written
         // to UserDefaults by these controls but read nowhere in the player,
         // so toggling did nothing. Restore alongside the readers if these
         // features are ever implemented.
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
-class PlaybackPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class PlaybackPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Speed")
         addSliderRow(stack, "Default speed:", min: 0.25, max: 4.0, value: 1.0, key: Defaults.defaultSpeed)
 
@@ -340,15 +355,11 @@ class PlaybackPrefsView: NSView {
         addPopupRow(stack, "When playlist ends:", key: Defaults.playlistEndAction, items: ["Do Nothing", "Close Window", "Quit"])
         addToggleRow(stack, "Auto-add files from directory", key: Defaults.autoAddFromDirectory)
         // sortOrder pref was orphaned — no playlist code consumed it.
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
-class VideoPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class VideoPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, L("Display"))
         addPopupRow(stack, L("Default aspect ratio:"), key: Defaults.defaultAspectRatio, items: [L("Auto"), "4:3", "16:9", "16:10", "2.35:1", "2.39:1"])
         addPopupRow(stack, L("Default window size:"), key: Defaults.defaultVideoSize, items: [L("Fit to Screen"), L("Original Size"), L("Half Size"), L("Double Size"), "50%", "75%", "150%", "200%"])
@@ -379,15 +390,11 @@ class VideoPrefsView: NSView {
         addSectionHeader(stack, L("Screenshot"))
         addPopupRow(stack, L("Format:"), key: Defaults.screenshotFormat, items: ["PNG", "JPEG", "TIFF"])
         addPopupRow(stack, L("Save to:"), key: Defaults.screenshotSavePath, items: [L("Desktop"), L("Pictures"), L("Downloads"), L("Custom…")])
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
-class AudioPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class AudioPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Volume")
         addSliderRow(stack, "Default volume:", min: 0, max: 1, value: 1, key: Defaults.defaultVolume)
         addToggleRow(stack, "Allow extended volume (up to 400%)", key: Defaults.extendedVolume)
@@ -408,15 +415,11 @@ class AudioPrefsView: NSView {
 
         addSectionHeader(stack, "Sync")
         addSliderRow(stack, "Audio delay step (ms):", min: 10, max: 500, value: 100, key: Defaults.audioDelayStep)
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
-class SubtitlePrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class SubtitlePrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Loading")
         addToggleRow(stack, "Auto-load embedded subtitles", key: Defaults.autoLoadEmbedded)
         addToggleRow(stack, "Auto-load external subtitle files", key: Defaults.autoLoadExternal)
@@ -455,15 +458,11 @@ class SubtitlePrefsView: NSView {
                                 let user = OpenSubtitlesService.storedUsername() ?? ""
                                 OpenSubtitlesService.setCredentials(username: user, password: password)
                             })
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
-class FullScreenPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class FullScreenPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Enter / Exit")
         addToggleRow(stack, "Auto-enter fullscreen on open", key: Defaults.autoEnterFullscreen)
         addToggleRow(stack, "Pause when exiting fullscreen", key: Defaults.pauseOnExitFullscreen)
@@ -475,9 +474,7 @@ class FullScreenPrefsView: NSView {
 
         addSectionHeader(stack, "Time Display")
         addPopupRow(stack, "Time OSD position:", key: Defaults.timeOSDPosition, items: ["Top-left", "Top-center", "Top-right", "Hidden"])
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
 class InputPrefsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
@@ -627,19 +624,15 @@ class InputPrefsView: NSView, NSTableViewDataSource, NSTableViewDelegate {
     }
 }
 
-class CastPrefsView: NSView {
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        let stack = makePrefsStack()
+class CastPrefsView: BasePrefsView {
+    override func buildContent(_ stack: NSStackView) {
         addSectionHeader(stack, "Connection")
         addToggleRow(stack, "Auto-disconnect on window close", key: Defaults.autoDisconnectOnClose)
         addToggleRow(stack, "Resume local playback on disconnect", key: Defaults.resumeLocalOnDisconnect)
         // The other four cast prefs (castDefaultBehavior, airplayButtonVisibility,
         // chromecastQuality, dlnaQuality) had UI but no reader — removed.
         // The actual cast flow always asks per-session and uses fixed quality.
-        embed(stack)
     }
-    required init?(coder: NSCoder) { fatalError() }
 }
 
 // MARK: - Helpers
