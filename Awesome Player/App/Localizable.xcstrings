@@ -17473,6 +17473,70 @@
           }
         }
       }
+    },
+    "Converting %.0f%%  •  ETA %.0fs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "转换中 %.0f%%  •  预计剩余 %.0f秒"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換中 %.0f%%  •  預計剩餘 %.0f秒"
+          }
+        },
+        "yue": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轉換緊 %.0f%%  •  預計剩餘 %.0f秒"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "変換中 %.0f%%  •  残り %.0f秒"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "변환 중 %.0f%%  •  남은 시간 %.0f초"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convirtiendo %.0f%%  •  ETA %.0fs"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversion %.0f%%  •  Restant %.0f s"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konvertierung %.0f%%  •  Verbleibend %.0fs"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convertendo %.0f%%  •  Restam %.0fs"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Конвертация %.0f%%  •  Осталось %.0f с"
+          }
+        }
+      }
     }
   }
 }

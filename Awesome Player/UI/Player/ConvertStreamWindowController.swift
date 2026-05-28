@@ -107,9 +107,15 @@ class ConvertStreamWindowController: NSWindowController {
         dropBox.contentView?.addSubview(dropZone)
 
         mediaLabel.translatesAutoresizingMaskIntoConstraints = false
-        mediaLabel.font = .systemFont(ofSize: 12)
+        mediaLabel.font = .systemFont(ofSize: 11)
         mediaLabel.textColor = .secondaryLabelColor
         mediaLabel.alignment = .center
+        // Paths are often longer than the section box width — truncate from
+        // the middle so the user still sees the parent directory (start) and
+        // the filename (end) instead of either being clipped.
+        mediaLabel.lineBreakMode = .byTruncatingMiddle
+        mediaLabel.cell?.lineBreakMode = .byTruncatingMiddle
+        mediaLabel.toolTip = nil
         dropBox.contentView?.addSubview(mediaLabel)
 
         let openButton = NSButton(title: L("Open Media…"), target: self, action: #selector(openMediaClicked))
@@ -208,8 +214,13 @@ class ConvertStreamWindowController: NSWindowController {
 
             statusLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 4),
             statusLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            statusLabel.trailingAnchor.constraint(lessThanOrEqualTo: goButton.leadingAnchor, constant: -12),
+            // Hard bottom margin so the status text sits 20pt above the
+            // window edge instead of hovering right against it (previously
+            // it had no bottom anchor and ended up flush with the border).
+            statusLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
 
-            goButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            goButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
             goButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             goButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 80),
         ])
@@ -225,7 +236,11 @@ class ConvertStreamWindowController: NSWindowController {
 
     private func setInputURL(_ url: URL) {
         selectedInputURL = url
-        mediaLabel.stringValue = url.lastPathComponent
+        // Show the full file path; the label middle-truncates if it overflows
+        // the section box. Also set toolTip so hovering reveals the full
+        // path without truncation.
+        mediaLabel.stringValue = url.path
+        mediaLabel.toolTip = url.path
         mediaLabel.textColor = .labelColor
         goButton.isEnabled = true
     }
@@ -341,7 +356,7 @@ class ConvertStreamWindowController: NSWindowController {
             if let start = conversionStartTime, pos > 0.01 {
                 let elapsed = Date().timeIntervalSince(start)
                 let eta = elapsed / pos - elapsed
-                statusLabel.stringValue = String(format: "Converting %.0f%%  •  ETA %.0fs", pos * 100, eta)
+                statusLabel.stringValue = String(format: L("Converting %.0f%%  •  ETA %.0fs"), pos * 100, eta)
             }
         }
     }
