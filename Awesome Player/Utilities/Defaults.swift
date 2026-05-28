@@ -188,6 +188,11 @@ enum Defaults {
             chromecastQuality: 1,        // 0=Low, 1=Medium, 2=High
             dlnaQuality: 1,              // 0=Low, 1=Medium, 2=High
             convertHardwareEncoding: true,
+            // KeyBindingManager.loadBindings handles a nil/missing value by
+            // falling back to the "default" preset, but registering an
+            // explicit empty Data here keeps the audit clean (every declared
+            // key has a registered default).
+            customShortcuts: Data(),
         ])
     }
 }

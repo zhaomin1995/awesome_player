@@ -4,6 +4,12 @@ DerivedData/
 *.xcuserdata/
 *.xcworkspace/xcuserdata/
 xcuserdata/
+*.hmap
+
+# Swift Package Manager (in case anyone adds SPM deps locally)
+.swiftpm/
+.build/
+Package.resolved
 
 # macOS
 .DS_Store
@@ -19,9 +25,8 @@ Vendor/ffmpeg/lib/pkgconfig/
 *.dSYM.zip
 *.dSYM
 
-# Temporary files
-*.hmap
-*.ipa
-*.dSYM.zip
-*.dSYM
+# Logs (incl. legacy /tmp/chromecast_debug.log location and DMG build logs)
+*.log
+
+# Tooling / editor / agent
 .claude/settings.local.json
