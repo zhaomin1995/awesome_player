@@ -72,6 +72,13 @@ class WelcomeView: NSView {
         wantsLayer = true
         registerForDraggedTypes([.fileURL])
         layer?.backgroundColor = NSColor(white: 0.18, alpha: 1).cgColor
+        // The view always draws a dark radial gradient regardless of the
+        // system appearance, so force its subtree to render with dark-mode
+        // control colors. In Light Mode the system would otherwise pick near-
+        // black text/bezel for buttons, which has no contrast against our
+        // dark background. Child NSButton/NSTextField inherits this and
+        // chooses the dark-variant rendering of its bezel and label color.
+        appearance = NSAppearance(named: .darkAqua)
 
         // Icon — same Movist-style rounded square as before
         iconView.wantsLayer = true

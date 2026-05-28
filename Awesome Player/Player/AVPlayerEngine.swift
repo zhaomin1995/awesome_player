@@ -86,6 +86,11 @@ class AVPlayerEngine: NSObject {
 
         let asset = AVURLAsset(url: url)
         let item = AVPlayerItem(asset: asset)
+        // Preserve pitch when rate ≠ 1.0. Default `.lowQualityZeroLatency` makes
+        // 1.5–2× playback sound chipmunked. `.spectral` is the most expensive
+        // algorithm but the only one that keeps voices natural at high rates;
+        // CPU cost is negligible compared to video decode for normal content.
+        item.audioTimePitchAlgorithm = .spectral
         playerItem = item
 
         let avPlayer = AVPlayer(playerItem: item)

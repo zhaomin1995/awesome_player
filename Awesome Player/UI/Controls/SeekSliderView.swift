@@ -24,9 +24,20 @@ class SeekSliderView: NSView {
     private var tooltipWindow: NSPanel?
     private var tooltipLabel: NSTextField?
 
-    // Thumbnail preview
+    // Thumbnail filmstrip preview — 5 thumbnails (center = cursor, ±1, ±2 at
+    // fixed time offsets). The center frame is rendered slightly larger and
+    // bordered so it reads as "this is the moment you'll seek to". Edge frames
+    // give scene context. Replaced the single hover-thumb with this strip in
+    // the trackpad-gestures / seek-bar polish pass.
+    private static let stripThumbWidth: CGFloat = 110
+    private static let stripThumbHeight: CGFloat = 62
+    private static let stripCenterScale: CGFloat = 1.25  // center thumb pops
+    private static let stripPadding: CGFloat = 4
+    private static let stripOffsetsSeconds: [Double] = [-20, -10, 0, 10, 20]
+
     private var thumbnailWindow: NSPanel?
-    private var thumbnailView: NSImageView?
+    private var thumbnailViews: [NSImageView] = []
+    private var thumbnailBgs: [NSView] = []
     private var imageGenerator: AVAssetImageGenerator?
     /// LRU thumbnail cache with byte-cost ceiling instead of a hard count
     /// ceiling. Earlier code wiped the whole dict at 150 entries — long
@@ -51,6 +62,13 @@ class SeekSliderView: NSView {
             imageGenerator?.cancelAllCGImageGeneration()
             pendingThumbnailTime = nil
             thumbnailCache.removeAllObjects()
+            // Tear down the filmstrip panel — slot count is constant, but the
+            // image views still hold references to the previous asset's NSImages
+            // and rebuilding them lazily on next hover is cheap.
+            thumbnailWindow?.orderOut(nil)
+            thumbnailWindow = nil
+            thumbnailViews.removeAll()
+            thumbnailBgs.removeAll()
             if let asset = currentAsset {
                 let gen = AVAssetImageGenerator(asset: asset)
                 gen.appliesPreferredTrackTransform = true
@@ -270,7 +288,11 @@ class SeekSliderView: NSView {
 
         let sliderScreenY = parentWindow.convertPoint(toScreen: convert(NSPoint(x: 0, y: bounds.maxY), to: nil)).y
 
-        let thumbnailOffset: CGFloat = (thumbnailWindow?.isVisible == true) ? 98 : 0
+        // Lift the time tooltip above the filmstrip when it's visible. Strip
+        // height = centerThumbHeight * scale + 2*padding ≈ 86pt; +8 spacer.
+        let thumbnailOffset: CGFloat = (thumbnailWindow?.isVisible == true)
+            ? Self.stripThumbHeight * Self.stripCenterScale + Self.stripPadding * 2 + 8
+            : 0
         let tipX = screenPoint.x - tipWidth / 2
         let tipY = sliderScreenY + 8 + thumbnailOffset
 
@@ -283,84 +305,157 @@ class SeekSliderView: NSView {
         tooltipWindow?.orderOut(nil)
     }
 
-    // MARK: - Thumbnail Preview (floating panel)
+    // MARK: - Thumbnail Filmstrip (floating panel)
+
+    /// 2-second cache buckets — adjacent strip slots that fall in the same
+    /// bucket reuse the same NSImage. With 10s offsets between strip thumbs
+    /// every slot has its own bucket; for videos under ~40s the offsets get
+    /// clamped to duration and the buckets start overlapping (fine — we just
+    /// show the same thumb twice).
+    private func cacheKey(for time: Double) -> NSNumber {
+        return NSNumber(value: Int(time / 2))
+    }
 
     private func requestThumbnail(at time: Double, screenPoint: NSPoint) {
-        guard imageGenerator != nil else { return }
+        guard imageGenerator != nil, duration > 0 else { return }
 
-        let cacheKey = NSNumber(value: Int(time / 2))
+        ensureStripPanel(at: screenPoint)
+        layoutStrip(at: screenPoint, centerTime: time)
 
-        if let cached = thumbnailCache.object(forKey: cacheKey) {
-            showThumbnail(cached, screenPoint: screenPoint)
-            return
+        // Slot times = center ± offsets, clamped to [0, duration]
+        let slotTimes = Self.stripOffsetsSeconds.map { offset in
+            max(0, min(duration, time + offset))
+        }
+        pendingThumbnailTime = time
+
+        // Fill slots that already have a cached thumb immediately. Issue async
+        // generation for the rest; when each finishes we update its slot only
+        // if the user is still hovering in the same neighborhood.
+        var needGen: [(slot: Int, time: Double)] = []
+        for (i, slotTime) in slotTimes.enumerated() {
+            if let cached = thumbnailCache.object(forKey: cacheKey(for: slotTime)) {
+                thumbnailViews[i].image = cached
+            } else {
+                thumbnailViews[i].image = nil
+                needGen.append((i, slotTime))
+            }
         }
 
-        guard let gen = imageGenerator else { return }
-
+        guard let gen = imageGenerator, !needGen.isEmpty else { return }
         gen.cancelAllCGImageGeneration()
-        pendingThumbnailTime = time
-        let cmTime = CMTimeMakeWithSeconds(time, preferredTimescale: 600)
+        let times = needGen.map { NSValue(time: CMTimeMakeWithSeconds($0.time, preferredTimescale: 600)) }
+        // Map back from CMTime to (slot, originalTime) since AVAsset can return
+        // requests in arbitrary order
+        let timesBySlot = Dictionary(uniqueKeysWithValues: needGen.map { (CMTimeMakeWithSeconds($0.time, preferredTimescale: 600).seconds, $0) })
 
-        gen.generateCGImagesAsynchronously(forTimes: [NSValue(time: cmTime)]) { [weak self] _, cgImage, _, _, _ in
+        gen.generateCGImagesAsynchronously(forTimes: times) { [weak self] requestedTime, cgImage, _, _, _ in
             guard let self = self, let cgImage = cgImage else { return }
+            let reqSeconds = requestedTime.seconds
             let image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
             DispatchQueue.main.async {
-                // Cost = approx bytes (RGBA8 width*height*4). Lets NSCache
-                // size the working set against totalCostLimit instead of a
-                // raw count, which mattered for 4K vs 720p thumbnails.
+                guard let info = timesBySlot.first(where: { abs($0.key - reqSeconds) < 0.5 })?.value else { return }
                 let cost = Int(cgImage.width * cgImage.height * 4)
-                self.thumbnailCache.setObject(image, forKey: cacheKey, cost: cost)
-                if let pending = self.pendingThumbnailTime, abs(pending - time) < 3 {
-                    self.showThumbnail(image, screenPoint: screenPoint)
+                self.thumbnailCache.setObject(image, forKey: self.cacheKey(for: info.time), cost: cost)
+                // Drop stale results — user may have moved cursor far away
+                if let pending = self.pendingThumbnailTime,
+                   abs(pending - time) < Self.stripOffsetsSeconds.last! * 2,
+                   info.slot < self.thumbnailViews.count {
+                    self.thumbnailViews[info.slot].image = image
                 }
             }
         }
     }
 
-    private func showThumbnail(_ image: NSImage, screenPoint: NSPoint) {
-        guard let parentWindow = window else { return }
-        let thumbWidth: CGFloat = 160
-        let thumbHeight: CGFloat = 90
+    private func ensureStripPanel(at screenPoint: NSPoint) {
+        guard thumbnailWindow == nil, let parentWindow = window else { return }
+        let count = Self.stripOffsetsSeconds.count
+        let stripWidth = CGFloat(count) * Self.stripThumbWidth
+            + CGFloat(count - 1) * Self.stripPadding
+            + Self.stripThumbWidth * (Self.stripCenterScale - 1)  // extra room for the larger center thumb
+        let stripHeight = Self.stripThumbHeight * Self.stripCenterScale + Self.stripPadding * 2
 
-        if thumbnailWindow == nil {
-            let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight),
-                                styleMask: [.borderless, .nonactivatingPanel],
-                                backing: .buffered, defer: true)
-            panel.isOpaque = false
-            panel.backgroundColor = .clear
-            panel.level = .floating
-            panel.hasShadow = true
-            panel.ignoresMouseEvents = true
+        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: stripWidth, height: stripHeight),
+                            styleMask: [.borderless, .nonactivatingPanel],
+                            backing: .buffered, defer: true)
+        panel.isOpaque = false
+        panel.backgroundColor = .clear
+        panel.level = .floating
+        panel.hasShadow = true
+        panel.ignoresMouseEvents = true
 
-            let bg = NSView(frame: NSRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight))
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: stripWidth, height: stripHeight))
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor(white: 0.05, alpha: 0.9).cgColor
+        container.layer?.cornerRadius = 6
+
+        thumbnailBgs.removeAll()
+        thumbnailViews.removeAll()
+        for i in 0..<count {
+            let bg = NSView(frame: .zero)
             bg.wantsLayer = true
-            bg.layer?.backgroundColor = NSColor(white: 0.05, alpha: 0.95).cgColor
-            bg.layer?.cornerRadius = 6
-            bg.layer?.borderColor = NSColor.white.withAlphaComponent(0.2).cgColor
-            bg.layer?.borderWidth = 1
-
-            let imageView = NSImageView(frame: NSRect(x: 3, y: 3, width: thumbWidth - 6, height: thumbHeight - 6))
+            bg.layer?.backgroundColor = NSColor.black.cgColor
+            bg.layer?.cornerRadius = 3
+            container.addSubview(bg)
+            let imageView = NSImageView(frame: .zero)
             imageView.imageScaling = .scaleProportionallyUpOrDown
             imageView.autoresizingMask = [.width, .height]
             bg.addSubview(imageView)
-
-            panel.contentView = bg
-            thumbnailView = imageView
-            thumbnailWindow = panel
-            parentWindow.addChildWindow(panel, ordered: .above)
+            // Highlight the center slot so users know which frame the click
+            // will land on. Border width on the layer is on/off here.
+            let isCenter = i == count / 2
+            bg.layer?.borderColor = isCenter
+                ? NSColor.systemBlue.cgColor
+                : NSColor.white.withAlphaComponent(0.15).cgColor
+            bg.layer?.borderWidth = isCenter ? 2 : 1
+            thumbnailBgs.append(bg)
+            thumbnailViews.append(imageView)
         }
 
-        guard let thumb = thumbnailWindow, let imageView = thumbnailView else { return }
+        panel.contentView = container
+        thumbnailWindow = panel
+        parentWindow.addChildWindow(panel, ordered: .above)
+    }
 
-        imageView.image = image
+    private func layoutStrip(at screenPoint: NSPoint, centerTime: Double) {
+        guard let panel = thumbnailWindow, let parentWindow = window else { return }
+        let count = Self.stripOffsetsSeconds.count
+        let centerW = Self.stripThumbWidth * Self.stripCenterScale
+        let centerH = Self.stripThumbHeight * Self.stripCenterScale
+        let edgeW = Self.stripThumbWidth
+        let edgeH = Self.stripThumbHeight
+        let pad = Self.stripPadding
 
-        let sliderScreenPoint = parentWindow.convertPoint(toScreen: convert(NSPoint(x: 0, y: bounds.maxY), to: nil))
+        let stripWidth = CGFloat(count - 1) * (edgeW + pad) + centerW + pad * 2
+        let stripHeight = centerH + pad * 2
+
+        var x: CGFloat = pad
+        for (i, bg) in thumbnailBgs.enumerated() {
+            let isCenter = i == count / 2
+            let w = isCenter ? centerW : edgeW
+            let h = isCenter ? centerH : edgeH
+            let y = (stripHeight - h) / 2
+            bg.frame = NSRect(x: x, y: y, width: w, height: h)
+            // Image view fills the bg with a 2pt inset so the border shows.
+            if let iv = bg.subviews.first as? NSImageView {
+                iv.frame = NSRect(x: 2, y: 2, width: w - 4, height: h - 4)
+            }
+            x += w + pad
+        }
+
+        let sliderScreenY = parentWindow.convertPoint(toScreen: convert(NSPoint(x: 0, y: bounds.maxY), to: nil)).y
         let scrPt = parentWindow.convertPoint(toScreen: screenPoint)
-        let thumbX = scrPt.x - thumbWidth / 2
-        let thumbY = sliderScreenPoint.y + 8
+        // Center the strip's center thumb on the cursor X. Then clamp X so the
+        // strip doesn't run off the screen edge.
+        var stripX = scrPt.x - stripWidth / 2
+        if let screen = parentWindow.screen {
+            let vf = screen.visibleFrame
+            stripX = max(vf.minX + 4, min(vf.maxX - stripWidth - 4, stripX))
+        }
+        let stripY = sliderScreenY + 8
 
-        thumb.setFrame(NSRect(x: thumbX, y: thumbY, width: thumbWidth, height: thumbHeight), display: true)
-        thumb.orderFront(nil)
+        panel.setFrame(NSRect(x: stripX, y: stripY, width: stripWidth, height: stripHeight), display: true)
+        panel.contentView?.frame = NSRect(x: 0, y: 0, width: stripWidth, height: stripHeight)
+        panel.orderFront(nil)
     }
 
     private func hideThumbnail() {

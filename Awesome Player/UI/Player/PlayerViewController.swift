@@ -284,17 +284,34 @@ class PlayerViewController: NSViewController {
         view.addGestureRecognizer(pinch)
     }
 
+    /// 0 = Zoom Video (resize window proportionally),
+    /// 1 = Resize Window (semantically same here — both grow/shrink the window),
+    /// 2 = Nothing.
+    /// Both 0 and 1 currently map to window resize because we don't have a
+    /// separate zoom-without-resize codepath; the libvlc/AVPlayer paths both
+    /// fit-to-window. Treat the preference as on/off.
     @objc private func handlePinch(_ gesture: NSMagnificationGestureRecognizer) {
         let action = UserDefaults.standard.integer(forKey: Defaults.pinchGestureAction)
-        guard action != 2, gesture.state == .ended else { return } // 2 = nothing
-        if gesture.magnification > 0.3 {
-            if !(view.window?.styleMask.contains(.fullScreen) ?? false) {
-                onDoubleClick?() // Enter fullscreen
-            }
-        } else if gesture.magnification < -0.3 {
-            if view.window?.styleMask.contains(.fullScreen) ?? false {
-                onDoubleClick?() // Exit fullscreen
-            }
+        guard action != 2 else { return }
+        guard let window = view.window,
+              !window.styleMask.contains(.fullScreen) else { return }
+
+        switch gesture.state {
+        case .changed:
+            let scale = 1 + gesture.magnification
+            let size = window.frame.size
+            let newSize = NSSize(width: max(640, size.width * scale),
+                                 height: max(360, size.height * scale))
+            var frame = window.frame
+            // Keep window centered around its current center on resize so the
+            // pinch feels anchored to the cursor instead of dragging from the
+            // bottom-left.
+            frame.origin.x -= (newSize.width - size.width) / 2
+            frame.origin.y -= (newSize.height - size.height) / 2
+            frame.size = newSize
+            window.setFrame(frame, display: true, animate: false)
+            gesture.magnification = 0
+        default: break
         }
     }
 
@@ -307,14 +324,38 @@ class PlayerViewController: NSViewController {
         onMouseMoved?()
     }
 
-    /// Scroll-wheel adjusts volume in fixed steps (not proportional to delta)
-    /// to avoid accidental large jumps from trackpad momentum scrolling.
+    /// Scroll/swipe routing:
+    /// - Two-finger trackpad swipe with horizontal-dominant delta → seek
+    ///   (left = back, right = forward). The horizontal branch fires on
+    ///   trackpad swipes that have basically no vertical component and
+    ///   accumulates the delta so a long swipe = longer seek.
+    /// - Vertical scroll → volume or seek per `scrollWheelAction` preference.
+    /// Fixed-step volume to avoid accidental large jumps from momentum.
+    private var swipeAccumulator: CGFloat = 0
     override func scrollWheel(with event: NSEvent) {
-        let delta = event.scrollingDeltaY
-        guard abs(delta) > 0.5 else { return }
+        let dx = event.scrollingDeltaX
+        let dy = event.scrollingDeltaY
+
+        // Horizontal-dominant trackpad swipe → seek. Threshold = 30pt accumulated
+        // delta per "tick" so a casual horizontal scroll doesn't seek wildly.
+        // Only treat as swipe when the gesture has precise (trackpad) deltas
+        // AND horizontal motion clearly dominates — a mouse wheel sends X=0.
+        if event.hasPreciseScrollingDeltas, abs(dx) > abs(dy) * 1.5, abs(dx) > 0.3 {
+            swipeAccumulator += dx
+            let threshold: CGFloat = 30
+            while abs(swipeAccumulator) >= threshold {
+                let direction: Double = swipeAccumulator > 0 ? 1 : -1
+                seek(by: direction * shortSeek)
+                swipeAccumulator -= direction * threshold
+            }
+            if event.phase == .ended || event.momentumPhase == .ended { swipeAccumulator = 0 }
+            return
+        }
+
+        guard abs(dy) > 0.5 else { return }
         switch scrollAction {
-        case 0: adjustVolume(by: Float(delta > 0 ? 0.05 : -0.05))
-        case 1: seek(by: delta > 0 ? shortSeek : -shortSeek)
+        case 0: adjustVolume(by: Float(dy > 0 ? 0.05 : -0.05))
+        case 1: seek(by: dy > 0 ? shortSeek : -shortSeek)
         default: break
         }
     }
@@ -1100,6 +1141,19 @@ class PlayerViewController: NSViewController {
         }
     }
 
+    // MARK: - Sleep Timer
+
+    /// Called by SleepTimer.onFire when the duration timer expires or the
+    /// `.endOfFile` branch triggers below. Pauses both engines (whichever is
+    /// live) and surfaces a confirmation. Doesn't stop / close — user might
+    /// just want a nap and to resume in the morning.
+    func pauseForSleepTimer() {
+        if let engine = playerEngine, engine.isPlaying { engine.pause() }
+        if let engine = vlcEngine, engine.isPlaying { engine.pause() }
+        controlBarView.setPlaying(false)
+        osdView.show(message: L("Sleep Timer — paused"), duration: 5.0)
+    }
+
     // MARK: - Frame Stepping
 
     func stepFrame(forward: Bool) {
@@ -1107,10 +1161,10 @@ class PlayerViewController: NSViewController {
             engine.stepFrame(forward: forward)
             controlBarView.setPlaying(false)
             osdView.show(message: forward ? L("Frame ▶") : L("◀ Frame"))
-        } else if let engine = vlcEngine, forward {
-            engine.stepFrame()
+        } else if let engine = vlcEngine {
+            engine.stepFrame(forward: forward)
             controlBarView.setPlaying(false)
-            osdView.show(message: L("Frame ▶"))
+            osdView.show(message: forward ? L("Frame ▶") : L("◀ Frame"))
         }
     }
 
@@ -1375,6 +1429,7 @@ extension PlayerViewController: AVPlayerEngineDelegate {
 
     func playerEngineDidFinishPlaying() {
         controlBarView.setPlaying(false)
+        if SleepTimer.shared.mode == .endOfFile { SleepTimer.shared.fire(); return }
         let action = UserDefaults.standard.integer(forKey: Defaults.mediaEndAction)
         switch action {
         case 0: // Nothing
@@ -1457,6 +1512,7 @@ extension PlayerViewController: VLCPlayerEngineDelegate {
     func vlcEngineDidFinishPlaying() {
         controlBarView.setPlaying(false)
         (NSApp.delegate as? AppDelegate)?.nowPlayingController.updatePlaybackState(isPlaying: false)
+        if SleepTimer.shared.mode == .endOfFile { SleepTimer.shared.fire(); return }
         let action = UserDefaults.standard.integer(forKey: Defaults.mediaEndAction)
         switch action {
         case 0: // Nothing — match AVPlayer twin (clear now-playing, keep frame)

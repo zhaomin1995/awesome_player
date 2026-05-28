@@ -21,8 +21,9 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - **30+ container formats** and all codecs VLC supports (H.264, HEVC, VP9, AV1, etc.)
 - Keyboard shortcuts: Space (play/pause), arrows (seek/volume), M (mute), F (fullscreen), `[` `]` (speed), `.` `,` (frame step), Escape (configurable behavior)
 - A-B loop with configurable gap
-- Playback speed control (0.25x-4x) with menu and keyboard shortcuts
-- Frame-by-frame stepping forward (`.`) and backward (`,`)
+- **Playback speed control with pitch correction** (0.25x-4x) — voices stay natural at 1.5×/2× via `AVAudioTimePitchAlgorithm.spectral` on the AVPlayer path and libvlc's `audio-time-stretch` on the VLC path
+- Frame-by-frame stepping forward (`.`) and backward (`,`) — AVPlayer uses native `step(byCount:)`; libvlc path approximates backward via a 40ms precise-seek (libvlc 3.x has no `previous_frame` API)
+- **Sleep timer** (Playback → Sleep Timer) with 15/30/45/60/90-minute presets, "End of File" mode, and a live countdown rendered into the menu
 - Configurable seek intervals (short and long seek with arrow keys)
 - Playback resume with smart thresholds (remembers position per file; requires 3min+ duration, 5-95% position, 1min absolute minimum)
 - **yt-dlp integration** for YouTube and web URL playback — bundled self-contained binary (no install needed), resolution picker dialog with all available qualities (up to 4K/8K), high-res playback via VLC with separate video+audio stream merging
@@ -95,14 +96,14 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - **Right-click context menu** with tracks, speed, screenshot, fullscreen, PiP
 - **Codec badges in title bar** (DV, HDR, Atmos, codec name — e.g., H.264, HEVC, VP9, AV1)
 - **On-screen display (OSD)** for all actions (seek, volume, speed, track changes, etc.)
-- Seek bar with time tooltip on hover
+- Seek bar with time tooltip on hover and a **5-thumb filmstrip preview** — center thumbnail is the exact seek target (highlighted blue), neighbors show context at ±10s and ±20s offsets. Lazy generation via `AVAssetImageGenerator`, cached in an `NSCache` with 24 MB cost ceiling
 - **Playlist sidebar panel** (Cmd+Shift+P) with double-click to play, current track highlighting
 - **Media Inspector window** (Cmd+I) showing codec info, resolution, duration, audio/subtitle tracks via FFmpeg probing
 - **Video Equalizer panel** with brightness/contrast/saturation/hue/gamma sliders and reset button
 - **9-tab Preferences** with animated tab switching (General, Open, Playback, Video, Audio, Subtitle, Screen, Input, Cast) — General tab now includes the in-app Language picker
 - Drag-and-drop file opening (anywhere in window via DragDropView)
 - **Open Recent** with file history (custom UserDefaults-based RecentDocumentsMenuDelegate, up to 10 files)
-- Pinch-to-fullscreen gesture (configurable action)
+- **Trackpad gestures** — two-finger horizontal swipe to seek (±5s per 30pt accumulated delta), pinch to live-resize the window anchored on its center (honors the Mouse → Pinch Gesture preference)
 - Video window sizing (Half, Actual, Double, Fit to Screen, Fill Screen)
 - Keep on Top / Always on Top (pin button in title bar + Window menu)
 - Picture-in-Picture (PiP) support

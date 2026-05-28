@@ -187,6 +187,53 @@ class ChapterMenuDelegate: NSObject, NSMenuDelegate {
     }
 }
 
+/// Rebuilt on every open so the "remaining 12:34" countdown reflects current
+/// state. The presets match what podcast/audiobook apps converge on; "End of
+/// File" is the most-requested option for video.
+class SleepTimerMenuDelegate: NSObject, NSMenuDelegate {
+    static let shared = SleepTimerMenuDelegate()
+    private static let presetMinutes = [15, 30, 45, 60, 90]
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let timer = SleepTimer.shared
+
+        let offTitle: String
+        switch timer.mode {
+        case .off:
+            offTitle = L("Off")
+        case .duration:
+            let remaining = timer.remainingSeconds
+            let m = remaining / 60
+            let s = remaining % 60
+            offTitle = String(format: L("Off  (%d:%02d remaining)"), m, s)
+        case .endOfFile:
+            offTitle = L("Off  (waiting for end of file)")
+        }
+        let off = menu.addItem(withTitle: offTitle, action: #selector(AppDelegate.setSleepTimer(_:)), keyEquivalent: "")
+        off.tag = 0
+        if timer.mode == .off { off.state = .on }
+
+        menu.addItem(.separator())
+
+        for mins in Self.presetMinutes {
+            let item = menu.addItem(
+                withTitle: String(format: L("%d minutes"), mins),
+                action: #selector(AppDelegate.setSleepTimer(_:)),
+                keyEquivalent: "")
+            item.tag = mins
+            if case .duration(let armed) = timer.mode, armed == mins { item.state = .on }
+        }
+
+        menu.addItem(.separator())
+        let eof = menu.addItem(withTitle: L("End of File"),
+                               action: #selector(AppDelegate.setSleepTimer(_:)),
+                               keyEquivalent: "")
+        eof.tag = -1
+        if timer.mode == .endOfFile { eof.state = .on }
+    }
+}
+
 /// VLC-style playback speed slider that lives inline in the Playback menu.
 /// Uses a log2 scale so 1.0× sits dead center between 0.25× and 4.0×.
 class PlaybackSpeedSliderView: NSView {
@@ -503,6 +550,14 @@ class MenuManager {
         seekBwd.keyEquivalentModifierMask = []
 
         menu.addItem(.separator())
+        let frameFwd = menu.addItem(withTitle: L("Step Forward One Frame"),
+            action: #selector(AppDelegate.stepFrameForward(_:)), keyEquivalent: ".")
+        frameFwd.keyEquivalentModifierMask = []
+        let frameBwd = menu.addItem(withTitle: L("Step Backward One Frame"),
+            action: #selector(AppDelegate.stepFrameBackward(_:)), keyEquivalent: ",")
+        frameBwd.keyEquivalentModifierMask = []
+
+        menu.addItem(.separator())
         menu.addItem(withTitle: L("Jump to Time…"), action: #selector(AppDelegate.jumpToTime(_:)), keyEquivalent: "j")
 
         menu.addItem(.separator())
@@ -530,6 +585,13 @@ class MenuManager {
         chapterSubmenu.delegate = ChapterMenuDelegate.shared
         chapterItem.submenu = chapterSubmenu
         menu.addItem(chapterItem)
+
+        menu.addItem(.separator())
+        let sleepItem = NSMenuItem(title: L("Sleep Timer"), action: nil, keyEquivalent: "")
+        let sleepSubmenu = NSMenu(title: L("Sleep Timer"))
+        sleepSubmenu.delegate = SleepTimerMenuDelegate.shared
+        sleepItem.submenu = sleepSubmenu
+        menu.addItem(sleepItem)
 
         menuItem.submenu = menu
         return menuItem

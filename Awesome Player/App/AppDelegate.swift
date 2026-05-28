@@ -239,6 +239,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func seekBackward5(_ sender: Any?) {
         windowController?.playerViewController.seek(by: -5)
     }
+    @objc func stepFrameForward(_ sender: Any?) {
+        windowController?.playerViewController.stepFrame(forward: true)
+    }
+    @objc func stepFrameBackward(_ sender: Any?) {
+        windowController?.playerViewController.stepFrame(forward: false)
+    }
+    @objc func setSleepTimer(_ sender: Any?) {
+        guard let item = sender as? NSMenuItem else { return }
+        let timer = SleepTimer.shared
+        // Pause and clear the on-screen banner when the timer fires (or EOF
+        // hits with `.endOfFile` mode). The closure lives until cancel/re-arm.
+        timer.onFire = { [weak self] in
+            self?.windowController?.playerViewController.pauseForSleepTimer()
+        }
+        switch item.tag {
+        case 0:
+            timer.cancel()
+            windowController?.playerViewController.showOSD(L("Sleep Timer cancelled"))
+        case -1:
+            timer.arm(.endOfFile)
+            windowController?.playerViewController.showOSD(L("Sleep Timer: end of file"))
+        default:
+            timer.arm(.duration(minutes: item.tag))
+            windowController?.playerViewController.showOSD(
+                String(format: L("Sleep Timer set: %d minutes"), item.tag))
+        }
+    }
     @objc func jumpToTime(_ sender: Any?) {
         let alert = NSAlert()
         alert.messageText = L("Jump to Time")

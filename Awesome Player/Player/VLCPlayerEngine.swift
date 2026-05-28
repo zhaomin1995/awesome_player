@@ -191,6 +191,11 @@ class VLCPlayerEngine {
             libvlc_media_add_option(m, ":file-caching=100")
             libvlc_media_add_option(m, ":network-caching=300")
 
+            // Preserve audio pitch when playback rate ≠ 1.0. libvlc's default
+            // is ON in 3.x but make it explicit so behavior matches AVPlayer
+            // (which we set `audioTimePitchAlgorithm = .spectral` on).
+            libvlc_media_add_option(m, ":audio-time-stretch")
+
             // Video decode mode (preference: 0=Auto, 1=Force HW, 2=Force SW)
             // Default leaves libvlc to pick (it auto-prefers VideoToolbox on macOS).
             // Force HW makes any decoder fall back to error rather than software —
@@ -282,10 +287,20 @@ class VLCPlayerEngine {
 
     // MARK: - Frame Stepping
 
-    func stepFrame() {
+    func stepFrame(forward: Bool = true) {
         guard let p = player else { return }
         if isPlaying { pause() }
-        libvlc_media_player_next_frame(p)
+        if forward {
+            libvlc_media_player_next_frame(p)
+        } else {
+            // libvlc 3.x has no `previous_frame` API and the compat header
+            // doesn't expose `get_fps`, so approximate with a small backward
+            // seek. 40ms ≈ 1/25s — lands within ±1 frame for typical 24/30fps
+            // content, which is good enough for "scrub back to find the moment"
+            // navigation. AVPlayer engine uses the precise step(byCount:-1) API.
+            let target = max(0, currentTime - 0.04)
+            libvlc_media_player_set_time(p, Int64(target * 1000))
+        }
     }
 
     // MARK: - Event-Driven Updates
