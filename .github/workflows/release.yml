@@ -1,0 +1,95 @@
+name: Release
+
+# Triggered by pushing a tag like v1.1 / v2.0.3. Builds the Release config,
+# packages both a zip (for GitHub Releases / Sparkle-style updaters) and a
+# DMG with an /Applications drop-target (native install gesture), then
+# attaches both to a draft GitHub Release the maintainer can publish.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Build (Release)
+        run: |
+          xcodebuild \
+            -project "Awesome Player.xcodeproj" \
+            -scheme "Awesome Player" \
+            -configuration Release \
+            -destination "platform=macOS" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | (xcbeautify --renderer github-actions 2>/dev/null || cat)
+        shell: bash
+
+      - name: Determine version
+        id: ver
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Zip Release .app
+        run: |
+          APP="build/Build/Products/Release/Awesome Player.app"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "Awesome-Player-${{ steps.ver.outputs.version }}.zip"
+        shell: bash
+
+      - name: Build DMG
+        run: |
+          APP="build/Build/Products/Release/Awesome Player.app"
+          DMG="Awesome-Player-${{ steps.ver.outputs.version }}.dmg"
+          # Stage the .app alone so create-dmg doesn't sweep up build artifacts.
+          STAGE=$(mktemp -d)
+          cp -R "$APP" "$STAGE/"
+          create-dmg \
+            --volname "Awesome Player ${{ steps.ver.outputs.version }}" \
+            --window-pos 200 120 \
+            --window-size 600 360 \
+            --icon-size 96 \
+            --icon "Awesome Player.app" 160 200 \
+            --app-drop-link 440 200 \
+            --no-internet-enable \
+            "$DMG" \
+            "$STAGE" || {
+              echo "::warning::create-dmg failed; falling back to hdiutil"
+              hdiutil create -volname "Awesome Player ${{ steps.ver.outputs.version }}" \
+                -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+            }
+          ls -lh "$DMG"
+        shell: bash
+
+      - name: Generate checksums
+        run: |
+          shasum -a 256 *.zip *.dmg > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+        shell: bash
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: Awesome Player ${{ steps.ver.outputs.version }}
+          draft: true
+          generate_release_notes: true
+          files: |
+            Awesome-Player-${{ steps.ver.outputs.version }}.zip
+            Awesome-Player-${{ steps.ver.outputs.version }}.dmg
+            SHA256SUMS.txt

@@ -1,0 +1,116 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Select latest Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Build (Debug)
+        run: |
+          xcodebuild \
+            -project "Awesome Player.xcodeproj" \
+            -scheme "Awesome Player" \
+            -configuration Debug \
+            -destination "platform=macOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | (xcbeautify --renderer github-actions 2>/dev/null || cat)
+        shell: bash
+
+      - name: Build (Release)
+        run: |
+          xcodebuild \
+            -project "Awesome Player.xcodeproj" \
+            -scheme "Awesome Player" \
+            -configuration Release \
+            -destination "platform=macOS" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | (xcbeautify --renderer github-actions 2>/dev/null || cat)
+        shell: bash
+
+      - name: Verify Release .app codesignature
+        run: |
+          APP="build/Build/Products/Release/Awesome Player.app"
+          if [ ! -d "$APP" ]; then
+            echo "::error::Release .app missing at $APP"
+            exit 1
+          fi
+          # --deep walks bundled frameworks, dylibs, plugins. --strict catches
+          # missing or mismatched signatures that runtime would surface as
+          # cryptic dyld errors when Hardened Runtime + library validation
+          # are enforced. -v prints what it checked.
+          codesign --verify --deep --strict --verbose=2 "$APP"
+        shell: bash
+
+      - name: Smoke-test launch
+        run: |
+          APP="build/Build/Products/Release/Awesome Player.app"
+          # Launch the .app, give it 3s to spin up dyld + main menu, then kill.
+          # If dyld can't resolve a bundled dylib (e.g. plugin signing mismatch
+          # under Hardened Runtime) the open returns non-zero or the process
+          # is gone immediately — both surface here instead of in user reports.
+          open -W -g "$APP" --args --selftest &
+          OPEN_PID=$!
+          sleep 3
+          if pgrep -x "Awesome Player" > /dev/null; then
+            echo "App is running — smoke test passed."
+            pkill -x "Awesome Player" || true
+          else
+            echo "::error::App died during 3s smoke test — likely dyld / signing failure."
+            wait $OPEN_PID
+            exit 1
+          fi
+        shell: bash
+
+      - name: Zip Release .app
+        run: |
+          APP="build/Build/Products/Release/Awesome Player.app"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "Awesome-Player-Release.zip"
+          ls -lh Awesome-Player-Release.zip
+        shell: bash
+
+      - name: Upload Release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Awesome-Player-Release-${{ github.sha }}
+          path: Awesome-Player-Release.zip
+          if-no-files-found: warn
+          retention-days: 7
+
+  test:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select latest Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+      - name: Run unit tests
+        run: |
+          if xcodebuild -project "Awesome Player.xcodeproj" -list 2>/dev/null | grep -q "Awesome PlayerTests"; then
+            xcodebuild test \
+              -project "Awesome Player.xcodeproj" \
+              -scheme "Awesome Player" \
+              -destination "platform=macOS" \
+              CODE_SIGNING_ALLOWED=NO 2>&1 | (xcbeautify --renderer github-actions 2>/dev/null || cat)
+          else
+            echo "No test target yet — skipping."
+          fi
+        shell: bash
