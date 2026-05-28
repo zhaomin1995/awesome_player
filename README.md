@@ -20,7 +20,8 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 ### Audio & Video Tracks
 - **Dynamic audio/video/subtitle track switching** from menu bar or right-click context menu
 - TrackMenuDelegate dynamically queries the active engine (AVPlayer or VLC) when the menu opens
-- **8 EQ presets** via libvlc equalizer (Flat, Bass Boost, Treble Boost, Vocal, Rock, Jazz, Classical, Electronic)
+- **23 audio EQ presets** matching Movist Pro's set (Flat, Acoustic, Bass Booster, Bass Reducer, Classical, Dance, Deep, Electronic, Hip-Hop, Jazz, Latin, Loudness, Lounge, Perfect :), Piano, Pop, R&B, Rock, Small Speakers, Spoken Word, Treble Booster, Treble Reducer, Vocal Booster). Each preset is a 10-band ISO-frequency custom EQ built via `libvlc_audio_equalizer_new` + `set_amp_at_index`
+- **VLC-style inline playback-speed slider** in the Playback menu (log2 scale, 0.25× to 4× with 1.0× centered), backed by Speed Presets submenu for click-to-set
 - **Audio delay adjustment** (pull/push/revert, applied to VLC engine in real-time via `libvlc_audio_set_delay`)
 - Audio passthrough detection for AC3/E-AC3 over HDMI (AudioPassthroughManager + CoreAudio)
 - **Real-time output device selection** (dynamically enumerates CoreAudio devices, filters virtual/aggregate devices)
@@ -37,10 +38,14 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - ASS color parsing (&HAABBGGRR format) and override tag stripping
 - **Embedded subtitle extraction** via FFmpeg (`FFmpegBridge.extractSubtitleTrack()` for text formats)
 - **VLC native subtitle track rendering** (including PGS/VobSub bitmap subtitles)
+- **16-color HTML/CSS palette** for both text color and background color (Black, Gray, Silver, White, Maroon, Red, Fuchsia, Yellow, Olive, Green, Teal, Lime, Purple, Navy, Blue, Aqua) — menu items show color swatches alongside names
+- **Outline thickness** submenu (None, 1–6 px) — rendered via `NSAttributedString.strokeWidth` (negative for fill + stroke)
+- **Background opacity** inline slider (0–100%) in the Subtitle menu, paired with the 16-color Background Color picker
+- All subtitle styling preferences are KVO-observed so changes apply to the currently-displayed subtitle without needing to scrub
 - Subtitle delay sync (pull/push/revert with configurable step size)
 - Subtitle visibility toggle (Ctrl+V)
 - Configurable subtitle position (Bottom of Video, Bottom of Screen, Letterbox)
-- Auto-load matching subtitle files from same directory
+- Auto-load matching subtitle files from same directory; falls back to embedded text-subtitle extraction for AVPlayer-based paths
 - Configurable font, font size, color, and outline via Preferences
 
 ### Casting
@@ -49,6 +54,28 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - **DLNA/UPnP** — SSDP discovery + AVTransport SOAP control
 - **Play on External Display** — move window to any connected screen in fullscreen
 - Built-in HTTP server for streaming local files to cast devices
+
+### Convert / Stream
+- **File → Convert / Stream…** (⇧⌘S) — VLC's Convert/Stream equivalent
+- Drag-and-drop or browse to pick a source file; full path shown with middle-truncation if long (tooltip reveals the full path)
+- **12 transcode profiles** matching VLC's built-in set:
+  - Video — H.264 + MP3 (MP4 / TS)
+  - Video — VP80 + Vorbis (WebM)
+  - Video — Theora + Vorbis / Flac (OGG)
+  - Video — MPEG-2 + MPGA (TS)
+  - Video — WMV + WMA (ASF), DIV3 + MP3 (ASF)
+  - Audio — Vorbis (OGG), MP3, MP3 (MP4), FLAC
+- Conversion runs through libvlc's sout (stream output) pipeline (`#transcode{vcodec=X,acodec=Y,...}:standard{access=file,mux=Z,dst=PATH}`), reusing the shared libvlc instance so no extra plugin scan cost
+- **Live CPU and GPU usage** displayed under the progress bar — CPU via `task_threads()` + `thread_info(THREAD_BASIC_INFO)`, GPU via IORegistry `IOAccelerator` `PerformanceStatistics["Device Utilization %"]` (Activity Monitor's GPU History uses the same key)
+- ETA and percentage updated every 500ms alongside the progress bar
+- Reveal-in-Finder button on completion
+
+### Internationalization (11 languages)
+- **Full UI localization** in 11 locales: English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Cantonese (廣東話), Japanese (日本語), Korean (한국어), Spanish (Español), French (Français), German (Deutsch), Brazilian Portuguese (Português brasileiro), Russian (Русский)
+- Translations stored in a single Xcode 15 `Localizable.xcstrings` catalog — 250+ keys × 10 non-English locales hand-translated, then QA'd by per-language native-reviewer LLM passes (which caught a real bug — Chinese had "Seek Forward 5s" / "Seek Backward 5s" swapped before shipping)
+- **In-app language picker** in General preferences, listed by endonym (so users can find their language regardless of current UI state)
+- **Live language switch — no relaunch.** Picking a language flips the menu bar, the Preferences window (rebuilt in place), and all future dialogs / OSD messages instantly. The chosen language also writes the standard macOS `AppleLanguages` key so it persists across launches and propagates to system dialogs at next launch
+- Proper nouns (AirPlay, Chromecast, DLNA, Dolby Vision, HDR, MP4, FFmpeg, VLC, etc.) kept untranslated in every locale
 
 ### UI (Movist Pro Style)
 - Borderless window with transparent title bar (`fullSizeContentView` style)
@@ -60,7 +87,7 @@ A full-featured macOS video player that combines **Dolby Vision** playback with 
 - **Playlist sidebar panel** (Cmd+Shift+P) with double-click to play, current track highlighting
 - **Media Inspector window** (Cmd+I) showing codec info, resolution, duration, audio/subtitle tracks via FFmpeg probing
 - **Video Equalizer panel** with brightness/contrast/saturation/hue/gamma sliders and reset button
-- **9-tab Preferences** with animated tab switching (General, Media Open, Playback, Playlist, Video, Audio, Subtitle, Full Screen, Keyboard/Mouse)
+- **9-tab Preferences** with animated tab switching (General, Open, Playback, Video, Audio, Subtitle, Screen, Input, Cast) — General tab now includes the in-app Language picker
 - Drag-and-drop file opening (anywhere in window via DragDropView)
 - **Open Recent** with file history (custom UserDefaults-based RecentDocumentsMenuDelegate, up to 10 files)
 - Pinch-to-fullscreen gesture (configurable action)

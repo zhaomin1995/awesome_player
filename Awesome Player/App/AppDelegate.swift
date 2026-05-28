@@ -459,6 +459,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         windowController?.playerViewController.togglePiP()
     }
 
+    // MARK: - Window action wrappers
+    //
+    // AppKit auto-localizes the title of any menu item whose action is one
+    // of its built-in window selectors (toggleFullScreen:, miniaturize:,
+    // zoom:, close, etc.). The auto-localization reads from AppKit's OWN
+    // bundle which follows the SYSTEM locale, not our app's AppleLanguages
+    // override. So if the user has macOS in Chinese but switches our app
+    // to English, "Enter Full Screen" still appears in Chinese — Chinese
+    // strings bleeding into the English menu, which looks broken.
+    //
+    // Routing through our own selectors bypasses that auto-localization;
+    // the title stays whatever we set via L() and respects our language.
+
+    @objc func toggleFullScreenAction(_ sender: Any?) {
+        windowController?.window?.toggleFullScreen(nil)
+    }
+
+    @objc func minimizeAction(_ sender: Any?) {
+        windowController?.window?.miniaturize(nil)
+    }
+
+    @objc func zoomAction(_ sender: Any?) {
+        windowController?.window?.zoom(nil)
+    }
+
+    @objc func closeWindowAction(_ sender: Any?) {
+        NSApp.keyWindow?.performClose(nil)
+    }
+
     @objc func rotateLeft(_ sender: Any?) {
         windowController?.playerViewController.rotateVideo(by: -90)
     }

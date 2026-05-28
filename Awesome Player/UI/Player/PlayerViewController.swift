@@ -343,9 +343,9 @@ class PlayerViewController: NSViewController {
         menu.addItem(.separator())
         menu.addItem(withTitle: "Screenshot", action: #selector(AppDelegate.saveScreenshot(_:)), keyEquivalent: "")
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Fullscreen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Picture in Picture", action: #selector(AppDelegate.togglePiP(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Always on Top", action: #selector(AppDelegate.toggleAlwaysOnTop(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: L("Enter Full Screen"), action: #selector(AppDelegate.toggleFullScreenAction(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: L("Picture in Picture"), action: #selector(AppDelegate.togglePiP(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: L("Keep on Top"), action: #selector(AppDelegate.toggleAlwaysOnTop(_:)), keyEquivalent: "")
 
         NSMenu.popUpContextMenu(menu, with: event, for: view)
     }

@@ -739,7 +739,7 @@ class MenuManager {
             action: #selector(AppDelegate.showConvertStream(_:)), keyEquivalent: "s")
         convertItem.keyEquivalentModifierMask = [.shift, .command]
         menu.addItem(.separator())
-        menu.addItem(withTitle: L("Close"), action: #selector(NSWindow.close), keyEquivalent: "w")
+        menu.addItem(withTitle: L("Close"), action: #selector(AppDelegate.closeWindowAction(_:)), keyEquivalent: "w")
 
         menuItem.submenu = menu
         return menuItem
@@ -870,7 +870,7 @@ class MenuManager {
         menu.addItem(.separator())
 
         // Full Screen & PiP
-        menu.addItem(withTitle: L("Enter Full Screen"), action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "\r")
+        menu.addItem(withTitle: L("Enter Full Screen"), action: #selector(AppDelegate.toggleFullScreenAction(_:)), keyEquivalent: "\r")
         menu.addItem(withTitle: L("Picture in Picture"), action: #selector(AppDelegate.togglePiP(_:)), keyEquivalent: "p")
         menu.addItem(.separator())
 
@@ -1097,8 +1097,8 @@ class MenuManager {
         let menuItem = NSMenuItem(title: L("Window"), action: nil, keyEquivalent: "")
         let menu = NSMenu(title: L("Window"))
 
-        menu.addItem(withTitle: L("Minimize"), action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m")
-        menu.addItem(withTitle: L("Zoom"), action: #selector(NSWindow.zoom(_:)), keyEquivalent: "")
+        menu.addItem(withTitle: L("Minimize"), action: #selector(AppDelegate.minimizeAction(_:)), keyEquivalent: "m")
+        menu.addItem(withTitle: L("Zoom"), action: #selector(AppDelegate.zoomAction(_:)), keyEquivalent: "")
         menu.addItem(.separator())
         menu.addItem(withTitle: L("Keep on Top"), action: #selector(AppDelegate.toggleAlwaysOnTop(_:)), keyEquivalent: "t")
         menu.addItem(.separator())
