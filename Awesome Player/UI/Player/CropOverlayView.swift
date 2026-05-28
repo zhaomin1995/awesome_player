@@ -155,44 +155,58 @@ final class CropOverlayView: NSView {
         infoLabel.stringValue = geo
     }
 
-    /// Translate the drag rect (in our view's points) to a libvlc crop
-    /// geometry string in source pixels: "WIDTHxHEIGHT+X+Y". Accounts for
-    /// letterbox: the video shown inside our bounds is fit-to-aspect inside
-    /// `bounds`, so we compute the actual displayed video rect first, then
-    /// map relative position into source pixels.
+    /// Instance helper that delegates to the pure static below — kept so call
+    /// sites can use `overlay.cropGeometry()` without worrying about state.
     func cropGeometry() -> String? {
-        guard let src = videoSize(), src.width > 0, src.height > 0 else { return nil }
-        guard currentRect.width > 4, currentRect.height > 4 else { return nil }
+        guard let src = videoSize() else { return nil }
+        return Self.cropGeometry(selection: currentRect, viewBounds: bounds, videoSize: src)
+    }
 
-        let viewAspect = bounds.width / bounds.height
-        let srcAspect = src.width / src.height
+    /// Translate a drag rect (in view-local points, origin bottom-left) to a
+    /// libvlc crop geometry string in source pixels (origin top-left):
+    /// `"WIDTHxHEIGHT+X+Y"`. Accounts for letterbox/pillarbox — the video
+    /// shown inside `viewBounds` is fit-to-aspect, so we compute where the
+    /// displayed video actually sits first, clip the selection to it, then
+    /// scale into source pixels and flip Y for libvlc's convention.
+    ///
+    /// Exposed as a `static` (not an instance method) specifically so unit
+    /// tests can exercise the math without needing an NSView in a window.
+    /// Returns nil for any degenerate input: zero source size, sub-4pt
+    /// selection, or selection entirely outside the displayed video.
+    static func cropGeometry(selection: NSRect, viewBounds: NSRect, videoSize: NSSize) -> String? {
+        guard videoSize.width > 0, videoSize.height > 0 else { return nil }
+        guard selection.width > 4, selection.height > 4 else { return nil }
+        guard viewBounds.width > 0, viewBounds.height > 0 else { return nil }
+
+        let viewAspect = viewBounds.width / viewBounds.height
+        let srcAspect = videoSize.width / videoSize.height
 
         let displayed: NSRect
         if viewAspect > srcAspect {
             // Pillarbox: bars on left/right, video uses full height
-            let w = bounds.height * srcAspect
-            displayed = NSRect(x: (bounds.width - w) / 2, y: 0, width: w, height: bounds.height)
+            let w = viewBounds.height * srcAspect
+            displayed = NSRect(x: viewBounds.minX + (viewBounds.width - w) / 2,
+                               y: viewBounds.minY,
+                               width: w, height: viewBounds.height)
         } else {
             // Letterbox: bars on top/bottom
-            let h = bounds.width / srcAspect
-            displayed = NSRect(x: 0, y: (bounds.height - h) / 2, width: bounds.width, height: h)
+            let h = viewBounds.width / srcAspect
+            displayed = NSRect(x: viewBounds.minX,
+                               y: viewBounds.minY + (viewBounds.height - h) / 2,
+                               width: viewBounds.width, height: h)
         }
 
-        // Clip selection to the actual displayed video area
-        let sel = currentRect.intersection(displayed)
-        guard !sel.isEmpty else { return nil }
+        let sel = selection.intersection(displayed)
+        guard sel.width > 0, sel.height > 0 else { return nil }
 
-        // Map sel from view coords (origin bottom-left) into source-pixel
-        // coords (origin top-left, where libvlc & AVPlayer want them).
-        let scaleX = src.width / displayed.width
-        let scaleY = src.height / displayed.height
+        let scaleX = videoSize.width / displayed.width
+        let scaleY = videoSize.height / displayed.height
         let srcX = Int((sel.minX - displayed.minX) * scaleX)
         let srcW = Int(sel.width * scaleX)
         let srcH = Int(sel.height * scaleY)
-        let srcY = Int(src.height) - Int((sel.minY - displayed.minY) * scaleY) - srcH
-        // Clamp inside source bounds
-        let cX = max(0, min(Int(src.width) - srcW, srcX))
-        let cY = max(0, min(Int(src.height) - srcH, srcY))
+        let srcY = Int(videoSize.height) - Int((sel.minY - displayed.minY) * scaleY) - srcH
+        let cX = max(0, min(Int(videoSize.width) - srcW, srcX))
+        let cY = max(0, min(Int(videoSize.height) - srcH, srcY))
         return "\(srcW)x\(srcH)+\(cX)+\(cY)"
     }
 

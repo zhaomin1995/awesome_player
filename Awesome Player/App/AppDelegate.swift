@@ -160,19 +160,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func routeIncomingURL(_ string: String) {
-        // file:// prefix → unwrap to a local URL; bare path → file URL;
-        // http(s):// → media URL routed through openStreamURL.
+    /// Classification of an external URL/path string handed to us by the
+    /// URL scheme handler, Services menu, bookmarklet, or CLI. Pure data —
+    /// the side-effectful dispatch happens in `routeIncomingURL`.
+    enum IncomingURLAction: Equatable {
+        case openFile(URL)
+        case openStream(URL)
+        case unknown
+    }
+
+    /// Pure classifier — exposed static so tests don't have to spin up
+    /// AppDelegate / windowController. `fileExists` is injectable so tests
+    /// can simulate a present/absent local path without touching the disk.
+    static func classifyIncomingURL(
+        _ string: String,
+        fileExists: (String) -> Bool = { FileManager.default.fileExists(atPath: $0) }
+    ) -> IncomingURLAction {
         if string.hasPrefix("file://"), let url = URL(string: string) {
+            return .openFile(url)
+        }
+        if (string.hasPrefix("http://") || string.hasPrefix("https://")),
+           let url = URL(string: string) {
+            return .openStream(url)
+        }
+        if fileExists(string) {
+            return .openFile(URL(fileURLWithPath: string))
+        }
+        return .unknown
+    }
+
+    private func routeIncomingURL(_ string: String) {
+        switch Self.classifyIncomingURL(string) {
+        case .openFile(let url):
             windowController?.openFile(url: url)
-        } else if string.hasPrefix("http://") || string.hasPrefix("https://"),
-                  let url = URL(string: string) {
+        case .openStream(let url):
             // Reuse the URL-open coordinator's resolution logic (yt-dlp for
-            // YouTube etc., direct play for media URLs). Pass the URL in
-            // pre-resolved so the dialog doesn't prompt the user.
+            // YouTube etc., direct play for media URLs). Pre-resolved URL so
+            // the dialog doesn't prompt the user.
             URLOpenCoordinator(windowController: windowController).openExternalURL(url)
-        } else if FileManager.default.fileExists(atPath: string) {
-            windowController?.openFile(url: URL(fileURLWithPath: string))
+        case .unknown:
+            break
         }
     }
 

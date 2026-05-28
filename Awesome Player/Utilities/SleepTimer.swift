@@ -26,7 +26,9 @@ final class SleepTimer {
     private var timer: Timer?
     var onFire: (() -> Void)?
 
-    private init() {}
+    /// Internal so unit tests can construct fresh instances without polluting
+    /// the singleton's state across tests. Production code uses `.shared`.
+    init() {}
 
     func arm(_ mode: Mode) {
         cancel()

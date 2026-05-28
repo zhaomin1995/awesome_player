@@ -52,6 +52,10 @@
 		A10606 /* ResumeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10606 /* ResumeManagerTests.swift */; };
 		A10607 /* SubtitleParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10607 /* SubtitleParserTests.swift */; };
 		A10608 /* UpdateCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10608 /* UpdateCheckerTests.swift */; };
+		A10611 /* CropOverlayViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10611 /* CropOverlayViewTests.swift */; };
+		A10612 /* VideoFiltersPanelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10612 /* VideoFiltersPanelTests.swift */; };
+		A10613 /* SleepTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10613 /* SleepTimerTests.swift */; };
+		A10614 /* URLRoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10614 /* URLRoutingTests.swift */; };
 		A10037 /* DLNAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10038 /* DLNAManager.swift */; };
 		A10038 /* AirPlayCastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10039 /* AirPlayCastManager.swift */; };
 		A10047 /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10047 /* PreferencesWindowController.swift */; };
@@ -127,6 +131,10 @@
 		F10606 /* ResumeManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeManagerTests.swift; sourceTree = "<group>"; };
 		F10607 /* SubtitleParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleParserTests.swift; sourceTree = "<group>"; };
 		F10608 /* UpdateCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCheckerTests.swift; sourceTree = "<group>"; };
+		F10611 /* CropOverlayViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropOverlayViewTests.swift; sourceTree = "<group>"; };
+		F10612 /* VideoFiltersPanelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFiltersPanelTests.swift; sourceTree = "<group>"; };
+		F10613 /* SleepTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTimerTests.swift; sourceTree = "<group>"; };
+		F10614 /* URLRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRoutingTests.swift; sourceTree = "<group>"; };
 		F10610 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F10620 /* Awesome PlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Awesome PlayerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F10038 /* DLNAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLNAManager.swift; sourceTree = "<group>"; };
@@ -195,6 +203,10 @@
 				F10606 /* ResumeManagerTests.swift */,
 				F10607 /* SubtitleParserTests.swift */,
 				F10608 /* UpdateCheckerTests.swift */,
+				F10611 /* CropOverlayViewTests.swift */,
+				F10612 /* VideoFiltersPanelTests.swift */,
+				F10613 /* SleepTimerTests.swift */,
+				F10614 /* URLRoutingTests.swift */,
 				F10610 /* Info.plist */,
 			);
 			path = "Awesome PlayerTests";
@@ -641,6 +653,10 @@
 				A10606 /* ResumeManagerTests.swift in Sources */,
 				A10607 /* SubtitleParserTests.swift in Sources */,
 				A10608 /* UpdateCheckerTests.swift in Sources */,
+				A10611 /* CropOverlayViewTests.swift in Sources */,
+				A10612 /* VideoFiltersPanelTests.swift in Sources */,
+				A10613 /* SleepTimerTests.swift in Sources */,
+				A10614 /* URLRoutingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

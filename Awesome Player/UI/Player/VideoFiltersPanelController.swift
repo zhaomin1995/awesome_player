@@ -218,11 +218,14 @@ final class VideoFiltersPanelController: NSWindowController {
         wc.playerViewController.openFile(url: url)
     }
 
-    /// Build the libvlc video-filter chain string from current UserDefaults.
-    /// Returns nil when no filter is enabled. Format is colon-separated module
-    /// names with `{key=value}` parameter sets for those that take them.
-    static func buildFilterChainOption() -> String? {
-        let ud = UserDefaults.standard
+    /// Build the libvlc video-filter chain string from defaults. Returns nil
+    /// when no filter is enabled. Format is colon-separated module names with
+    /// `{key=value}` parameter sets for those that take them.
+    ///
+    /// `defaults` is injectable so tests can pass a custom `UserDefaults`
+    /// suite instead of mutating the global standard suite (which would leak
+    /// between tests and into the user's real settings during local runs).
+    static func buildFilterChainOption(defaults ud: UserDefaults = .standard) -> String? {
         var modules: [String] = []
         if ud.bool(forKey: Defaults.filterSharpen) {
             let sigma = ud.double(forKey: Defaults.filterSharpenSigma)
